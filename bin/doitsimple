@@ -1,0 +1,120 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+//var rmdirSync = require('rimraf').sync;
+var exec = require('child_process').exec;
+var events = require('events');
+var emitter = new events.EventEmitter();
+
+var initJsonFile = "../dsp-init.json";
+var cmsRoot = "./cms";
+var cmd = process.argv[2];
+var node = process.argv[0];
+if(!cmd){
+	console.log("Usage: bin/doitsimple [start|stop|restart]");
+	process.exit(1);
+}
+var config = readConfig();
+checkEnv(config, function(config){
+	if(cmd === "start"){
+		startAll(config, function(){
+			console.log("all finished");
+		});
+	}
+	else if(cmd === "stop"){
+		stopAll(config);
+	}
+	else if(cmd === "restart"){
+		stopAll(config, function(){
+			startAll(config);
+		});
+	}
+});
+function extend(json1, json2){
+	for (var key in json2){
+    if(!json1[key])
+      json1[key] = json2[key];
+  }
+}
+function readJsonArray(file, defaultJsonArray){
+	var json;
+	if (fs.existsSync(file))
+    json = require(file);
+	else
+		json = defaultJsonArray;
+	var noNameCount = 0;
+	var rootHash;
+	json.forEach(function(el){
+		if(!el.name){
+			console.log("config with no name: " + JSON.stringify(el));
+			noNameCount++;
+			el.name = "anonymous" + noNameCount.toString();
+		}
+		else if(json[el.name]){
+			console.err("Duplicate name: " + JSON.stringify(el) + "\n" + json[el.name]);
+			process.exit(1);
+		}
+		json[el.name]=el;
+		rootHash[el.root]=1;
+	});
+	for (var key in rootHash)
+		if (!fs.existsSync(key))
+			fs.mkdirSync(key);
+	return json;
+}
+function readJson(file, defaultJson){
+	var json;
+	if (fs.existsSync(file))
+    json = require(file);
+	extend(json, defaultJson);
+	return json;
+}
+function readConfig(){
+
+	var defaultConfig = {
+		port: 8088,
+		jsonFile: "../dsp.json"
+	};
+	var initConfig = readJson(initJsonFile, defaultConfig);
+	console.log(initConfig);
+	var config;
+	config = readJsonArray(initConfig.jsonFile, [{
+		name: "defaultClient",
+		type: "angularBasic",
+		root: "client"
+	},{
+		name: "defaultServer",
+		type: "nodeRaw",
+		root: "server"
+	}]);
+	return config;
+}
+function checkEnv(config, fn){
+	if(1){
+		fn(config);
+	}
+}
+function loadModule(type, fn){
+//	var handle = require("type");
+	
+}
+function startAll(configArray, fn){
+	configArray.forEach(function(config){
+		loadModule(config.type, function(){
+			emitter.emit("moduleCompleted");
+		});
+	});	
+	var count = 0;
+	if(configArray.length === 0)
+		fn();
+	else
+		emitter.on("moduleCompleted", function(){
+			count ++;
+			if(count == configArray.length) fn();
+		});
+}
+function stopAll(configArray, fn){
+}
+
+
+
