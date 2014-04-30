@@ -5,7 +5,7 @@ var modPath = __dirname + "/";
 function generateSrc(config, fn){
 	console.log("generating "+ config.type);
   var src = {}; 
-	var mod	= require(config.type);
+	var mod	= require("./"+config.type);
 	if(mod.init)
 		src = mod.init(config);
 	else
@@ -15,11 +15,17 @@ function generateSrc(config, fn){
 		if(!src.srcDir)
 			src.srcPath = modPath + config.type + "/";
 		if(!src.destDir)
-			src.destPath = config.server.root;
+			if(config.server)
+				src.destPath = global.distPath + config.server.name +"/";
+			else if(config.ns)
+				src.destPath = global.distPath + config.name +"/";
+			else
+				process.exit(1);
 		if(!src.env)
 			src.env = config;
 		copyFormated(src);
 	}
+	fn();
 }
 
 function copyFormated(json){
@@ -31,7 +37,8 @@ function copyFormated(json){
 			process.exit(1);
 		}
 		mkdirp.sync(dirname(destFile));
-		fs.writeFile(destFile + '/' + file, tmpl(srcFile + '/' + file, json.env));
+		console.log(destFile);
+		fs.writeFile(destFile, tmpl(srcFile, json.env));
 	});
 }
 var cache = {};
@@ -48,18 +55,20 @@ function tmpl(str, data){
 					"obj", 
 					"var p=[],print=function(){p.push.apply(p,arguments);};" +						
 						// Introduce the data as local variables using with(){}
-						"with(obj){p.push('" +
-						
+						"with(obj){p.push('" +						
 						// Convert the template into pure JavaScript
 						str
-						.replace(/[\r\t\n]/g, " ")
-						.split("<\|").join("\t")
-						.replace(/((^|\|>)[^\t]*)'/g, "$1\r")
-						.replace(/\t=(.*?)\|>/g, "',$1,'")
-						.split("\t").join("');")
-						.split("\|>").join(";p.push('")
-						.split("\r").join("\\'")
-						+ "');}return p.join('');");
+						.replace(/[\n]/g, "\\n")
+//						.replace(/[\r\t\n]/g, " ")
+						.replace(/'/g, "\\'")
+//						.split("<\|").join("\t")
+						.replace(/((^\$\$)[(^\^\^)]*)'/g, "$1'")
+						.replace(/\^\^=(.*?)\$\$/g, "',$1,'")
+						.split("\^\^").join("');")
+						.split("\$\$").join(";p.push('")
+//						.split("\r").join("'")
+						+ "');}return p.join('');"
+				);
   
   // Provide some basic currying to the user
   return data ? fn( data ) : fn;

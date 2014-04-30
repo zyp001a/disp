@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-console.log(__dirname);
+//console.log(__dirname);
 var fs = require('fs');
 //var rmdirSync = require('rimraf').sync;
 var exec = require('child_process').exec;
 var events = require('events');
 var emitter = new events.EventEmitter();
-var generateSrc = require("generator").generateSrc;
-var startServer = require("launcher").startServer;
+var generateSrc = require("./generator").generateSrc;
+var startServer = require("./launcher").startServer;
 
 
 var node = process.argv[0];
@@ -49,7 +49,9 @@ checkEnv(function(){
 */
 	if(cmd === "init"){
 		generateSrc(disp.initConfig.src, function(){
-			startServer(disp.initConfig.server);
+			generateSrc(disp.initConfig.server, function(){
+				startServer(disp.initConfig.server);
+			});
 		});
 	}
 	else {
@@ -128,6 +130,7 @@ function readInitConfig(){
 	var defaultInitConfig = {
 		server: {
 			name: "cms-server",
+			type: "node-express",
 			port: 8088
 		},
 		src: {
@@ -137,8 +140,9 @@ function readInitConfig(){
 		},
 		distPath: __dirname + "/../dist/"
 	};
-	var initConfig = require("init");
+	var initConfig = require("./init");
 	extend(initConfig, defaultInitConfig);
+	global.distPath = initConfig.distPath;
 	var config;
 /*
 	var serverConfig = readJsonArray(initConfig.server.root + 
@@ -163,7 +167,7 @@ function startAll(configArray, fn){
 		startServer(config.type, function(){
 			emitter.emit("serverStarted");
 		});
-	});	
+	});
 	var count = 0;
 	if(configArray.length === 0)
 		fn();
