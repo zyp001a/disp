@@ -48,5 +48,11 @@ function startServer(config, fn){
 	});
 */
 }
+function stopServer(config, fn){
+	var pid = fs.readFileSync(global.distPath + config.name + "/" + "PID");
+	pid = pid.toString().replace(/\n\r/g,"");
+	process.kill(pid);
+}
 
 module.exports.startServer = startServer;
+module.exports.stopServer = stopServer;

@@ -1,5 +1,5 @@
 {
-	"bin": "nodemon",
+	"bin": "node",
 	"main": "server.js",
 	"files": ["server.js"]
 }

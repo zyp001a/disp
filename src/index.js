@@ -8,6 +8,7 @@ var events = require('events');
 var emitter = new events.EventEmitter();
 var generateSrc = require("./generator").generateSrc;
 var startServer = require("./launcher").startServer;
+var stopServer = require("./launcher").stopServer;
 
 
 var node = process.argv[0];
@@ -15,7 +16,7 @@ var dispCmd = process.argv[1];
 var cmd = process.argv[2];
 var noNameCount = 0;
 function help(){
-	console.log("Usage: " + dispCmd + "[init|help]");
+	console.log("Usage: " + dispCmd + "[start-cms|stop-cms|help]");
   process.exit(1);
 }
 if(!cmd){
@@ -47,12 +48,15 @@ checkEnv(function(){
 		src();
 	}
 */
-	if(cmd === "init"){
+	if(cmd === "start-cms"){
 		generateSrc(disp.initConfig.src, function(){
 			generateSrc(disp.initConfig.server, function(){
 				startServer(disp.initConfig.server);
 			});
 		});
+	}
+	else if(cmd === "stop-cms"){
+		stopServer(disp.initConfig.server);
 	}
 	else {
 		help();

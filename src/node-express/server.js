@@ -1,4 +1,5 @@
 var express = require('express');
+var fs=require('fs');
 var app = express();
 
 var path = require('path'),
@@ -16,7 +17,8 @@ app.configure(function(){
 });
 
 
-http.createServer(app).listen(app.get('port'), function () {
-    console.log("Express server listening on port " + app.get('port'));
+http.createServer(app).listen(app.get('port'), function () {	
+  console.log("Express server listening on port " + app.get('port'));
+	fs.writeFile("PID",process.pid);
 });
 
