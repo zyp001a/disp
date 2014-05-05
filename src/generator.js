@@ -58,14 +58,19 @@ function tmpl(str, data){
 						"with(obj){p.push('" +						
 						// Convert the template into pure JavaScript
 						str
+						.replace(/\\n/g, "\\\\n")
 						.replace(/[\n]/g, "\\n")
 //						.replace(/[\r\t\n]/g, " ")
+						.replace(/\\'/g, "\\\\'")
 						.replace(/'/g, "\\'")
-//						.split("<\|").join("\t")
 						.replace(/((^\$\$)[(^\^\^)]*)'/g, "$1'")
 						.replace(/\^\^=(.*?)\$\$/g, "',$1,'")
 						.split("\^\^").join("');")
 						.split("\$\$").join(";p.push('")
+						.replace(/\\^/g, "^")
+						.replace(/\\$/g, "$")
+
+						.replace(/(\\[^\\\'n])/g, "\\$1")
 //						.split("\r").join("'")
 						+ "');}return p.join('');"
 				);

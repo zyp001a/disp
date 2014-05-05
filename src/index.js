@@ -112,11 +112,19 @@ function formatSrcConfig(el){
 	var server = ns[el.server];
 	formatName(el, server.ns);
 	el.server = server;
+
+	if(el.deps){
+		el.deps.forEach(function(e){
+			el.deps[e]=server.ns[e];
+		});
+	}
+	
 	if(!el.root)
 		el.root = server.root + el.name + "/";
 		
 	if (!fs.existsSync(el.root))
 		fs.mkdirSync(el.root);
+	
 }
 
 /*
