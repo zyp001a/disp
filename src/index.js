@@ -1,62 +1,66 @@
 #!/usr/bin/env node
-
+/*
+extended config:
+{
+ "name": "example",
+ "type": "cms",
+ "deps": [type1, type2],
+ "rels": [{},{}],
+ "env": {
+ }
+ "status": 0|1|2
+}
+*/
 //console.log(__dirname);
 var fs = require('fs');
 //var rmdirSync = require('rimraf').sync;
 var exec = require('child_process').exec;
 var events = require('events');
 var emitter = new events.EventEmitter();
-var generateSrc = require("./generator").generateSrc;
-var startServer = require("./launcher").startServer;
-var stopServer = require("./launcher").stopServer;
 
 
 var node = process.argv[0];
 var dispCmd = process.argv[1];
 var cmd = process.argv[2];
-var noNameCount = 0;
+var modName = process.argv[3];
+
 function help(){
-	console.log("Usage: " + dispCmd + "[start-cms|stop-cms|help]");
+	console.log("Usage: " + dispCmd + "[gen|start|stop|help] [module name]");
   process.exit(1);
 }
 if(!cmd){
 	help();
 }
 var disp = {};
-var ns = {};
+var ns = [];
+var entrances = [];
+var noNameCount = 0;
+global.disp = disp;
 disp.ns = ns;
-disp.initConfig = readInitConfig();
-formatServerConfig(disp.initConfig.server);
-formatSrcConfig(disp.initConfig.src);
+var cmdPool = {};
+cmdPool.gen = require("./generator").generateSrc;
+cmdPool.gen.set = ns;
+var launcher = require("./launcher");
+cmdPool.start = launcher.startServer;
+cmdPool.stop = launcher.stopServer;
+cmdPool.start.set = entrances;
+cmdPool.stop.set = entrances;
+
+disp.distPath = __dirname + "/../dist/";
+if (!fs.existsSync(disp.distPath))
+	fs.mkdirSync(disp.distPath);
+
+disp.entrances = entrances;
+initFromConfig();
 
 checkEnv(function(){
-/*
-	if(cmd === "start"){
-		startAll(disp.server, function(){
-			console.log("all finished");
-		});
-	}
-	else if(cmd === "stop"){
-		stopAll(disp.server);
-	}
-	else if(cmd === "restart"){
-		stopAll(disp.server, function(){
-			startAll(disp.server);
-		});
-	}
-	else if(cmd === "src"){
-		src();
-	}
-*/
-	if(cmd === "start-cms"){
-		generateSrc(disp.initConfig.src, function(){
-			generateSrc(disp.initConfig.server, function(){
-				startServer(disp.initConfig.server);
+	if(cmd != "help" && cmdPool[cmd]){
+		if(modName)
+			cmdPool[cmd](ns[modName]);
+		else
+			cmdPool[cmd].set.forEach(function(config){
+				cmdPool[cmd](config);
 			});
-		});
-	}
-	else if(cmd === "stop-cms"){
-		stopServer(disp.initConfig.server);
 	}
 	else {
 		help();
@@ -71,6 +75,9 @@ function extend(json1, json2){
 	for (var key in json2){
     if(!(key in json1))
       json1[key] = json2[key];
+		else if(key === "env" || key === "deps"){
+			json1[key] = extend(json1[key], json2[key]);
+		}
   }
 	return json1;
 }
@@ -84,6 +91,75 @@ function readJsonArray(file, defaultJsonArray){
 	return json;
 }
 */
+function extendConfig(config){
+	if(config.status >= 1){
+		return;
+	}
+	if(!config.type){
+		console.error("Module type is not defined");
+    process.exit(1);
+	}
+
+	if(!config.name){
+    config.name = config.type;
+  }
+  else if(ns[config.name]){
+    console.error("Duplicate name: " + JSON.stringify(config) + "\n" + JSON.stringify(ns[config.name]));
+    process.exit(1);
+  }
+//	console.log(config.type);
+	var defaultConfig = require("./"+config.type);
+	config = extend(config, defaultConfig);
+  ns[config.name]=config;
+  ns.push(config);
+	if(config.main){
+		entrances.push(config);
+	}
+	config.children = [];
+	config.status = 1;
+}
+function extendDeps(config){
+	if(config.deps)
+//		console.log(config.deps);
+		for (var key in config.deps){
+			extendConfig({
+				"name": config.deps[key],
+				"type": key
+			});
+		};
+
+}
+function applyConfig(config){
+	if(config.rels){
+		config.rels.forEach(function(rel){
+			if(rel.parent){
+				ns[rel.parent].env.children.push(config.name);
+			}
+			var key;
+			if(rel.with){
+				if(rel.append){
+					rel.pass.forEach(function(varName){
+						ns[rel.with].env[varName] += ("\n" + config[varName]);
+					});
+				}
+				if(rel.pass){
+					rel.pass.forEach(function(varName){
+						ns[rel.with].env[varName] = config[varName];
+					});
+				}
+				if(rel.push){
+          rel.pass.forEach(function(varName){
+            ns[rel.with].env[varName].push(config[varName]);
+          });
+        }
+			}
+			if(rel.invoke && rel.func){
+				ns[rel.invoke][rel.func](config);
+			}				
+		});
+	}
+}
+/*
 function formatName(el, ns){
 	if(!el.name){
 		console.log("config with no name: " + JSON.stringify(el));
@@ -95,16 +171,18 @@ function formatName(el, ns){
 		process.exit(1);
 	}
 	ns[el.name]=el;
+	ns.push(el);
 }
 function formatServerConfig(el){
 	formatName(el, ns);
 	if(!el.root)
 		el.root = disp.initConfig.distPath + el.name + "/";
-	el.ns= {};
+	el.ns= [];
 	if (!fs.existsSync(el.root))
 		fs.mkdirSync(el.root);
 }
 function formatSrcConfig(el){
+
 	if(!el.server || !ns[el.server]){
 		console.log("src config must have a existing server object");
 		process.exit(1);
@@ -112,13 +190,7 @@ function formatSrcConfig(el){
 	var server = ns[el.server];
 	formatName(el, server.ns);
 	el.server = server;
-
-	if(el.deps){
-		el.deps.forEach(function(e){
-			el.deps[e]=server.ns[e];
-		});
-	}
-	
+	el.components = [];
 	if(!el.root)
 		el.root = server.root + el.name + "/";
 		
@@ -126,6 +198,7 @@ function formatSrcConfig(el){
 		fs.mkdirSync(el.root);
 	
 }
+*/
 
 /*
 function readJson(file, defaultJson){
@@ -137,59 +210,32 @@ function readJson(file, defaultJson){
 	return json;
 }
 */
-function readInitConfig(){
+function initFromConfig(){
 	
 	var defaultInitConfig = {
-		server: {
-			name: "cms-server",
-			type: "node-express",
-			port: 8088
-		},
-		src: {
-			name: "cms-src",
-			type: "cms",
-			server: "cms-server"
-		},
-		distPath: __dirname + "/../dist/"
+		name: "cms",
+		type: "cms",
+		port: 8088
 	};
 	var initConfig = require("./init");
 	extend(initConfig, defaultInitConfig);
-	global.distPath = initConfig.distPath;
-	var config;
-/*
-	var serverConfig = readJsonArray(initConfig.server.root + 
-															 initConfig.src.serverFile, []);
-	var srcConfig = readJsonArray(initConfig.server.root + 
-																	initConfig.src.srcFile, []);
 
-	formatConfig(serverConfig);
-	formatConfig(srcConfig);
-*/ 	
-	return initConfig;
-	
+	disp.initConfig = initConfig;
+
+	extendConfig(disp.initConfig);
+	ns.forEach(function(config){
+		extendDeps(config);
+	});
+	ns.forEach(function(config){
+		applyConfig(config);
+	});
+	console.log(ns);
+	console.log(entrances);
 }
 function checkEnv(fn){
 	if(1){
 		fn();
 	}
-}
-
-function startAll(configArray, fn){
-	configArray.forEach(function(config){
-		startServer(config.type, function(){
-			emitter.emit("serverStarted");
-		});
-	});
-	var count = 0;
-	if(configArray.length === 0)
-		fn();
-	else
-		emitter.on("serverStarted", function(){
-			count ++;
-			if(count == configArray.length) fn();
-		});
-}
-function stopAll(configArray, fn){
 }
 
 

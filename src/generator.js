@@ -4,28 +4,24 @@ var dirname = require("path").dirname;
 var modPath = __dirname + "/";
 function generateSrc(config, fn){
 	console.log("generating "+ config.type);
-  var src = {}; 
-	var mod	= require("./"+config.type);
-	if(mod.init)
-		src = mod.init(config);
-	else
-		src = mod;
-	
-	if(src.files.length>0){
-		if(!src.srcDir)
+	var src = {};
+	if(config.files.length>0){
+		src.files = config.files;
+		if(!config.srcPath)
 			src.srcPath = modPath + config.type + "/";
-		if(!src.destDir)
-			if(config.server)
-				src.destPath = global.distPath + config.server.name +"/";
-			else if(config.ns)
-				src.destPath = global.distPath + config.name +"/";
-			else
-				process.exit(1);
-		if(!src.env)
-			src.env = config;
+		else
+			src.srcPath = modPath + config.type + "/" + config.srcPath;
+		if(!config.destPath)
+			src.destPath =  disp.distPath + config.name +"/";
+		else
+			src.destPath =  disp.distPath + config.destPath + "/";
+		if(!config.env)
+			src.env={};
+		else
+			src.env = config.env;
 		copyFormated(src);
 	}
-	fn();
+	if(fn) fn();
 }
 
 function copyFormated(json){

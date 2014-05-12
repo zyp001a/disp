@@ -8,33 +8,33 @@ var libc = new FFI.Library(null, {
 var system = libc.system;
 function startServer(config, fn){
 	var src = {};
-  var mod = require("./"+config.type);
-	if(mod.start)
-		src = mod.start(config);
-	else
-		src = mod;
 
-	if(!src.log){
-		src.log = ">";
-	}
-	src.log += "log/"+new Date().toISOString() + ".log";
-	if(!src.data){
+	if(!config.log)
+		src.log = ">log/"+new Date().toISOString() + ".log";
+	else 
+		src.log = ">" + config.log;
+
+	if(!config.data)
 		src.data="";
-	}
-	if(!src.config){
+	else 
+		src.data = config.data;
+
+	if(!config.config)
 		src.config= "";
-	}
-	if(!src.bin){
+	else
+		src.config = config.config;
+	if(!config.bin){
 		console.error("server must have bin path");
 		process.exit(1);
 	}
-	if(!src.main){
+	src.bin = config.bin;
+	if(!config.main){
 		console.error("server must have main path");
 		process.exit(1);
 	}
-	
+	src.main = config.main;
 	var cmd = [src.bin, src.main, src.data, src.config, src.log, "2>&1 &"].join(" ");
-	cmd = "cd " + global.distPath + config.name + " && mkdir -p log && " + cmd;
+	cmd = "cd " + disp.distPath + config.name + " && mkdir -p log && " + cmd;
 	console.log(cmd);
 	system(cmd);
 /*
@@ -49,7 +49,7 @@ function startServer(config, fn){
 */
 }
 function stopServer(config, fn){
-	var pid = fs.readFileSync(global.distPath + config.name + "/" + "PID");
+	var pid = fs.readFileSync(disp.distPath + config.name + "/" + "PID");
 	pid = pid.toString().replace(/\n\r/g,"");
 	process.kill(pid);
 }
