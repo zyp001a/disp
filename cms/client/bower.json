@@ -26,6 +26,8 @@
     "angular": "~1.2.16",
     "angular-route": "~1.2.16",
     "angular-resource": "~1.2.16",
-    "jstree": "~3.0.0"
+    "jstree": "~3.0.0",
+    "bootstrap": "~3.1.1",
+    "ace-builds": "~1.1.3"
   }
 }

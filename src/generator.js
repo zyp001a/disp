@@ -11,14 +11,12 @@ function generateSrc(config, fn){
 			src.srcPath = modPath + config.type + "/";
 		else
 			src.srcPath = modPath + config.type + "/" + config.srcPath;
+		console.log(config);
 		if(!config.destPath)
 			src.destPath =  disp.distPath + config.name +"/";
 		else
 			src.destPath =  disp.distPath + config.destPath + "/";
-		if(!config.env)
-			src.env={};
-		else
-			src.env = config.env;
+		src.env = config.env;
 		copyFormated(src);
 	}
 	if(fn) fn();
@@ -26,8 +24,17 @@ function generateSrc(config, fn){
 
 function copyFormated(json){
 	json.files.forEach(function(file){
-		var srcFile = json.srcPath + file;
-		var destFile = json.destPath + file;
+		var srcFile;
+		var destFile;
+		
+		if(file.origin && file.rename){
+			srcFile = json.srcPath + file.origin;
+			destFile = json.destPath + file.rename;
+		}
+		else{
+			 srcFile = json.srcPath + file;
+			destFile = json.destPath + file;
+		}
 		if(!fs.existsSync(srcFile)){
 			console.error("Source file not exists: " + srcFile);
 			process.exit(1);

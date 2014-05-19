@@ -5,9 +5,18 @@ extended config:
  "name": "example",
  "type": "cms",
  "deps": [type1, type2],
- "rels": [{},{}],
- "env": {
+ "inhAttrs": {
+ 	concat: [],(for array attrs)
+ 	replace: [],
+ 	append: []
  }
+ "rels": [{},{}],
+ "env": { }
+
+ 	name: "index",
+ 	type: "html",
+
+ }]
  "status": 0|1|2
 }
 */
@@ -25,7 +34,7 @@ var cmd = process.argv[2];
 var modName = process.argv[3];
 
 function help(){
-	console.log("Usage: " + dispCmd + "[gen|start|stop|help] [module name]");
+	console.log("Usage: " + dispCmd + "[inst|gen|start|stop|help] [module name]");
   process.exit(1);
 }
 if(!cmd){
@@ -38,6 +47,7 @@ var noNameCount = 0;
 global.disp = disp;
 disp.ns = ns;
 var cmdPool = {};
+cmdPool.inst = require("./install").installDeps;
 cmdPool.gen = require("./generator").generateSrc;
 cmdPool.gen.set = ns;
 var launcher = require("./launcher");
@@ -110,6 +120,8 @@ function extendConfig(config){
 //	console.log(config.type);
 	var defaultConfig = require("./"+config.type);
 	config = extend(config, defaultConfig);
+	if(!config.env)
+		config.env={};
   ns[config.name]=config;
   ns.push(config);
 	if(config.main){
@@ -118,15 +130,36 @@ function extendConfig(config){
 	config.children = [];
 	config.status = 1;
 }
+function inherentConfig(inhConfig, inhTarget, config){
+	if(inhConfig){
+		if(inhConfig.replace)
+			inhConfig.replace.forEach(function(el){
+				inhTarget[el] = config[el];
+			});
+		if(inhConfig.append)
+			inhConfig.append.forEach(function(el){
+        inhTarget[el] += (" " + config[el]);
+      });
+		if(inhConfig.appendLine)
+			inhConfig.appendLine.forEach(function(el){
+        inhTarget[el] += ("\n" + config[el]);
+      });
+		if(inhConfig.concat)
+			inhConfig.concat.forEach(function(el){
+				inhConfig[el].concat(config[el]);
+			});
+	}
+}
+
 function extendDeps(config){
 	if(config.deps)
 //		console.log(config.deps);
-		for (var key in config.deps){
-			extendConfig({
-				"name": config.deps[key],
-				"type": key
-			});
-		};
+		config.deps.forEach(function(dep){
+			extendConfig(dep);
+			inherentConfig(dep.inhAttrs, dep, config);
+			inherentConfig(dep.inhEnvs, dep.env, config);
+			extendDeps(dep);
+		});
 
 }
 function applyConfig(config){
@@ -136,20 +169,29 @@ function applyConfig(config){
 				ns[rel.parent].env.children.push(config.name);
 			}
 			var key;
-			if(rel.with){
+			if(rel.setEnv || rel.setConfig){
+				var target;
+				if(rel.setEnv)
+					target = ns[rel.setEnv].env;
+				else
+					target = ns[rel.setConfig];
+				if(!target){
+					console.error("rels, setEnv or setConfig, name not found");
+					process.exit(1);
+				}
 				if(rel.append){
-					rel.pass.forEach(function(varName){
-						ns[rel.with].env[varName] += ("\n" + config[varName]);
+					rel.append.forEach(function(varName){
+						target[varName] += ("\n" + config[varName]);
 					});
 				}
 				if(rel.pass){
 					rel.pass.forEach(function(varName){
-						ns[rel.with].env[varName] = config[varName];
+						target[varName] = config[varName];
 					});
 				}
 				if(rel.push){
-          rel.pass.forEach(function(varName){
-            ns[rel.with].env[varName].push(config[varName]);
+          rel.push.forEach(function(varName){
+            target[varName].push(config[varName]);
           });
         }
 			}
@@ -158,6 +200,10 @@ function applyConfig(config){
 			}				
 		});
 	}
+	if(config.init){
+		config.init();
+	}
+
 }
 /*
 function formatName(el, ns){
@@ -214,7 +260,7 @@ function initFromConfig(){
 	
 	var defaultInitConfig = {
 		name: "cms",
-		type: "cms",
+		type: "package/cms",
 		port: 8088
 	};
 	var initConfig = require("./init");
