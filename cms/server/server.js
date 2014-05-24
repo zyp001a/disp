@@ -14,7 +14,9 @@ app.configure(function () {
 var dirTree = require("./dirTree").dirTree;
 
 app.get('/dir', function(req, res){
-	var root= dirTree(".");
+	var id = req.params.id;
+	if(!id) id = ".";
+	var root= dirTree(encodeURIComponent(id));
 	root.type = "root";
 	res.send(root);
 });

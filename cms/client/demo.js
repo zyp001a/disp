@@ -9,7 +9,7 @@ $('#jstree_demo').jstree({
 				return 'dir';
       },
       'data' : function (node) {
-        return { 'id' : node.id };
+        return { 'id' : node.text };
       }
     }
   },
