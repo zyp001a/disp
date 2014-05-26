@@ -11,18 +11,26 @@ app.configure(function () {
   app.use(express.bodyParser({limit: '500mb'}));
   app.use(express.static(path.join(__dirname, '../client')));
 });
-var dirTree = require("./dirTree").dirTree;
+var listDir = require("./fsapi").listDir;
+var getFile = require("./fsapi").getFile;
+
+app.get('/file/:id', function(req, res){
+  var id = req.params.id;
+  var root= getFile(decodeURIComponent(id));
+  res.send(root);
+});
 
 app.get('/dir', function(req, res){
+	var root= listDir(".");
+  res.send(root);
+});
+app.get('/dir/:id', function(req, res){
 	var id = req.params.id;
-	if(!id) id = ".";
-	var root= dirTree(encodeURIComponent(id));
-	root.type = "root";
+	var root= listDir(decodeURIComponent(id));
 	res.send(root);
 });
 
-
 http.createServer(app).listen(app.get('port'), function () {
-    console.log("Express server listening on port " + app.get('port'));
+  console.log("Express server listening on port " + app.get('port'));
 });
 
