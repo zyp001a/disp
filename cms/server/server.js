@@ -30,6 +30,8 @@ app.get('/dir/:id', function(req, res){
 	res.send(root);
 });
 
+var authService = require("./auth").start(app);
+
 http.createServer(app).listen(app.get('port'), function () {
   console.log("Express server listening on port " + app.get('port'));
 });
