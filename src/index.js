@@ -1,288 +1,182 @@
 #!/usr/bin/env node
-/*
-extended config:
-{
- "name": "example",
- "type": "cms",
- "deps": [type1, type2],
- "inhAttrs": {
- 	concat: [],(for array attrs)
- 	replace: [],
- 	append: []
- }
- "rels": [{},{}],
- "env": { }
 
- 	name: "index",
- 	type: "html",
-
- }]
- "status": 0|1|2
-}
-*/
-//console.log(__dirname);
-var fs = require('fs');
-//var rmdirSync = require('rimraf').sync;
-var exec = require('child_process').exec;
-var events = require('events');
-var emitter = new events.EventEmitter();
-
+var fs = require("fs");
+var mkdirp = require("mkdirp");
+var dirname = require("path").dirname;
+//var modPath = __dirname + "/";
 
 var node = process.argv[0];
 var dispCmd = process.argv[1];
-var cmd = process.argv[2];
-var modName = process.argv[3];
+var dir = process.argv[2];
+var dist = process.argv[3];
 
-function help(){
-	console.log("Usage: " + dispCmd + "[inst|gen|start|stop|help] [module name]");
-  process.exit(1);
-}
-if(!cmd){
-	help();
-}
-var disp = {};
-var ns = [];
-var entrances = [];
-var noNameCount = 0;
-global.disp = disp;
-disp.ns = ns;
-var cmdPool = {};
-cmdPool.inst = require("./install").installDeps;
-cmdPool.gen = require("./generator").generateSrc;
-cmdPool.gen.set = ns;
-var launcher = require("./launcher");
-cmdPool.start = launcher.startServer;
-cmdPool.stop = launcher.stopServer;
-cmdPool.start.set = entrances;
-cmdPool.stop.set = entrances;
 
-disp.distPath = __dirname + "/../dist/";
-if (!fs.existsSync(disp.distPath))
-	fs.mkdirSync(disp.distPath);
 
-disp.entrances = entrances;
-initFromConfig();
 
-checkEnv(function(){
-	if(cmd != "help" && cmdPool[cmd]){
-		if(modName)
-			cmdPool[cmd](ns[modName]);
-		else
-			cmdPool[cmd].set.forEach(function(config){
-				cmdPool[cmd](config);
+function extendObj(obj){
+	if(typeof obj === "object"){
+		if(isArray(obj)){
+			obj.forEach(function(e, i){
+				if(extendObj(e)){
+					obj[i]= readJSON(dir+"/"+e.mount);
+					return 0;
+				}
 			});
-	}
-	else {
-		help();
-	}
-});
-
-function extend(json1, json2){
-	if(!json1){
-		console.error("cannot extend undefined json");
-		process.exit(1);
-	}
-	for (var key in json2){
-    if(!(key in json1))
-      json1[key] = json2[key];
-		else if(key === "env" || key === "deps"){
-			json1[key] = extend(json1[key], json2[key]);
 		}
-  }
-	return json1;
-}
-/*
-function readJsonArray(file, defaultJsonArray){
-	var json;
-	if (fs.existsSync(file))
-    json = require(file);
-	else
-		json = defaultJsonArray;
-	return json;
-}
-*/
-function extendConfig(config){
-	if(config.status >= 1){
-		return;
-	}
-	if(!config.type){
-		console.error("Module type is not defined");
-    process.exit(1);
-	}
-
-	if(!config.name){
-    config.name = config.type;
-  }
-  else if(ns[config.name]){
-    console.error("Duplicate name: " + JSON.stringify(config) + "\n" + JSON.stringify(ns[config.name]));
-    process.exit(1);
-  }
-//	console.log(config.type);
-	var defaultConfig = require("./"+config.type);
-	config = extend(config, defaultConfig);
-	if(!config.env)
-		config.env={};
-  ns[config.name]=config;
-  ns.push(config);
-	if(config.main){
-		entrances.push(config);
-	}
-	config.children = [];
-	config.status = 1;
-}
-function inherentConfig(inhConfig, inhTarget, config){
-	if(inhConfig){
-		if(inhConfig.replace)
-			inhConfig.replace.forEach(function(el){
-				inhTarget[el] = config[el];
-			});
-		if(inhConfig.append)
-			inhConfig.append.forEach(function(el){
-        inhTarget[el] += (" " + config[el]);
-      });
-		if(inhConfig.appendLine)
-			inhConfig.appendLine.forEach(function(el){
-        inhTarget[el] += ("\n" + config[el]);
-      });
-		if(inhConfig.concat)
-			inhConfig.concat.forEach(function(el){
-				inhConfig[el].concat(config[el]);
-			});
-	}
-}
-
-function extendDeps(config){
-	if(config.deps)
-//		console.log(config.deps);
-		config.deps.forEach(function(dep){
-			extendConfig(dep);
-			inherentConfig(dep.inhAttrs, dep, config);
-			inherentConfig(dep.inhEnvs, dep.env, config);
-			extendDeps(dep);
-		});
-
-}
-function applyConfig(config){
-	if(config.rels){
-		config.rels.forEach(function(rel){
-			if(rel.parent){
-				ns[rel.parent].env.children.push(config.name);
+		else{
+			if(obj.hasOwnProperty("mount")){
+				return 1;
 			}
-			var key;
-			if(rel.setEnv || rel.setConfig){
-				var target;
-				if(rel.setEnv)
-					target = ns[rel.setEnv].env;
-				else
-					target = ns[rel.setConfig];
-				if(!target){
-					console.error("rels, setEnv or setConfig, name not found");
-					process.exit(1);
+			if(obj.hasOwnProperty("tpl")){
+				if(typeof obj["tpl"] === "object"){
+					loader[obj["tpl"].loader](nsPath+"/"+obj["tpl"].name, obj, env);
 				}
-				if(rel.append){
-					rel.append.forEach(function(varName){
-						target[varName] += ("\n" + config[varName]);
-					});
+				else{
+					loader._default(nsPath+"/"+obj["tpl"], obj, env);
 				}
-				if(rel.pass){
-					rel.pass.forEach(function(varName){
-						target[varName] = config[varName];
-					});
-				}
-				if(rel.push){
-          rel.push.forEach(function(varName){
-            target[varName].push(config[varName]);
-          });
-        }
 			}
-			if(rel.invoke && rel.func){
-				ns[rel.invoke][rel.func](config);
-			}				
-		});
+			for (var prop in obj){
+				if(extendObj(obj[prop])){
+					obj[prop]= JSON.parse(fs.readFileSync(dir+"/"+obj[prop].mount));
+				}
+			}
+		}
 	}
-	if(config.init){
-		config.init();
+	else{
+		return 0;
 	}
-
 }
-/*
-function formatName(el, ns){
-	if(!el.name){
-		console.log("config with no name: " + JSON.stringify(el));
-		noNameCount++;
-		el.name = "anonymous" + noNameCount.toString();
-	}
-	else if(ns[el.name]){
-		console.error("Duplicate name: " + JSON.stringify(el) + "\n" + JSON.stringify(ns[el.name]));
+function isArray(obj){
+	return Object.prototype.toString.call( obj ) === '[object Array]';
+}
+function readJSON(file){
+	if(fs.existsSync(file))
+		return JSON.parse(fs.readFileSync(file));
+	else{
+		console.error("No JSON file:" + file);
 		process.exit(1);
 	}
-	ns[el.name]=el;
-	ns.push(el);
 }
-function formatServerConfig(el){
-	formatName(el, ns);
-	if(!el.root)
-		el.root = disp.initConfig.distPath + el.name + "/";
-	el.ns= [];
-	if (!fs.existsSync(el.root))
-		fs.mkdirSync(el.root);
-}
-function formatSrcConfig(el){
-
-	if(!el.server || !ns[el.server]){
-		console.log("src config must have a existing server object");
-		process.exit(1);
-	}
-	var server = ns[el.server];
-	formatName(el, server.ns);
-	el.server = server;
-	el.components = [];
-	if(!el.root)
-		el.root = server.root + el.name + "/";
-		
-	if (!fs.existsSync(el.root))
-		fs.mkdirSync(el.root);
 	
-}
-*/
 
-/*
-function readJson(file, defaultJson){
-	var json = {};
-	if (fs.existsSync(file))
-    json = require(file);
-	
-	extend(json, defaultJson);
-	return json;
-}
-*/
-function initFromConfig(){
-	
-	var defaultInitConfig = {
-		name: "cms",
-		type: "package/cms",
-		port: 8088
-	};
-	var initConfig = require("./init");
-	extend(initConfig, defaultInitConfig);
+//iterate ./src dir
+var srcRoot, distDir, distRoot;
+if(dist)
+	distDir = dist;
+else
+	distDir = dir + "/dist";
+mkdirp(distDir);
 
-	disp.initConfig = initConfig;
+//read ./project.json
+var config, env, loader;
 
-	extendConfig(disp.initConfig);
-	ns.forEach(function(config){
-		extendDeps(config);
-	});
-	ns.forEach(function(config){
-		applyConfig(config);
-	});
-	console.log(ns);
-	console.log(entrances);
+var modPath = dirname(dispCmd) + "/../src/tpls";
+//console.log(modPath);
+var nsPath;
+config = readJSON(dir + "/project.json");	
+if(config && config.hasOwnProperty("env")){
+		env = config.env;
 }
-function checkEnv(fn){
-	if(1){
-		fn();
+
+if(config.hasOwnProperty("ns")){
+	nsPath = modPath + "/"+config.ns;
+	loader = require(nsPath + "/loader");
+}
+
+extendObj(config);
+console.log(JSON.stringify(config));
+
+
+if(config.hasOwnProperty("proto") && config.hasOwnProperty("ns")){
+	if(isArray(config.proto)){
+		config.proto.forEach(function(proto){
+			srcRoot = nsPath + "/" + proto;
+			distRoot = distDir + "/" + proto;
+			walk(srcRoot);
+		});
+	}else{
+		srcRoot = nsPath + "/" + config.proto;
+		distRoot = distDir;
+		walk(srcRoot);
 	}
 }
+else{
+	srcRoot = dir + "/src";
+	distRoot = distDir;
+	walk(srcRoot);
+}
 
+//var cache = {};
+
+function walk(dir){
+	if(!fs.existsSync(dir)){
+		return 0;
+	}
+
+	fs.readdirSync(dir).forEach(function(f){
+		if(f== "." || f.match(/~/)){
+			return 0;
+		}
+		var p = dir + '/' + f;
+		var tdir = dir.replace(new RegExp("^"+quote(srcRoot)), distRoot);
+		var	stat = fs.statSync(p);
+		if(stat.isDirectory()){
+			mkdirp.sync(tdir + '/' + f);
+			walk(p);
+			return 0;
+		}
+		console.log("file:"+p);
+// if begin with disp, format the file
+		if(f.match(/^disp\./)){
+			if(f == "disp.json"){
+				//load empty dir
+				var dj = readJSON(p);
+				with(env){
+					var evalstr = dj.array+".forEach(function(e){"+
+               "fs.writeFile(tdir+'/'+e."+dj.file+",e." + dj.data+ ")"+
+              "})";
+					console.log(evalstr);
+					eval(evalstr);
+				}
+			}
+			else{
+				var t = tdir + '/' + f.replace(/^disp\./, "");				
+				fs.writeFile(t, tmpl(fs.readFileSync(p).toString(), env));
+			}
+		}
+//	else copy file
+		else{
+			var t = tdir + '/' + f;
+			copy(p, t);
+		}
+	});
+};
+
+function quote(str){
+	return (str+'').replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+}
+function copy(oldFile, newFile){
+	newFp = fs.createWriteStream(newFile);     
+	oldFp = fs.createReadStream(oldFile);
+	oldFp.pipe(newFp);
+}
+
+function tmpl(str, data){
+	with(data){
+		var p=[];
+		var evalstr = "p.push('"+
+		str
+			.replace(/\n/g, "\\n")
+			.replace(/\^\^=(.*?)\$\$/g, "',$1,'")
+			.replace(/\s*(\^\^.*?\$\$)\s*\\n\s*/g, "$1")
+			.split("\^\^").join("');")
+			.split("\$\$").join(";p.push('")
+			+ "');";
+//		console.log(evalstr);
+		eval(evalstr);
+//		console.log(p);
+		return p.join('');
+	}
+}
 
 

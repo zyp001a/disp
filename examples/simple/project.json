@@ -1,0 +1,26 @@
+{
+		"ns": "text",
+		"proto": "one-charpter-one-file",
+		"env": {
+				"title": "This is title",
+				"authors": ["author1", "author2"], 
+				"content": "Just a single file exmaple.",
+				"charpters": [
+						{
+								"name": "charpter1",
+								"content": "This is charpter1"
+						},
+						{
+								"name": "charpter2",
+								"content": "This is charpter2"
+						},
+						{
+								"mount": "alphabet.json"
+						},
+						{
+								"name": "appendix",
+								"tpl": "appendix"
+						}
+				]
+		}
+}

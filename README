@@ -1,1 +1,25 @@
-adfasdf
+DO IT SIMPLE！！！
+
+This is an awosome template system based on JSON.
+
+Reserved keywords:
+
+disp.json
+array
+name
+data
+
+project.json
+file: new file name
+data: load file content from raw string
+path: load file content from path
+
+dist: distribution path
+ns: the class of the project, if null from ./src
+proto: load prototype, if null from ./src
+env: environment
+
+tpl: load templates
+mount: load json
+
+
