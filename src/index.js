@@ -3,14 +3,18 @@
 var fs = require("fs");
 var mkdirp = require("mkdirp");
 var dirname = require("path").dirname;
+var utils = require("./utils");
 //var modPath = __dirname + "/";
+var tmpl = utils.tmpl;
 
 var node = process.argv[0];
 var dispCmd = process.argv[1];
 var dir = process.argv[2];
 var dist = process.argv[3];
 
-
+if(!dir){
+	dir=".";
+}
 
 
 function extendObj(obj){
@@ -29,10 +33,10 @@ function extendObj(obj){
 			}
 			if(obj.hasOwnProperty("tpl")){
 				if(typeof obj["tpl"] === "object"){
-					loader[obj["tpl"].loader](nsPath+"/"+obj["tpl"].name, obj, env);
+					loadMod(obj["tpl"].loader, obj["tpl"].name, obj);
 				}
 				else{
-					loader._default(nsPath+"/"+obj["tpl"], obj, env);
+					loadMod("_default", obj["tpl"], obj);
 				}
 			}
 			for (var prop in obj){
@@ -46,15 +50,28 @@ function extendObj(obj){
 		return 0;
 	}
 }
+function loadMod(loaderType, name, mp){
+	var config = readJSONUnsafe(nsPath+"/mods/"+name + "/config.json");
+	loader[loaderType](nsPath+"/mods/"+name, mp, env, config);
+}
 function isArray(obj){
 	return Object.prototype.toString.call( obj ) === '[object Array]';
 }
 function readJSON(file){
-	if(fs.existsSync(file))
+	if(fs.existsSync(file)){
 		return JSON.parse(fs.readFileSync(file));
+	}
 	else{
 		console.error("No JSON file:" + file);
 		process.exit(1);
+	}
+}
+function readJSONUnsafe(file){
+	if(fs.existsSync(file)){
+		return JSON.parse(fs.readFileSync(file));
+	}
+	else{
+		return {};
 	}
 }
 	
@@ -65,7 +82,7 @@ if(dist)
 	distDir = dist;
 else
 	distDir = dir + "/dist";
-mkdirp(distDir);
+mkdirp.sync(distDir);
 
 //read ./project.json
 var config, env, loader;
@@ -77,10 +94,16 @@ config = readJSON(dir + "/project.json");
 if(config && config.hasOwnProperty("env")){
 		env = config.env;
 }
+else{
+	console.error("no env");
+	process.exit(1);
+}
 
 if(config.hasOwnProperty("ns")){
 	nsPath = modPath + "/"+config.ns;
 	loader = require(nsPath + "/loader");
+	if(loader._init)
+		loader._init(env);
 }
 
 extendObj(config);
@@ -113,7 +136,8 @@ function walk(dir){
 		return 0;
 	}
 
-	fs.readdirSync(dir).forEach(function(f){
+	var files = fs.readdirSync(dir);
+	files.forEach(function(f){
 		if(f== "." || f.match(/~/)){
 			return 0;
 		}
@@ -121,33 +145,44 @@ function walk(dir){
 		var tdir = dir.replace(new RegExp("^"+quote(srcRoot)), distRoot);
 		var	stat = fs.statSync(p);
 		if(stat.isDirectory()){
-			mkdirp.sync(tdir + '/' + f);
 			walk(p);
 			return 0;
 		}
-		console.log("file:"+p);
+//		console.log("file:"+p);
 // if begin with disp, format the file
 		if(f.match(/^disp\./)){
 			if(f == "disp.json"){
 				//load empty dir
 				var dj = readJSON(p);
+				if(!dj.file) dj.file = "name";
+				if(!dj.data) dj.data = "content";
+				if(!dj.path) dj.path = "path";
 				with(env){
 					var evalstr = dj.array+".forEach(function(e){"+
-               "fs.writeFile(tdir+'/'+e."+dj.file+",e." + dj.data+ ")"+
-              "})";
-					console.log(evalstr);
+								"var df = tdir + '/' + e."+dj.file + ";" + 
+								"if(e." + dj.data + "){" +
+									"mkdirp.sync(dirname(df));"+
+									"fs.writeFile(df, e." + dj.data+ ");"+
+								"}else if(e." + dj.path + "){"+
+									"mkdirp.sync(dirname(df));"+
+									"copySync(e." + dj.path+ ",df);"+
+								"}"+
+							 "})";
+//					console.log(evalstr);
 					eval(evalstr);
 				}
 			}
 			else{
 				var t = tdir + '/' + f.replace(/^disp\./, "");				
-				fs.writeFile(t, tmpl(fs.readFileSync(p).toString(), env));
+				mkdirp.sync(dirname(t));
+				fs.writeFileSync(t, tmpl(fs.readFileSync(p).toString(), env));
 			}
 		}
 //	else copy file
 		else{
 			var t = tdir + '/' + f;
-			copy(p, t);
+			mkdirp.sync(dirname(t));
+			copySync(p, t);
 		}
 	});
 };
@@ -155,28 +190,27 @@ function walk(dir){
 function quote(str){
 	return (str+'').replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
 }
-function copy(oldFile, newFile){
-	newFp = fs.createWriteStream(newFile);     
-	oldFp = fs.createReadStream(oldFile);
+function copy(srcFile, destFile){
+
+	var newFp = fs.createWriteStream(destFile);     
+	var oldFp = fs.createReadStream(srcFile);
 	oldFp.pipe(newFp);
-}
 
-function tmpl(str, data){
-	with(data){
-		var p=[];
-		var evalstr = "p.push('"+
-		str
-			.replace(/\n/g, "\\n")
-			.replace(/\^\^=(.*?)\$\$/g, "',$1,'")
-			.replace(/\s*(\^\^.*?\$\$)\s*\\n\s*/g, "$1")
-			.split("\^\^").join("');")
-			.split("\$\$").join(";p.push('")
-			+ "');";
-//		console.log(evalstr);
-		eval(evalstr);
-//		console.log(p);
-		return p.join('');
+}
+function copySync(srcFile, destFile){
+	var BUF_LENGTH = 64*1024;
+  var buff = new Buffer(BUF_LENGTH);
+  var fdr = fs.openSync(srcFile, 'r');
+  var fdw = fs.openSync(destFile, 'w');
+  var bytesRead = 1;
+  var pos = 0;
+  while(bytesRead > 0){
+    bytesRead = fs.readSync(fdr, buff, 0, BUF_LENGTH, pos);
+    fs.writeSync(fdw,buff,0,bytesRead);
+    pos += bytesRead;
 	}
-}
+  fs.closeSync(fdr);
+  fs.closeSync(fdw);
 
+}
 

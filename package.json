@@ -11,6 +11,8 @@
   "dependencies": {
     "express": "^3.4.8",
     "mkdirp": "^0.3.5",
-    "node-ffi": "^0.5.7"
+    "node-ffi": "^0.5.7",
+    "commander": "~2.5.0",
+    "graceful-fs": "~3.0.4"
   }
 }

@@ -1,0 +1,10 @@
+<div ng-repeat="friend in filteredFriends">
+  {{friend.name}}
+</div>
+<pagination total-items="totalItems" items-per-page="itemsPerPage" ng-model="currentPage" ng-change="pageChanged()"></pagination>
+
+<p>
+  total Items: {{totalItems}}<br />
+  Items per page: {{itemsPerPage}}<br />
+  Current Page: {{currentPage}}
+</p>
