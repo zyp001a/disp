@@ -1,4 +1,4 @@
-rootApp.controller('ScholarinfoController', function($scope){
+rootApp.controller('^^=name$$Controller', function($scope){
 
 
     $scope.friends = [

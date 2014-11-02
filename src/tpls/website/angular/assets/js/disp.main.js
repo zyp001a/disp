@@ -1,40 +1,31 @@
-var rootApp = angular.module('rootApp', ['ngRoute','ui.bootstrap']);
+var rootApp = angular.module('rootApp', [
+	'ngRoute',^^if(angularDeps)angularDeps.forEach(function(nd){$$'^^=nd$$'^^})$$
+]);
 
 
 rootApp.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
-      when('/', {
-        templateUrl: 'assets/partials/home.html',
-        controller: 'HomeController'
+			^^routes.forEach(function(route){$$
+				^^if(route.isHome){$$
+			when('/', {
+				templateUrl: 'assets/partials/^^=route.name$$.html',
+        controller: '^^=route.controller$$'
 			}).
-      when('/scholarinfo', {
-        templateUrl: 'assets/partials/scholarinfo.html',
-        controller: 'ScholarinfoController'
+				^^}else{$$
+      when('/^^=route.name$$', {
+        templateUrl: 'assets/partials/^^=route.name$$.html',
+        controller: '^^=route.controller$$'
 			}).
-      when('/deploy', {
-        templateUrl: 'assets/partials/deploy.html',
-        controller: 'DeployController'
-      }).
-      when('/modifyinfo', {
-        templateUrl: 'assets/partials/modifyinfo.html',
-        controller: 'ModifyinfoController'
-      }).
-      when('/error', {
-        templateUrl: 'assets/paritals/error.html',
-        controller: 'ErrorController'
-			}).
-      otherwise({
+				^^}$$
+			^^})$$
+
+			otherwise({
         redirectTo: '/error'
       });
 }]);
  
-rootApp.controller('DeployController', function($scope){
-	
-});
-rootApp.controller('ModifyinfoController', function($scope){
 
-});
 rootApp.controller('ErrorController', function($scope){
 	
 });

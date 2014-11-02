@@ -2,4 +2,4 @@
 ^^authors.forEach(function(author){$$
 ^^=author$$
 ^^})$$
-^^=content$$
+^^=content$$''

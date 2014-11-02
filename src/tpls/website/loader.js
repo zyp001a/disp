@@ -1,11 +1,14 @@
 var fs = require("fs");
 var utils = require("../../utils");
-function _init(env){
+var tmpl = utils.tmpl;
+function _init(root, env){
 
 }
 function _default(mod, mp, env, config){
 	console.log("load mod " + mod);
 	var depPath = mod + "/../../deps";
+	if(config.mountEnv)
+		env[config.mountEnv]=mp;
 	if(!env.jsDeps)
 		env.jsDeps = [];
 	if(config.jsDeps)
@@ -34,32 +37,57 @@ function _default(mod, mp, env, config){
 				env.angularDeps.push(dep);
 		});
 	if(!env.nodeDeps)
-		env.nodeDeps = [];
+		env.nodeDeps = {};
 	if(config.nodeDeps)
-		config.nodeDeps.forEach(function(dep){
-			if(env.nodeDeps.indexOf(dep) == -1)
-				env.nodeDeps.push(dep);
-		});
+		for (var dep in config.nodeDeps){
+			env.nodeDeps[dep] = config.nodeDeps[dep];
+		};
 
-	if(fs.existsSync(mod+"/partial.html") && 
-		 fs.existsSync(mod+"/controller.js")){
-		if(!env.controllers)
-			env.controllers = [];
-		env.controllers.push({
-			name: mp.name + "Controller", 
-			content:fs.readFileSync(mod+"/controller.js").toString()
-		});
+	if(fs.existsSync(mod+"/partial.html")){
+		if(fs.existsSync(mod+"/controller.js")){
+			if(!env.controllers)
+				env.controllers = [];
+			env.controllers.push({
+				name: mp.name + "Controller", 
+				content:tmpl(fs.readFileSync(mod+"/controller.js").toString(), mp)
+			});
+		}
 		if(!env.partials)
 			env.partials = [];
 		env.partials.push({
 			name: mp.name,
-			content:fs.readFileSync(mod+"/partial.html").toString()
+			content:tmpl(fs.readFileSync(mod+"/partial.html").toString(), mp)
 		});
 		if(!env.routes)
 			env.routes = [];
-		env.routes.push({
-			name: mp.name,
-			controller: mp.name + "Controller"
+		if(mp.isHome)
+			env.routes.push({
+				name: mp.name,
+				controller: mp.name + "Controller",
+				isHome: true
+			});			
+		else if(!mp.noRoutes)
+			env.routes.push({
+				name: mp.name,
+				controller: mp.name + "Controller"
+			});
+	}
+	if(fs.existsSync(mod+"/nodeController.js")){
+/*
+		if(fs.existsSync(mod+"/model.js")){
+			if(!env.models)
+				env.models = [];
+			env.models.push({
+				name: mp.name, 
+				content:tmpl(fs.readFileSync(mod+"/model.js").toString(), mp)
+			});
+		}
+*/
+		if(!env.nodeControllers)
+			env.nodeControllers = [];
+		env.nodeControllers.push({
+			name: mp.name, 
+			content:tmpl(fs.readFileSync(mod+"/nodeController.js").toString(), mp)
 		});
 	}
 

@@ -6,6 +6,9 @@ var dirname = require("path").dirname;
 var utils = require("./utils");
 //var modPath = __dirname + "/";
 var tmpl = utils.tmpl;
+var readJSON = utils.readJSON;
+var readJSONUnsafe = utils.readJSONUnsafe;
+var isArray = utils.isArray;
 
 var node = process.argv[0];
 var dispCmd = process.argv[1];
@@ -54,29 +57,9 @@ function loadMod(loaderType, name, mp){
 	var config = readJSONUnsafe(nsPath+"/mods/"+name + "/config.json");
 	loader[loaderType](nsPath+"/mods/"+name, mp, env, config);
 }
-function isArray(obj){
-	return Object.prototype.toString.call( obj ) === '[object Array]';
-}
-function readJSON(file){
-	if(fs.existsSync(file)){
-		return JSON.parse(fs.readFileSync(file));
-	}
-	else{
-		console.error("No JSON file:" + file);
-		process.exit(1);
-	}
-}
-function readJSONUnsafe(file){
-	if(fs.existsSync(file)){
-		return JSON.parse(fs.readFileSync(file));
-	}
-	else{
-		return {};
-	}
-}
 	
 
-//iterate ./src dir
+
 var srcRoot, distDir, distRoot;
 if(dist)
 	distDir = dist;
@@ -103,13 +86,13 @@ if(config.hasOwnProperty("ns")){
 	nsPath = modPath + "/"+config.ns;
 	loader = require(nsPath + "/loader");
 	if(loader._init)
-		loader._init(env);
+		loader._init(dir, env);
 }
 
 extendObj(config);
 console.log(JSON.stringify(config));
 
-
+//iterate proto
 if(config.hasOwnProperty("proto") && config.hasOwnProperty("ns")){
 	if(isArray(config.proto)){
 		config.proto.forEach(function(proto){
@@ -123,11 +106,12 @@ if(config.hasOwnProperty("proto") && config.hasOwnProperty("ns")){
 		walk(srcRoot);
 	}
 }
-else{
-	srcRoot = dir + "/src";
-	distRoot = distDir;
-	walk(srcRoot);
-}
+
+srcRoot = dir + "/src";
+distRoot = distDir;
+//iterate ./src dir
+walk(srcRoot);
+
 
 //var cache = {};
 

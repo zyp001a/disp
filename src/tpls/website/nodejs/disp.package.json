@@ -1,0 +1,15 @@
+{
+  "name": "^^=name$$",
+  "main": "server.js",
+  "dependencies": {
+		^^for (dep in nodeDeps){$$
+		"^^=dep$$": "^^=nodeDeps[dep]$$",
+		^^}$$
+    "express": "^4.*",
+    "mongoose": "*",
+    "body-parser": "*",
+    "bcrypt": "*",
+    "passport": "*",
+    "passport-http": "*"
+  }
+}

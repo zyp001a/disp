@@ -1,0 +1,6 @@
+{
+		"nodeDeps": {
+				"passport": "*"
+		},
+		"mountEnv": "auth"
+}
