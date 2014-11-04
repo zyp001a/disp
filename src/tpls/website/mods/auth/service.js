@@ -1,55 +1,56 @@
 rootApp.factory('^^=name$$Service', function($http, $cookieStore){
   var currentUser = $cookieStore.get('user') || { username: ''};
 	function getUser(){
-		$cookieStore.get('username');
+//		console.log(document.cookie);
+		return $cookieStore.get('username');
 	}
 	function getCred(){
-		$cookieStore.get('token');
+		return $cookieStore.get('token');
 	};
   return {
-        isLoggedIn: function(user) {
-            if(user === undefined) {
-                user = currentUser;
-            }
-            return false;
-        },
-				getCred: getCred,
-				getUser: getUser,
-        signin: function(user, done) {
-/*
-					$http({
-						url: "/api/^^=signin$$",
-						dataType: "json",
-						method: "POST",
-						data: user,
-						headers: {
-							"Authorization": "Bearer " + getCred()
-						}
-					}).success(function(data){
-					}).error(function(err){
-					});
-*/
+    isLoggedIn: function(user) {
+      if(user === undefined) {
+        user = currentUser;
+      }
+      return false;
+    },
+		getCred: getCred,
+		getUser: getUser,
+    signin: function(user, done) {
+			/*
+			 $http({
+			 url: "/api/^^=signin$$",
+			 dataType: "json",
+			 method: "POST",
+			 data: user,
+			 headers: {
+			 "Authorization": "Bearer " + getCred()
+			 }
+			 }).success(function(data){
+			 }).error(function(err){
+			 });
+			 */
 
-          $http.post('/api/^^=signin$$', user).success(function(data){
-            $cookieStore.put("token", data.token);
-            $cookieStore.put("username", data.username);
-						if(done) done(null, data);
-          }).error(function(err){
-						if(done) done(err, null);
-					});
+      $http.post('/api/^^=signin$$', user).success(function(data){
+        $cookieStore.put("token", data.token);
+        $cookieStore.put("username", data.username);
+				if(done) done(null, data);
+      }).error(function(err){
+				if(done) done(err, null);
+			});
 
-        },
-        signup: function(user) {
-          $http.post('/api/^^=signup$$', user).success(function(data) {
-          }).error(function(err){
-					});
-        },
-        signout: function(user) {
-          $http.post('/api/^^=signout$$', user).success(function(data) {
-          }).error(function(err){
-					});
-        }
-    };
+    },
+    signup: function(user) {
+      $http.post('/api/^^=signup$$', user).success(function(data) {
+      }).error(function(err){
+			});
+    },
+    signout: function(user) {
+      $http.post('/api/^^=signout$$', user).success(function(data) {
+      }).error(function(err){
+			});
+    }
+  };
 });
 
 /*

@@ -3,8 +3,11 @@ rootApp.run(function ($rootScope, ^^=name$$Service) {
     $rootScope.$on("$routeChangeStart", function (event, next, current) {
         if (next.access<3) {
           if(!^^=name$$Service.getUser()){
+						
+						console.log("redirect");
 						event.preventDefault();
-						window.location = "#/^^=signin$$";
+						window.location = "#/^^=signin$$?redirect=" + 
+							encodeURIComponent(next.\$\$route.originalPath);		
 					}
         }
     });
