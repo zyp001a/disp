@@ -9,8 +9,40 @@ function tmpl(str, data){
 		return f + str.substr(1);
 	};
 
+	var p=[];
+	var win, wout;
+	var evalstr = "p.push('";
 	with(data){
-		var p=[];
+		str = str.
+			replace(/[^\S\n]*(\^\^[^=]((?!\$\$).)*\$\$)\s*\n/g, "$1");
+		//[\s but not \n]* [^^] [not =] [not $$]* [$$] [\s*\n] 
+		console.log(str);
+		str.split("\^\^").forEach(function(sub, i){
+			if(i==0){
+				win = "";
+				wout = sub || "";
+			}else{
+				var subs = sub.split("\$\$");
+				win = subs[0];
+				wout = subs[1] || "";
+			}
+			wout = wout.replace(/\\([nrt'])/g, "\\\\$1")
+				.replace(/\n/g, "\\n")
+				.replace(/'/g, "\\'");
+
+			if(win && win[0] == '='){
+				evalstr += (win.replace(/^=(.+)/, "',$1,'") + wout);
+			}
+			else{
+
+				evalstr+=("');"+win+";p.push('"+wout);
+			}
+			
+		});
+		evalstr+="');";
+
+
+/*
 		var evalstr = "p.push('"+
 		str
 			.replace(/\\([nrt'])/g, "\\\\$1")
@@ -21,7 +53,8 @@ function tmpl(str, data){
 			.split("\^\^").join("');")
 			.split("\$\$").join(";p.push('")
 			+ "');";
-//		console.log(evalstr);
+*/
+		console.log(evalstr);
 		eval(evalstr);
 //		console.log(p);
 		return p.join('');

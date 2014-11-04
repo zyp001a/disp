@@ -1,5 +1,5 @@
 var rootApp = angular.module('rootApp', [
-	'ngRoute',^^if(angularDeps)angularDeps.forEach(function(nd){$$'^^=nd$$'^^})$$
+	'ngRoute'^^if(angularDeps)angularDeps.forEach(function(nd){$$, '^^=nd$$'^^})$$
 ]);
 
 
@@ -10,12 +10,14 @@ rootApp.config(['$routeProvider',
 				^^if(route.isHome){$$
 			when('/', {
 				templateUrl: 'assets/partials/^^=route.name$$.html',
-        controller: '^^=route.controller$$'
+        controller: '^^=route.controller$$',
+				access: ^^=route.access || 3$$
 			}).
 				^^}else{$$
       when('/^^=route.name$$', {
         templateUrl: 'assets/partials/^^=route.name$$.html',
-        controller: '^^=route.controller$$'
+        controller: '^^=route.controller$$',
+				access: ^^=route.access || 2$$
 			}).
 				^^}$$
 			^^})$$
@@ -25,10 +27,11 @@ rootApp.config(['$routeProvider',
       });
 }]);
  
+^^runs.forEach(function(run){$$
+^^=run.content$$
+^^})$$
 
-rootApp.controller('ErrorController', function($scope){
-	
-});
+
 /**
 *
 *  Base64 encode / decode

@@ -2,7 +2,7 @@
 var Model = require('../models/^^=name$$');
 
 
-exports.post = function(req, res) {
+exports.postList = function(req, res) {
 
   var json = {};
 	^^fields.forEach(function(field){$$
@@ -33,7 +33,7 @@ exports.getList = function(req, res) {
 
 exports.get = function(req, res) {
   // Use the Beer model to find a specific beer
-  Model.find({ _id: req.params._id }, function(err, model) {
+  Model.find({ _id: req.params.id }, function(err, model) {
     if (err)
       res.send(err);
 
@@ -50,7 +50,7 @@ exports.put = function(req, res) {
 		json.^^=field.name$$ = req.body.^^=field.name$$;
 	^^})$$
 
-  Model.update({ _id: req.params._id }, json, function(err, num, raw) {
+  Model.update({ _id: req.params.id }, json, function(err, num, raw) {
     if (err)
       res.send(err);
 
@@ -61,7 +61,7 @@ exports.put = function(req, res) {
 // Create endpoint /api/beers/:beer_id for DELETE
 exports.delete = function(req, res) {
   // Use the Beer model to find a specific beer and remove it
-  Model.remove({ _id: req.params._id }, function(err) {
+  Model.remove({ _id: req.params.id }, function(err) {
     if (err)
       res.send(err);
 

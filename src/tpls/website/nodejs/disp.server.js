@@ -18,6 +18,8 @@ var app = express();
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+app.use(bodyParser.json());
+
 
 ^^if(auth){$$
 //authentication/authorization module
@@ -26,29 +28,23 @@ var passport = require("passport");
 app.use(passport.initialize());
 ^^}$$
 
-// Create our Express router
 var router = express.Router();
+// Create our Express router
+^^nodeRoutes.forEach(function(route){$$
 
+  ^^if(route.content){$$
+^^=route.content$$
+  ^^} else {$$
+router.route('/^^=route.name$$').^^=route.type$$(^^if(route.auth){$$^^=route.auth$$Controller.authMidware, ^^}$$^^=route.method$$);
+	^^}$$
 /*
-// Create endpoint handlers for /beers
-router.route('/beers')
-  .post(authController.isAuthenticated, beerController.postBeers)
-  .get(authController.isAuthenticated, beerController.getBeers);
-
-// Create endpoint handlers for /beers/:beer_id
-router.route('/beers/:beer_id')
-  .get(authController.isAuthenticated, beerController.getBeer)
-  .put(authController.isAuthenticated, beerController.putBeer)
-  .delete(authController.isAuthenticated, beerController.deleteBeer);
-
-// Create endpoint handlers for /users
-router.route('/users')
-  .post(userController.postUsers)
-  .get(authController.isAuthenticated, userController.getUsers);
-
-// Register all our routes with /api
-app.use('/api', router);
+app.^^=route.type$$("/^^=route.name$$", ^^if(route.auth){$$^^=route.auth$$Controller.isAuthenticated, ^^}$$^^=route.method$$);
 */
+^^})$$
+
+app.use('/api', router);
+
+
 // Start the server
 app.listen(^^=port$$, function(err){
 	if(!err)

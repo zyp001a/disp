@@ -1,28 +1,65 @@
 // Load required packages
 var passport = require('passport');
-var BasicStrategy = require('passport-http').BasicStrategy;
 var User = require('../models/^^=database$$');
 
-passport.use(new BasicStrategy(
-  function(username, password, callback) {
-    User.findOne({ '^^=usernameField$$': username }, function (err, user) {
-      if (err) { return callback(err); }
+^^if(strategy == 'basic'){$$
+var BasicStrategy = require('passport-http').BasicStrategy;
+//TODO
+^^}else if(strategy == 'local'){$$
+var LocalStrategy = require('passport-local').Strategy;
+function authenticate(username, password, done) {
+  User.findOne({ '^^=usernameField$$': username }, function(err, user) {
+    if (err) { return done(err); }
+    if (!user) {
+      return done(null, false, { message: 'Incorrect username.' });
+    }
 
-      // No user found with that username
-      if (!user) { return callback(null, false); }
+    user.verifyPassword(password, function(err, isMatch){
+			if(err) return done(null, false, { message: err });
+			else if(isMatch)	return done(null, user);
+      else return done(null, false, { message: 'Incorrect password.' });
+    });
+  });
+}
 
-      // Make sure the password is correct
-      user.verifyPassword(password, function(err, isMatch) {
-        if (err) { return callback(err); }
-
-        // Password did not match
-        if (!isMatch) { return callback(null, false); }
-
-        // Success
-        return callback(null, user);
-      });
+passport.use("^^=name$$", new LocalStrategy({
+    usernameField: '^^=usernameField$$',
+    passwordField: '^^=passwordField$$'
+},authenticate));
+exports.auth = authenticate;
+exports.authMidware = passport.authenticate('^^=name$$', {
+  failureRedirect: '/^^=signin$$',
+//  failureFlash: true,
+	session : false 
+});
+^^}else if(strategy == 'bearer'){$$
+var BearerStrategy = require('passport-http-bearer').Strategy;
+passport.use("^^=name$$", new BearerStrategy(
+  function(token, done) {
+    User.findOne({ token: token }, function (err, user) {
+      if (err) { return done(err); }
+      if (!user) { return done(null, false); }
+      return done(null, user, { scope: 'all' });
     });
   }
 ));
+module.exports.authMidware = passport.authenticate('^^=name$$', { session: false });
 
-exports.isAuthenticated = passport.authenticate('basic', { session : false });
+^^}$$
+function auth(username, password, done){
+  User.findOne({ '^^=usernameField$$': username }, function(err, user) {
+    if (err) { return done(err); }
+    if (!user) {
+      return done(null, false, { message: 'Incorrect username.' });
+    }
+    user.verifyPassword(password, function(err, isMatch){
+			if(err) return done(null, false, { message: err });
+			else if(isMatch)	return done(null, {
+				username: user.^^=usernameField$$,
+				token: user.^^=tokenField$$
+			});
+      else return done(null, false, { message: 'Incorrect password.' });
+    });
+  });
+}
+module.exports.auth = auth;

@@ -141,8 +141,9 @@ function walk(dir){
 				if(!dj.file) dj.file = "name";
 				if(!dj.data) dj.data = "content";
 				if(!dj.path) dj.path = "path";
-				with(env){
-					var evalstr = dj.array+".forEach(function(e){"+
+				if(env[dj.array])
+					with(env){
+						var evalstr = dj.array+".forEach(function(e){"+
 								"var df = tdir + '/' + e."+dj.file + ";" + 
 								"if(e." + dj.data + "){" +
 									"mkdirp.sync(dirname(df));"+
@@ -153,8 +154,8 @@ function walk(dir){
 								"}"+
 							 "})";
 //					console.log(evalstr);
-					eval(evalstr);
-				}
+						eval(evalstr);
+					}
 			}
 			else{
 				var t = tdir + '/' + f.replace(/^disp\./, "");				

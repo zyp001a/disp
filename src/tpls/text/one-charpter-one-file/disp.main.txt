@@ -1,5 +1,5 @@
 ^^=title$$
-^^authors.forEach(function(author){$$
+^^authors.forEach(function( author){$$
 ^^=author$$
 ^^})$$
 ^^=content$$''

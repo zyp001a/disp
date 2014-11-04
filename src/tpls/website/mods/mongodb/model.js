@@ -39,12 +39,21 @@ UserSchema.methods.verifyPassword = function(password, cb) {
 ^^}$$
 
 // Export the Mongoose model
-var User = mongoose.model('User', UserSchema);
-module.exports = User;
+var Model = mongoose.model('^^=name$$', UserSchema);
+module.exports = Model;
 
-var user = new User({
-	"username":"admin",
+^^if(passwordField){$$
+
+var user = new Model({
+	"_id":"admin",
+	"username": "admin",
 	"password":"admin",
+	"token":"admin",
 	"isAdmin": true
 });
-user.save();
+Model.remove({"_id": "admin"}, function(err){
+	user.save();
+});
+
+^^}$$
+

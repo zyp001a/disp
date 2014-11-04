@@ -53,6 +53,7 @@
 									^^})$$
 								</ul>
 							</li>
+							^^}else if(navitem.userStatus){$$
 							^^}$$
 							^^})$$
 							^^}$$
@@ -97,6 +98,12 @@
 <script src="assets/js/main.js"></script>
 ^^controllers.forEach(function(c){$$
 <script src="assets/js/controllers/^^=c.name$$.js"></script>
+^^})$$
+^^directives.forEach(function(d){$$
+<script src="assets/js/directives/^^=d.name$$.js"></script>
+^^})$$
+^^services.forEach(function(s){$$
+<script src="assets/js/services/^^=s.name$$.js"></script>
 ^^})$$
 
 </body>
