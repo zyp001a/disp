@@ -37,6 +37,19 @@ UserSchema.methods.verifyPassword = function(password, cb) {
   });
 };
 ^^}$$
+^^if(tokenField){$$
+UserSchema.methods.getToken = function(cb) {
+	if(!this.^^=tokenField$$){
+		var token = require('crypto').randomBytes(16).toString('hex');	
+		this.^^=tokenField$$ = token;
+		this.save(function(){
+			cb(null, token);
+		});
+	}else{
+			cb(null, this.^^=tokenField$$);
+	}
+}
+^^}$$
 
 // Export the Mongoose model
 var Model = mongoose.model('^^=name$$', UserSchema);

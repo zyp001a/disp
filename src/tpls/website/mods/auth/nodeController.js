@@ -54,10 +54,16 @@ function auth(username, password, done){
     }
     user.verifyPassword(password, function(err, isMatch){
 			if(err) return done(null, false, { message: err });
-			else if(isMatch)	return done(null, {
-				username: user.^^=usernameField$$,
-				token: user.^^=tokenField$$
-			});
+			else if(isMatch){
+				user.getToken(function(err, token){
+					if(err) return done(null, false, { message: err });
+					else
+						return done(null, {
+							username: user.^^=usernameField$$,
+							token: token
+						});
+				});
+			}
       else return done(null, false, { message: 'Incorrect password.' });
     });
   });

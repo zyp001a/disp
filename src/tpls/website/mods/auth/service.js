@@ -45,10 +45,10 @@ rootApp.factory('^^=name$$Service', function($http, $cookieStore){
       }).error(function(err){
 			});
     },
-    signout: function(user) {
-      $http.post('/api/^^=signout$$', user).success(function(data) {
-      }).error(function(err){
-			});
+    signout: function() {
+			$cookieStore.remove("token");
+			$cookieStore.remove("username");
+			window.location = "#/";
     }
   };
 });

@@ -96,7 +96,7 @@ function _default(mod, mp, env, config){
 				controller: mp.name + "Controller",
 				isHome: true,
 				access: mp.access || config.access || 3
-			});			
+			});
 		else 
 			env.routes.push({
 				name: mp.name,

@@ -1,5 +1,6 @@
 {
 		"jsDeps": ["jquery.smartmenus.js", "jquery.smartmenus.bootstrap.js"],
 		"cssDeps": ["jquery.smartmenus.bootstrap.css"],
-		"mountEnv": "navbar"
+		"mountEnv": "navbar",
+		"noRoute": true
 }

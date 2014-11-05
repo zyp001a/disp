@@ -24,9 +24,9 @@
 </head>
 
 <body>
-
+^^if(navbar){$$
       <!-- Static navbar -->
-      <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="navbar navbar-default navbar-fixed-top" role="navigation" ng-controller="^^=navbar.name$$Controller">
         <div class="container">
           <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -36,16 +36,19 @@
               <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="#/">
-							^^if(navbar && navbar.home)$$
+							^^if(navbar.home)$$
 							^^=navbar.home.text$$
 						</a>
           </div>
           <div class="navbar-collapse collapse">
-							^^function expandSubNavbar(sn){$$
-							^^sn.forEach(function(navitem){$$
-							^^if(navitem.name){$$
-              <li><a href="#^^=navitem.name$$">^^=navitem.text$$</a></li>
-							^^}else if(navitem.dropdown){$$
+					^^function expandSubNavbar(sn){$$
+						^^sn.forEach(function(navitem){$$
+              ^^if(navitem.welcome){$$
+							<li><a ng-show="isSignedin()">^^=navitem.text$$ {{getUser()}}</a></li>
+							^^} else if(navitem.signedin){$$
+							<li><a href="#^^=navitem.name$$" ng-hide="isSignedin()">^^=navitem.text$$</a></li>
+							<li><a href="#" ng-click="signout()" ng-show="isSignedin()">^^=navitem.signedin.text$$</a></li>
+							^^} else if(navitem.dropdown){$$
               <li><a>^^=navitem.dropdown.text$$</a>
                 <ul class="dropdown-menu">
 									^^navitem.dropdown.items.forEach(function(subitem){$$				
@@ -53,18 +56,19 @@
 									^^})$$
 								</ul>
 							</li>
-							^^}else if(navitem.userStatus){$$
+							^^} else {$$
+							<li><a href="#^^=navitem.name$$" ng-class="{active: isActive('/^^=navitem.name$$')}">^^=navitem.text$$</a></li>
 							^^}$$
-							^^})$$
-							^^}$$
+						^^})$$
+					^^}$$
 
-						^^if(navbar && navbar.left){$$
+						^^if(navbar.left){$$
             <!-- Left nav -->
             <ul class="nav navbar-nav">
 							^^expandSubNavbar(navbar.left)$$
 						</ul>
 						^^}$$
-						^^if(navbar && navbar.right){$$
+						^^if(navbar.right){$$
             <!-- Right nav -->
             <ul class="nav navbar-nav navbar-right">
 							^^expandSubNavbar(navbar.right)$$
@@ -76,7 +80,7 @@
           </div><!--/.nav-collapse -->
         </div><!--/.container -->
       </div>
-
+^^}$$
     <div class="container main">
 			<div ng-view></div>
 		</div>
