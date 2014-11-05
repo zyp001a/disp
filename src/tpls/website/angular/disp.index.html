@@ -44,20 +44,20 @@
 					^^function expandSubNavbar(sn){$$
 						^^sn.forEach(function(navitem){$$
               ^^if(navitem.welcome){$$
-							<li><a ng-show="isSignedin()">^^=navitem.text$$ {{getUser()}}</a></li>
+							<li ng-show="isSignedin()"><a href="#">^^=navitem.text$$ {{getUser()}}</a></li>
 							^^} else if(navitem.signedin){$$
-							<li><a href="#^^=navitem.name$$" ng-hide="isSignedin()">^^=navitem.text$$</a></li>
-							<li><a href="#" ng-click="signout()" ng-show="isSignedin()">^^=navitem.signedin.text$$</a></li>
+							<li ng-hide="isSignedin()" ng-class="{active: isActive('/^^=navitem.name$$')}"><a href="#^^=navitem.name$$">^^=navitem.text$$</a></li>
+							<li ng-show="isSignedin()"><a href="#" ng-click="signout()">^^=navitem.signedin.text$$</a></li>
 							^^} else if(navitem.dropdown){$$
-              <li><a>^^=navitem.dropdown.text$$</a>
+							<li ng-class="{active: isActive('/^^=navitem.name$$')}"><a href="#^^=navitem.name$$">^^=navitem.text$$</a>
                 <ul class="dropdown-menu">
-									^^navitem.dropdown.items.forEach(function(subitem){$$				
+									^^navitem.dropdown.forEach(function(subitem){$$				
 									<li><a href="#^^=subitem.name$$">^^=subitem.text$$</a></li>
 									^^})$$
 								</ul>
 							</li>
 							^^} else {$$
-							<li><a href="#^^=navitem.name$$" ng-class="{active: isActive('/^^=navitem.name$$')}">^^=navitem.text$$</a></li>
+							<li ng-class="{active: isActive('/^^=navitem.name$$')}"><a href="#^^=navitem.name$$">^^=navitem.text$$</a></li>
 							^^}$$
 						^^})$$
 					^^}$$
