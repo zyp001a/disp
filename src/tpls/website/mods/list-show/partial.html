@@ -1,10 +1,37 @@
-<div ng-repeat="friend in filteredFriends">
-  {{friend.name}}
-</div>
-<pagination total-items="totalItems" items-per-page="itemsPerPage" ng-model="currentPage" ng-change="pageChanged()"></pagination>
+<div class="row">
+	<div class="col-sm-3">
+		<input ng-model="search.name" placeholder="搜索姓名"/>
+		<input ng-model="search._id" placeholder="搜索学号"/>
+		<input ng-model="search.$" placeholder="搜索关键字"/>
+	</div>
+	<div class="col-sm-9 col-md-6">
+		<ul class="list-group">
+			<li class="list-group-item" ng-repeat="row in filtered = (data | filter: search) | slice:(currentPage-1)*itemsPerPage:currentPage*itemsPerPage">
+				<div class="row">
+					<div class="col-xs-3">
+						<a>
+						<img src="assets/img/default-portrait.jpg" class="img-responsive">
+					</a>
+					</div>
+					<div class="col-xs-9">
+						<p>{{row.name}} - {{row._id}}</p>
+						<p>院系: {{row.majors.join(", ")}}</p>
+						<p>简介: {{row.des}}</p>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+<div/>
+
+<pagination total-items="filtered.length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" previous-text="&lsaquo;" next-text="&rsaquo;" ng-change="pageChanged()"></pagination>
 
 <p>
-  total Items: {{totalItems}}<br />
+  total Items: {{filtered.length}}<br />
   Items per page: {{itemsPerPage}}<br />
   Current Page: {{currentPage}}
 </p>
+
+
+
+

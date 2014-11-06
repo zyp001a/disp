@@ -5,6 +5,9 @@
 				"title": "This is title",
 				"authors": ["author1", "author2"], 
 				"content": "Just a single file exmaple.",
+				"content2": "Ax",
+				"content2Flag": false,
+				"content3": "Just a single file exmaple. Content3",
 				"charpters": [
 						{
 								"name": "charpter1",

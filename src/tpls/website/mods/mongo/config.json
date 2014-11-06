@@ -1,6 +1,5 @@
 {
 		"nodeDeps": {
 				"mongoose":"*"
-		},
-		"mountEnv": "mongodb"
+		}
 }

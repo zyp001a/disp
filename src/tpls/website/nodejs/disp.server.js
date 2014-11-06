@@ -31,15 +31,9 @@ app.use(passport.initialize());
 var router = express.Router();
 // Create our Express router
 ^^nodeRoutes.forEach(function(route){$$
-
   ^^if(route.content){$$
 ^^=route.content$$
-  ^^} else {$$
-router.route('/^^=route.name$$').^^=route.type$$(^^if(route.auth){$$^^=route.auth$$Controller.authMidware, ^^}$$^^=route.method$$);
-	^^}$$
-/*
-app.^^=route.type$$("/^^=route.name$$", ^^if(route.auth){$$^^=route.auth$$Controller.isAuthenticated, ^^}$$^^=route.method$$);
-*/
+  ^^}$$
 ^^})$$
 
 app.use('/api', router);

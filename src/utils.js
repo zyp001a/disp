@@ -40,7 +40,7 @@ function tmpl(str, data){
 			
 		});
 		evalstr+="');";
-
+//		evalstr = evalstr.replace("p.push('')");
 
 /*
 		var evalstr = "p.push('"+

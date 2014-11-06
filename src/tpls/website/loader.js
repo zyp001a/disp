@@ -12,9 +12,10 @@ function _init(root, env){
 	if(!env.services) env.services = [];
 	if(!env.directives) env.directives = [];
 	if(!env.controllers) env.controllers = [];
-	if(!env.nodeControllers) env.nodeControllers = [];
 	if(!env.routes) env.routes = [];
+	if(!env.nodeControllers) env.nodeControllers = [];
 	if(!env.nodeRoutes) env.nodeRoutes = [];
+	if(!env.models) env.models = [];
 }
 function _default(mod, mp, env, config){
 	console.log("load mod " + mod);
@@ -109,6 +110,12 @@ function _default(mod, mp, env, config){
 		env.nodeControllers.push({
 			name: mp.name, 
 			content:tmpl(fs.readFileSync(mod+"/nodeController.js").toString(), mp)
+		});
+	}
+	if(fs.existsSync(mod+"/model.js")){
+		env.models.push({
+			name: mp.name, 
+			content:tmpl(fs.readFileSync(mod+"/model.js").toString(), mp)
 		});
 	}
 	if(fs.existsSync(mod+"/nodeRoute.js")){

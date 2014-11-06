@@ -2,4 +2,7 @@
 ^^authors.forEach(function( author){$$
 ^^=author$$
 ^^})$$
-^^=content$$''
+^^=content$$'
+^^if(content2Flag)$$^^=content2$$
+^^if(content3)$$
+^^=content3$$
