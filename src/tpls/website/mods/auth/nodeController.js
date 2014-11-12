@@ -2,6 +2,7 @@
 var passport = require('passport');
 var User = require('../models/^^=database$$');
 
+
 ^^if(strategy == 'basic'){$$
 var BasicStrategy = require('passport-http').BasicStrategy;
 //TODO
@@ -57,11 +58,12 @@ function auth(username, password, done){
 			else if(isMatch){
 				user.getToken(function(err, token){
 					if(err) return done(null, false, { message: err });
-					else
+					else{
 						return done(null, {
 							username: user.^^=usernameField$$,
 							token: token
 						});
+					}
 				});
 			}
       else return done(null, false, { message: 'Incorrect password.' });

@@ -1,0 +1,14 @@
+<dl class="dl-horizontal">
+^^schema.fields.forEach(function(field){$$
+<dt>^^=field.text$$</dt>
+ ^^if(field.type == "String"){$$
+<dd>{{data.^^=field.name$$}}</dd>
+ ^^}else if(field.type == "Array"){$$
+<dd>{{data.^^=field.name$$.join(",")}}</dd>
+ ^^}else if(field.type == "Text"){$$
+<dd>{{data.^^=field.name$$}}</dd>
+ ^^}else if(field.type == "Index"){$$
+<dd>{{^^=field.name$$map[data.^^=field.name$$.toString()]}}</dd>
+ ^^}$$
+^^})$$
+<dl/>

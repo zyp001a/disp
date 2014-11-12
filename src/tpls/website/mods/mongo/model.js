@@ -6,7 +6,18 @@ var bcrypt = require('bcrypt');
 var json = {};
 ^^fields.forEach(function(field){$$
 	json.^^=field.name$$ = 
-	{	type: ^^=field.type$$^^if(field.required){$$, required: true^^}$$};
+	{	
+		type: 
+^^if(field.type == "Index"){$$
+Number
+^^}else if(field.type == "Text"){$$
+String
+^^}else{$$
+^^=field.type$$
+^^}$$
+		^^if(field.required){$$
+		,required: true
+		^^}$$};
 ^^})$$
 var UserSchema = new mongoose.Schema(json);
 

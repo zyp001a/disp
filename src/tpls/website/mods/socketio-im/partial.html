@@ -1,0 +1,55 @@
+<div class="container">
+	<div class="row">
+		<div class="col-md-3">
+			<ul id="rooms" class="list-group">
+				<li class="list-group-item active">List of rooms 
+					<span class="badge">1</span>
+				</li>
+				<li class="list-group-item">
+					<span>sadfsadf</span> 
+					<button class="joinRoomBtn btn btn-default btn-xs">Join</button> 
+					<button class="removeRoomBtn btn btn-default btn-xs">Remove</button>
+				</li>
+			</ul>
+			<ul id="rooms" class="list-group">
+				<li class="list-group-item active">Online Users
+					<span class="badge">1</span>
+				</li>
+				<li class="list-group-item">
+					<span>sadfsadf</span> 
+					<button class="joinRoomBtn btn btn-default btn-xs">Join</button> 
+					<button class="removeRoomBtn btn btn-default btn-xs">Remove</button>
+				</li>
+			</ul>
+		</div>
+		<div class="col-md-6">
+			<div id="conversation" style="height:300px;overflow:scroll;">
+				<ul id="msgs" class="list-unstyled">
+					<li>You have connected to the server.</li>
+					<li>asdfasdf is online.</li>
+					<li>Welcome to sadfsadf.</li>
+					<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>		<li>Welcome to sadfsadf.</li>
+				</ul>
+			</div>
+			<form id="chatForm" class="form-inline">
+				<div class="form-group">
+					<input class="form-control input-lg" placeholder="Your message" id="msg" type="text">
+				</div>
+				<input name="send" id="send" value="Send" class="btn btn-success btn-lg" type="submit">
+			</form>
+		</div>
+		<div class="col-md-3">
+			<input name="start_button" id="start_button" value="Record" onclick="startButton(event)" class="btn btn-info btn-lg" type="button">
+			<div class="btn-group">
+				<button aria-expanded="false" type="button" class="btn btn-lg btn-info dropdown-toggle" data-toggle="dropdown">
+					Actions <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="#" name="createRoom" data-toggle="modal" data-target="#roomModal">Create room</a></li>
+					<li><a href="#" name="leave" id="leave">Leave current room</a></li>
+					<!--<li><a href="#" name="disconnect" id="disconnect">Disconnect from chat</a></li>-->
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

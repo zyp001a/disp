@@ -16,7 +16,7 @@ function tmpl(str, data){
 		str = str.
 			replace(/[^\S\n]*(\^\^[^=]((?!\$\$).)*\$\$)\s*\n/g, "$1");
 		//[\s but not \n]* [^^] [not =] [not $$]* [$$] [\s*\n] 
-		console.log(str);
+//		console.log(str);
 		str.split("\^\^").forEach(function(sub, i){
 			if(i==0){
 				win = "";
@@ -54,7 +54,7 @@ function tmpl(str, data){
 			.split("\$\$").join(";p.push('")
 			+ "');";
 */
-		console.log(evalstr);
+//		console.log(evalstr);
 		eval(evalstr);
 //		console.log(p);
 		return p.join('');

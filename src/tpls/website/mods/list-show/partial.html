@@ -9,7 +9,7 @@
 			<li class="list-group-item" ng-repeat="row in filtered = (data | filter: search) | slice:(currentPage-1)*itemsPerPage:currentPage*itemsPerPage">
 				<div class="row">
 					<div class="col-xs-3">
-						<a>
+						<a href="#/^^=details.name$$/{{row._id}}">
 						<img src="assets/img/default-portrait.jpg" class="img-responsive">
 					</a>
 					</div>

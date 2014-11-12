@@ -16,6 +16,11 @@ function _init(root, env){
 	if(!env.nodeControllers) env.nodeControllers = [];
 	if(!env.nodeRoutes) env.nodeRoutes = [];
 	if(!env.models) env.models = [];
+
+	if(!env.schemas) env.schemas = {};
+	if(!env.auths) env.auths = {};
+
+	if(!env.static) env.static = false;
 }
 function _default(mod, mp, env, config){
 	console.log("load mod " + mod);
@@ -51,7 +56,10 @@ function _default(mod, mp, env, config){
 		for (var dep in config.nodeDeps){
 			env.nodeDeps[dep] = config.nodeDeps[dep];
 		};
-
+	if(config.mountSchema){
+		mp.schema = env.schemas[mp[config.mountSchema]];
+		mp.schema.extended = true;
+	}
 
 
 	if(fs.existsSync(mod+"/run.js")){
@@ -91,19 +99,29 @@ function _default(mod, mp, env, config){
 		});
 	}
 	if(!config.noRoute && mp.name){
-		if(mp.isHome)
+		if(mp.isHome){
 			env.routes.push({
 				name: mp.name,
 				controller: mp.name + "Controller",
 				isHome: true,
 				access: mp.access || config.access || 3
 			});
-		else 
+		}
+		else if(mp.param){
+			env.routes.push({
+				name: mp.name,
+				controller: mp.name + "Controller",
+				access: mp.access || config.access || 2,
+				param: true
+			});
+		}
+		else{
 			env.routes.push({
 				name: mp.name,
 				controller: mp.name + "Controller",
 				access: mp.access || config.access || 2
 			});
+		}
 	}
 
 	if(fs.existsSync(mod+"/nodeController.js")){
@@ -125,7 +143,7 @@ function _default(mod, mp, env, config){
 		});
 	}
 
-
+	
 	return 1;
 }
 module.exports._default = _default;

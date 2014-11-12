@@ -9,12 +9,10 @@ module.exports = function(mod, mp, env, config){
 	}else if(mp.strategy == "bearer"){
 		env.nodeDeps["passport-http-bearer"]="*";
 	}
-	if(!mp.signin)
-		mp.signin = "signin";
-	if(!mp.signup)
-		mp.signup = "signup";
-	if(!mp.signout)
-		mp.signout = "signout";
+	if(!mp.signin) mp.signin = "signin";
+	if(!mp.signup) mp.signup = "signup";
+	if(!mp.signout) mp.signout = "signout";
+	env.auths[mp.name] = mp;
 	return 1;
 }
 

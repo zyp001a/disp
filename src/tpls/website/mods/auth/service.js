@@ -1,39 +1,24 @@
 rootApp.factory('^^=name$$Service', function($http, $cookieStore){
   var currentUser = $cookieStore.get('user') || { username: ''};
 	function getUser(){
-//		console.log(document.cookie);
 		return $cookieStore.get('username');
+	}
+	function getName(){
+		return $cookieStore.get('name');
 	}
 	function getCred(){
 		return $cookieStore.get('token');
 	};
   return {
-    isLoggedIn: function(user) {
-      if(user === undefined) {
-        user = currentUser;
-      }
-      return false;
-    },
+		getName: getName,
 		getCred: getCred,
 		getUser: getUser,
     signin: function(user, done) {
-			/*
-			 $http({
-			 url: "/api/^^=signin$$",
-			 dataType: "json",
-			 method: "POST",
-			 data: user,
-			 headers: {
-			 "Authorization": "Bearer " + getCred()
-			 }
-			 }).success(function(data){
-			 }).error(function(err){
-			 });
-			 */
 
       $http.post('/api/^^=signin$$', user).success(function(data){
         $cookieStore.put("token", data.token);
         $cookieStore.put("username", data.username);
+        $cookieStore.put("name", data.name);
 				if(done) done(null, data);
       }).error(function(err){
 				if(done) done(err, null);
@@ -48,6 +33,7 @@ rootApp.factory('^^=name$$Service', function($http, $cookieStore){
     signout: function() {
 			$cookieStore.remove("token");
 			$cookieStore.remove("username");
+			$cookieStore.remove("name");
 			window.location = "#/";
     }
   };

@@ -31,6 +31,9 @@ function extendObj(obj){
 			});
 		}
 		else{
+			if(obj.hasOwnProperty('extended')){
+				return 0;
+			}
 			if(obj.hasOwnProperty("mount")){
 				return 1;
 			}
@@ -54,9 +57,11 @@ function extendObj(obj){
 	}
 }
 function loadMod(loaderType, name, mp){
+	console.log("loadMod: " + mp.name);
 	var config = readJSONUnsafe(nsPath+"/mods/"+name + "/config.json");
 	loader[loaderType](nsPath+"/mods/"+name, mp, env, config);
 }
+
 	
 
 
@@ -90,7 +95,7 @@ if(config.hasOwnProperty("ns")){
 }
 
 extendObj(config);
-console.log(JSON.stringify(config));
+
 
 //iterate proto
 if(config.hasOwnProperty("proto") && config.hasOwnProperty("ns")){

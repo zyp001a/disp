@@ -27,11 +27,14 @@ exports.^^=api.name$$ = function(req, res) {
  ^^}else if(api.type == "get"){$$
 exports.^^=api.name$$ = function(req, res) {
   // Use the Beer model to find a specific beer
-  Model.find({ _id: req.params.id }, function(err, model) {
+  Model.findOne({ _id: req.params.id }, function(err, model) {
     if (err)
       res.send(err);
-
+		^^if(api.field){$$
+		res.send(model.^^=api.field$$);
+		^^}else{$$
     res.json(model);
+		^^}$$
   });
 };
 
@@ -84,10 +87,9 @@ exports.post = function(req, res) {
 
 exports.get = function(req, res) {
   // Use the Beer model to find a specific beer
-  Model.find({ _id: req.params.id }, function(err, model) {
+  Model.findOne({ _id: req.params.id }, function(err, model) {
     if (err)
       res.send(err);
-
     res.json(model);
   });
 };

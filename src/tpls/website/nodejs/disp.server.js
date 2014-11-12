@@ -20,13 +20,15 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
+^^if(static){$$
+app.use(express.static(__dirname + '/^^=static$$'));
+^^}$$
 
-^^if(auth){$$
 //authentication/authorization module
 var passport = require("passport");
 // Use the passport package in our application
 app.use(passport.initialize());
-^^}$$
+
 
 var router = express.Router();
 // Create our Express router

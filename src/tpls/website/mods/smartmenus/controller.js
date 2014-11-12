@@ -1,9 +1,11 @@
-rootApp.controller('^^=name$$Controller', function($scope, $location, ^^=auth$$Service){
+rootApp.controller('^^=name$$Controller', function($rootScope, $scope, $location, ^^=auth$$Service){
 	$scope.isActive=function(path){
 		return $location.url() == path;
 	};
 	$scope.isSignedin = ^^=auth$$Service.getUser;
-	$scope.getUser = ^^=auth$$Service.getUser;
+
+	$scope.getName = ^^=auth$$Service.getName;;
+
 	$scope.collapseMenu = function(){
 		console.log("click");
 		document.getElementById("toggle-menu").click();

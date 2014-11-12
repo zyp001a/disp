@@ -13,6 +13,12 @@ rootApp.config(['$routeProvider',
         controller: '^^=route.controller$$',
 				access: ^^=route.access || 3$$
 			}).
+				^^}else if(route.param){$$
+			when('/^^=route.name$$/:id', {
+				templateUrl: 'assets/partials/^^=route.name$$.html',
+        controller: '^^=route.controller$$',
+				access: ^^=route.access || 2$$
+			}).
 				^^}else{$$
       when('/^^=route.name$$', {
         templateUrl: 'assets/partials/^^=route.name$$.html',

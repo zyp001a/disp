@@ -44,7 +44,7 @@
 					^^function expandSubNavbar(sn){$$
 						^^sn.forEach(function(navitem){$$
               ^^if(navitem.welcome){$$
-							<li ng-show="isSignedin()"><a href="#">^^=navitem.text$$ {{getUser()}}</a></li>
+							<li ng-show="isSignedin()"><a href="#">^^=navitem.text$$ {{getName()}}</a></li>
 							^^} else if(navitem.signedin){$$
 							<li ng-hide="isSignedin()" ng-class="{active: isActive('/^^=navitem.name$$')}"><a href="#^^=navitem.name$$" >^^=navitem.text$$</a></li>
 							<li ng-show="isSignedin()"><a href="#" ng-click="signout()">^^=navitem.signedin.text$$</a></li>

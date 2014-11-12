@@ -1,4 +1,4 @@
-rootApp.controller('^^=name$$Controller', function($rootScope, $scope, $routeParams, ^^=auth$$Service){
+rootApp.controller('^^=name$$Controller', function($scope, $routeParams, ^^=auth$$Service){
 
     $scope.rememberme = true;
     $scope.submit = function() {
@@ -8,8 +8,12 @@ rootApp.controller('^^=name$$Controller', function($rootScope, $scope, $routePar
           rememberme: $scope.rememberme
         }, function(err, data){
 //					console.log("done"+data);
-					if(!err)
-						window.location = "#"+ decodeURIComponent($routeParams.redirect);
+					if(!err){
+						if($routeParams.redirect)
+							window.location = "#"+ decodeURIComponent($routeParams.redirect);
+						else
+							window.location = "#/";
+					}
 				});
     };
 
