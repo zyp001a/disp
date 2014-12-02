@@ -23,3 +23,17 @@ tpl: load templates
 mount: load json
 
 
+form guide
+Boolean
+Integer
+Number
+Index static
+Select dynamic
+String
+Text
+DateTime
+Date
+Time
+Buffer
+
+Array

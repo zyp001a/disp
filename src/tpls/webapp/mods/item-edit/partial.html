@@ -1,0 +1,29 @@
+<form ng-submit="submit()">
+^^schema.fields.forEach(function(field){$$
+ ^^if(field.noneditable){$$
+  <div class="form-group">
+    <label for="^^=field.name$$">^^=field.text$$</label>
+		<div class="form-control" style="color:#933;background-color:#ffc;">{{data.^^=field.name$$}}</div>
+	</div>
+ ^^}else if(field.type == "String"){$$
+  <div class="form-group">
+    <label for="^^=field.name$$">^^=field.text$$</label>
+    <input type="text" class="form-control ^^if(field.required){$$required^^}$$" 
+					 id="^^=field.name$$" name="^^=field.name$$"
+					 placeholder="^^=field.hint || field.text$$" ng-model="data.^^=field.name$$">
+  </div>
+ ^^}else if(field.type == "Integer"){$$
+ ^^}else if(field.type == "Text"){$$
+ ^^}else if(field.type == "Index"){$$
+ ^^}else if(field.type == "Date"){$$
+ ^^}else if(field.type == "Time"){$$
+ ^^}else if(field.type == "DateTime"){$$
+ ^^}else if(field.type == "Boolean"){$$
+  <div class="form-group">
+		<input type="checkbox" ng-model="data.^^=field.name$$" id="^^=field.name$$" name="^^=field.name$$"/>^^=field.text$$
+	</div>
+ ^^}else if(field.type == "Array"){$$
+ ^^}$$
+^^})$$
+  <button type="submit" class="btn btn-primary btn-block">Modify</button>
+<form/>

@@ -81,9 +81,13 @@ function readJSONUnsafe(file){
 	}
 }
 
+function readDir(path){
+}
 module.exports.tmpl = tmpl;
 module.exports.isArray = isArray;
 module.exports.readJSON = readJSON;
 module.exports.readJSONUnsafe = readJSONUnsafe;
+module.exports.readDir = readDir;
+
 
 

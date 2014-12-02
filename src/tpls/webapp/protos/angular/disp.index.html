@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html ng-app="rootApp">
+<head>
+<title>^^=title$$</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <!-- Bootstrap core CSS -->
+    <link href="assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
+		^^cssDeps.forEach(function(css){$$
+    <link href="assets/libs/css/^^=css.name$$" rel="stylesheet">
+		^^})$$
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/assets/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/assets/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+
+    <link href="assets/css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+^^if(navbar){$$
+      <!-- Static navbar -->
+      <div class="navbar navbar-default navbar-static-top" role="navigation" ng-controller="^^=navbar.name$$Controller">
+        <div class="container">
+          <div class="navbar-header">
+            <button id="toggle-menu" type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#/">
+							^^if(navbar.home)$$
+							^^=navbar.home.text$$
+						</a>
+          </div>
+          <div id="menu" class="navbar-collapse collapse">
+					^^function expandSubNavbar(sn){$$
+						^^sn.forEach(function(navitem){$$
+              ^^if(navitem.welcome){$$
+							<li ng-show="isSignedin()"><a href="#">^^=navitem.text$$ {{getName()}}</a></li>
+							^^} else if(navitem.signedin){$$
+							<li ng-hide="isSignedin()" ng-class="{active: isActive('/^^=navitem.name$$')}"><a href="#^^=navitem.name$$" >^^=navitem.text$$</a></li>
+							<li ng-show="isSignedin()"><a href ng-click="signout()">^^=navitem.signedin.text$$</a></li>
+							^^} else if(navitem.dropdown){$$
+							<li ng-class="{active: isActive('/^^=navitem.name$$')}"><a href="#^^=navitem.name$$">^^=navitem.text$$</a>
+                <ul class="dropdown-menu">
+									^^navitem.dropdown.forEach(function(subitem){$$				
+									<li><a href="#^^=subitem.name$$">^^=subitem.text$$</a></li>
+									^^})$$
+								</ul>
+							</li>
+							^^} else {$$
+							<li ng-class="{active: isActive('/^^=navitem.name$$')}"><a href="#^^=navitem.name$$">^^=navitem.text$$</a></li>
+							^^}$$
+						^^})$$
+					^^}$$
+
+						^^if(navbar.left){$$
+            <!-- Left nav -->
+            <ul class="nav navbar-nav">
+							^^expandSubNavbar(navbar.left)$$
+						</ul>
+						^^}$$
+						^^if(navbar.right){$$
+            <!-- Right nav -->
+            <ul class="nav navbar-nav navbar-right">
+							^^expandSubNavbar(navbar.right)$$
+						</ul>
+						^^}$$
+
+
+          
+          </div><!--/.nav-collapse -->
+        </div><!--/.container -->
+      </div>
+^^}$$
+    <div class="container main">
+			<div ng-view></div>
+		</div>
+
+
+<!-- Basic -->
+<script src="assets/libs/js/jquery.js"></script>
+<script src="assets/libs/bootstrap/js/bootstrap.min.js"></script>
+<script src="assets/libs/js/angular.min.js"></script>
+<script src="assets/libs/js/angular-route.min.js"></script>
+
+^^jsDeps.forEach(function(js){$$
+<script src="assets/libs/js/^^=js.name$$"></script>
+^^})$$
+
+
+
+
+<script src="assets/js/main.js"></script>
+^^controllers.forEach(function(c){$$
+<script src="assets/js/controllers/^^=c.name$$.js"></script>
+^^})$$
+^^directives.forEach(function(d){$$
+<script src="assets/js/directives/^^=d.name$$.js"></script>
+^^})$$
+^^services.forEach(function(s){$$
+<script src="assets/js/services/^^=s.name$$.js"></script>
+^^})$$
+
+</body>
+</html>

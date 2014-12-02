@@ -9,6 +9,7 @@ var tmpl = utils.tmpl;
 var readJSON = utils.readJSON;
 var readJSONUnsafe = utils.readJSONUnsafe;
 var isArray = utils.isArray;
+var readDir = utils.readDir;
 
 var node = process.argv[0];
 var dispCmd = process.argv[1];
@@ -18,7 +19,9 @@ var dist = process.argv[3];
 if(!dir){
 	dir=".";
 }
-
+function readNsDir(nsPath){
+	return {};
+}
 
 function extendObj(obj){
 	if(typeof obj === "object"){
@@ -62,7 +65,6 @@ function loadMod(loaderType, name, mp){
 	loader[loaderType](nsPath+"/mods/"+name, mp, env, config);
 }
 
-	
 
 
 var srcRoot, distDir, distRoot;
@@ -89,10 +91,13 @@ else{
 
 if(config.hasOwnProperty("ns")){
 	nsPath = modPath + "/"+config.ns;
+	env.ns = readNsDir(nsPath);
+	env.ns.extended = true;
 	loader = require(nsPath + "/loader");
 	if(loader._init)
 		loader._init(dir, env);
 }
+
 
 extendObj(config);
 
@@ -101,12 +106,12 @@ extendObj(config);
 if(config.hasOwnProperty("proto") && config.hasOwnProperty("ns")){
 	if(isArray(config.proto)){
 		config.proto.forEach(function(proto){
-			srcRoot = nsPath + "/" + proto;
+			srcRoot = nsPath + "/protos/" + proto;
 			distRoot = distDir + "/" + proto;
 			walk(srcRoot);
 		});
 	}else{
-		srcRoot = nsPath + "/" + config.proto;
+		srcRoot = nsPath + "/protos/" + config.proto;
 		distRoot = distDir;
 		walk(srcRoot);
 	}

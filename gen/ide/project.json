@@ -1,0 +1,38 @@
+{
+    "ns": "webapp",
+    "proto": [
+        "angular",
+        "nodejs"
+    ],
+    "env": {
+        "port": 3000,
+        "static": "../angular",
+        "name": "disp-ide",
+        "title": "Do It SimPle",
+        "modules": [
+            {
+                "name": "project",
+                "tpl": "filedb",
+                "file": "project.json2",
+								"fields": [
+										{
+												"name": "ns",
+												"text": "namespace",
+												"type": "Select"
+										}
+								]
+            },
+            {
+                "name": "navbar",
+                "tpl": "smartmenus",
+                "home": {
+                    "name": "home",
+                    "text": "DISP",
+                    "isHome": true,
+                    "tpl": "file-edit",
+										"db": "project"
+                }
+            }
+        ]
+    }
+}
