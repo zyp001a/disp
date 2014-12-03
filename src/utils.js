@@ -13,6 +13,7 @@ function tmpl(str, data){
 	var win, wout;
 	var evalstr = "p.push('";
 	with(data){
+		str = str.replace(/\r/g,"");
 		str = str.
 			replace(/[^\S\n]*(\^\^[^=]((?!\$\$).)*\$\$)\s*\n/g, "$1");
 		//[\s but not \n]* [^^] [not =] [not $$]* [$$] [\s*\n] 

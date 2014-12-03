@@ -51,13 +51,13 @@ function auth(username, password, done){
   User.findOne({ '^^=usernameField$$': username }, function(err, user) {
     if (err) { return done(err); }
     if (!user) {
-      return done(null, false, { message: 'Incorrect username.' });
+      return done({ message: 'Incorrect username.' });
     }
     user.verifyPassword(password, function(err, isMatch){
-			if(err) return done(null, false, { message: err });
+			if(err) return done(err);
 			else if(isMatch){
 				user.getToken(function(err, token){
-					if(err) return done(null, false, { message: err });
+					if(err) return done(err);
 					else{
 						return done(null, {
 							username: user.^^=usernameField$$,
@@ -66,7 +66,7 @@ function auth(username, password, done){
 					}
 				});
 			}
-      else return done(null, false, { message: 'Incorrect password.' });
+      else return done({ message: 'Incorrect password.' });
     });
   });
 }

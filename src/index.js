@@ -62,6 +62,10 @@ function extendObj(obj){
 function loadMod(loaderType, name, mp){
 	console.log("loadMod: " + mp.name);
 	var config = readJSONUnsafe(nsPath+"/mods/"+name + "/config.json");
+	if(config.deps){
+//TODO
+	}
+// loaderType not used
 	loader[loaderType](nsPath+"/mods/"+name, mp, env, config);
 }
 
@@ -130,13 +134,43 @@ function walk(dir){
 		return 0;
 	}
 
+// first look at  disp.json
+	var tdir = dir.replace(new RegExp("^"+quote(srcRoot)), distRoot);
+	var dj = {};
+	if(fs.existsSync(dir+"/disp.json")){
+		dj = readJSON(dir+"/disp.json");
+		if(dj.mv){
+			tdir = dirname(tdir) + "/" + tmpl(dj.mv, env);
+		}
+		if(!dj.file) dj.file = "name";
+		if(!dj.data) dj.data = "content";
+		if(!dj.path) dj.path = "path";
+		if(env[dj.array])
+			with(env){
+				var evalstr = dj.array+".forEach(function(e){"+
+							"var df = tdir + '/' + e."+dj.file + ";" + 
+							"if(e." + dj.data + "){" +
+							"mkdirp.sync(dirname(df));"+
+							"fs.writeFile(df, e." + dj.data+ ");"+
+							"}else if(e." + dj.path + "){"+
+							"mkdirp.sync(dirname(df));"+
+							"copySync(e." + dj.path+ ",df);"+
+							"}"+
+							"})";
+//						console.log(evalstr);
+				eval(evalstr);
+			}
+	}
+
+// then iterate file
 	var files = fs.readdirSync(dir);
 	files.forEach(function(f){
-		if(f== "." || f.match(/~/)){
+		if(f== "." || f.match(/~/) || f == "disp.json"){
 			return 0;
 		}
 		var p = dir + '/' + f;
-		var tdir = dir.replace(new RegExp("^"+quote(srcRoot)), distRoot);
+// support disp. in directory name
+
 		var	stat = fs.statSync(p);
 		if(stat.isDirectory()){
 			walk(p);
@@ -145,33 +179,9 @@ function walk(dir){
 //		console.log("file:"+p);
 // if begin with disp, format the file
 		if(f.match(/^disp\./)){
-			if(f == "disp.json"){
-				//load empty dir
-				var dj = readJSON(p);
-				if(!dj.file) dj.file = "name";
-				if(!dj.data) dj.data = "content";
-				if(!dj.path) dj.path = "path";
-				if(env[dj.array])
-					with(env){
-						var evalstr = dj.array+".forEach(function(e){"+
-								"var df = tdir + '/' + e."+dj.file + ";" + 
-								"if(e." + dj.data + "){" +
-									"mkdirp.sync(dirname(df));"+
-									"fs.writeFile(df, e." + dj.data+ ");"+
-								"}else if(e." + dj.path + "){"+
-									"mkdirp.sync(dirname(df));"+
-									"copySync(e." + dj.path+ ",df);"+
-								"}"+
-							 "})";
-//					console.log(evalstr);
-						eval(evalstr);
-					}
-			}
-			else{
-				var t = tdir + '/' + f.replace(/^disp\./, "");				
-				mkdirp.sync(dirname(t));
-				fs.writeFileSync(t, tmpl(fs.readFileSync(p).toString(), env));
-			}
+			var t = tdir + '/' + f.replace(/^disp./, "");				
+			mkdirp.sync(dirname(t));
+			fs.writeFileSync(t, tmpl(fs.readFileSync(p).toString(), env));
 		}
 //	else copy file
 		else{

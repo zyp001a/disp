@@ -18,17 +18,27 @@ function _init(root, env){
 	if(!env.nodeRoutes) env.nodeRoutes = [];
 	if(!env.models) env.models = [];
 
+	if(!env.androidDeps) env.androidDeps = [];
+	if(!env.androidCodeDeps) env.androidCodeDeps = [];
+	if(!env.androidAPIs) env.androidAPIs = [];
+	if(!env.androidAPITests) env.androidAPITests = [];
+	if(!env.androidControllers) env.androidControllers = [];
+	if(!env.androidProviders) env.androidProviders = [];
+
 	if(!env.schemas) env.schemas = {};
 	if(!env.auths) env.auths = {};
 
 	if(!env.static) env.static = false;
 	if(!env.navbar) env.navbar = false;
 	if(!env.mongodb) env.mongodb = false;
+	env.lcname = env.name.toLowerCase();
+	env.ucname = env.name.toUpperCase();
 }
 function _default(mod, mp, env, config){
 	console.log("load mod " + mod);
-	if(fs.existsSync(mod+"/loader.js"))
+	if(fs.existsSync(mod+"/loader.js")){
 		require(mod+"/loader")(mod, mp, env, config);
+	}
 
 	var depPath = mod + "/../../deps";
 	if(config.mountEnv){
@@ -61,18 +71,37 @@ function _default(mod, mp, env, config){
 		for (var dep in config.nodeDeps){
 			env.nodeDeps[dep] = config.nodeDeps[dep];
 		};
+	if(config.androidDeps)
+		config.androidDeps.forEach(function(dep){
+			if(env.androidDeps.indexOf(dep) == -1)
+				env.androidDeps.push({
+					name: dep,
+					path: depPath + "/android/" + dep
+				});
+		});
+	if(config.androidCodeDeps)
+		config.androidCodeDeps.forEach(function(dep){
+			if(env.androidCodeDeps.indexOf(dep) == -1)
+				env.androidCodeDeps.push({
+					name: dep,
+					content:tmpl(fs.readFileSync(depPath + "/java/" + dep).toString(), env)
+				});
+		});
+
 	if(config.mountSchema){
 		mp.schema = env.schemas[mp[config.mountSchema]];
 		mp.schema.extended = true;
 	}
 
-
+//common js
 	if(fs.existsSync(mod+"/run.js")){
 		env.runs.push({
 			name: mp.name + "Run", 
 			content:tmpl(fs.readFileSync(mod+"/run.js").toString(), mp)
 		});
 	}
+
+// angular
 	if(fs.existsSync(mod+"/filter.js")){
 		env.filters.push({
 			name: mp.name + "Filter", 
@@ -129,6 +158,37 @@ function _default(mod, mp, env, config){
 		}
 	}
 
+
+//android api
+	if(fs.existsSync(mod+"/androidAPI.java")){
+		mp.ns = env.cop + "." + env.name;
+		env.androidAPIs.push({
+			name: mp.name, 
+			content:tmpl(fs.readFileSync(mod+"/androidAPI.java").toString(), mp)
+		});
+	}
+	if(fs.existsSync(mod+"/androidAPITest.java")){
+		mp.ns = env.cop + "." + env.name;
+		env.androidAPITests.push({
+			name: mp.name, 
+			content:tmpl(fs.readFileSync(mod+"/androidAPITest.java").toString(), mp)
+		});
+	}
+	if(fs.existsSync(mod+"/androidController.js")){
+		env.androidControllers.push({
+			name: mp.name, 
+			content:tmpl(fs.readFileSync(mod+"/androidController.js").toString(), mp)
+		});
+	}
+	if(fs.existsSync(mod+"/androidProvider.js")){
+		env.androidProviders.push({
+			name: mp.name, 
+			content:tmpl(fs.readFileSync(mod+"/androidProvider.js").toString(), mp)
+		});
+	}
+
+
+//nodejs 
 	if(fs.existsSync(mod+"/nodeController.js")){
 		env.nodeControllers.push({
 			name: mp.name, 
@@ -147,6 +207,8 @@ function _default(mod, mp, env, config){
 			content:tmpl(fs.readFileSync(mod+"/nodeRoute.js").toString(), mp)
 		});
 	}
+
+//css
 	if(fs.existsSync(mod+"/style.css")){
 		env.csses.push({
 			name: mp.name, 

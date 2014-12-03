@@ -105,16 +105,16 @@ UserSchema.methods.getToken = function(cb) {
 var Model = mongoose.model('^^=name$$', UserSchema);
 module.exports = Model;
 
-^^if(passwordField){$$
+^^if(passwordField && usernameField){$$
 
 var user = new Model({
-	"_id":"admin",
-	"username": "admin",
+
+	"^^=usernameField$$":"admin",
 	"password":"admin",
 	"token":"admin",
 	"isAdmin": true
 });
-Model.remove({"_id": "admin"}, function(err){
+Model.remove({"^^=usernameField$$": "admin"}, function(err){
 	user.save();
 });
 
