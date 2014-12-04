@@ -1,4 +1,4 @@
 {
 		"array": "services",
-		"file": "name+'.js'"
+		"file": "^^=name$$.js"
 }

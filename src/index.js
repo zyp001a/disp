@@ -10,6 +10,7 @@ var readJSON = utils.readJSON;
 var readJSONUnsafe = utils.readJSONUnsafe;
 var isArray = utils.isArray;
 var readDir = utils.readDir;
+var ucfirst = utils.ucfirst;
 
 var node = process.argv[0];
 var dispCmd = process.argv[1];
@@ -67,16 +68,12 @@ function loadMod(loaderType, name, mp){
 	}
 // loaderType not used
 	loader[loaderType](nsPath+"/mods/"+name, mp, env, config);
+	mp.extended = true;
 }
 
 
 
 var srcRoot, distDir, distRoot;
-if(dist)
-	distDir = dist;
-else
-	distDir = dir + "/dist";
-mkdirp.sync(distDir);
 
 //read ./project.json
 var config, env, loader;
@@ -87,11 +84,21 @@ var nsPath;
 config = readJSON(dir + "/project.json");	
 if(config && config.hasOwnProperty("env")){
 		env = config.env;
+
+// assign common function
+//	env.ucfirst = ucfirst;
 }
 else{
 	console.error("no env");
 	process.exit(1);
 }
+
+if(dist)
+	distDir = dist;
+else
+	distDir = dir + "/dist";
+mkdirp.sync(distDir);
+
 
 if(config.hasOwnProperty("ns")){
 	nsPath = modPath + "/"+config.ns;
@@ -142,13 +149,13 @@ function walk(dir){
 		if(dj.mv){
 			tdir = dirname(tdir) + "/" + tmpl(dj.mv, env);
 		}
-		if(!dj.file) dj.file = "name";
+		if(!dj.file) dj.file = "^^=name$$";
 		if(!dj.data) dj.data = "content";
 		if(!dj.path) dj.path = "path";
-		if(env[dj.array])
+		if(dj.array && env[dj.array])
 			with(env){
 				var evalstr = dj.array+".forEach(function(e){"+
-							"var df = tdir + '/' + e."+dj.file + ";" + 
+							"var df = tdir + '/' + tmpl('"+dj.file + "',e);" + 
 							"if(e." + dj.data + "){" +
 							"mkdirp.sync(dirname(df));"+
 							"fs.writeFile(df, e." + dj.data+ ");"+

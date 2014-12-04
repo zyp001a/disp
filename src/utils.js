@@ -1,19 +1,21 @@
 var fs = require("fs");
-function tmpl(str, data){
-	data.ucfirst = function(str) {
+function ucfirst(str) {
   //  discuss at: http://phpjs.org/functions/lcfirst/
   // original by: Brett Zamir (http://brett-zamir.me)
-		str += '';
-		var f = str.charAt(0)
-					.toUpperCase();
-		return f + str.substr(1);
-	};
+	str += '';
+	var f = str.charAt(0)
+				.toUpperCase();
+	return f + str.substr(1);
+};
 
+
+function tmpl(str, data){
+	data.ucfirst = ucfirst;
 	var p=[];
 	var win, wout;
 	var evalstr = "p.push('";
 	with(data){
-		str = str.replace(/\r/g,"");
+		str = str.replace(/\r/g,"").replace(/\\\"/g, "\\\\\\\"");
 		str = str.
 			replace(/[^\S\n]*(\^\^[^=]((?!\$\$).)*\$\$)\s*\n/g, "$1");
 		//[\s but not \n]* [^^] [not =] [not $$]* [$$] [\s*\n] 
@@ -89,6 +91,7 @@ module.exports.isArray = isArray;
 module.exports.readJSON = readJSON;
 module.exports.readJSONUnsafe = readJSONUnsafe;
 module.exports.readDir = readDir;
+module.exports.ucfirst = ucfirst;
 
 
 

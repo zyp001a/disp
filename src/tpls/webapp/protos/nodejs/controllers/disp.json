@@ -1,4 +1,4 @@
 {
 		"array": "nodeControllers",
-		"file": "name+'.js'"
+		"file": "^^=name$$.js"
 }

@@ -2,7 +2,7 @@
     package="com.^^=cop$$.^^=name.toLowerCase()$$"
     android:versionCode="1"
     android:versionName="1.0" >
-
+		<uses-permission android:name="android.permission.INTERNET" /> 
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="21" />
@@ -12,6 +12,10 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+			<provider
+          android:name=".provider.Provider"
+          android:exported="false"
+          android:authorities="com.^^=cop$$.^^=name.toLowerCase()$$.provider" />
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 var fs = require("fs");
 var utils = require("../../utils");
 var tmpl = utils.tmpl;
+var ucfirst = utils.ucfirst;
 function _init(root, env){
 	if(!env.jsDeps) env.jsDeps = [];
 	if(!env.cssDeps) env.cssDeps = [];
@@ -33,6 +34,7 @@ function _init(root, env){
 	if(!env.mongodb) env.mongodb = false;
 	env.lcname = env.name.toLowerCase();
 	env.ucname = env.name.toUpperCase();
+	env.ucfirstname = ucfirst(env.name);
 }
 function _default(mod, mp, env, config){
 	console.log("load mod " + mod);
@@ -161,29 +163,31 @@ function _default(mod, mp, env, config){
 
 //android api
 	if(fs.existsSync(mod+"/androidAPI.java")){
-		mp.ns = env.cop + "." + env.name;
+		mp.ns = env.cop + "." + env.lcname;
 		env.androidAPIs.push({
 			name: mp.name, 
 			content:tmpl(fs.readFileSync(mod+"/androidAPI.java").toString(), mp)
 		});
 	}
 	if(fs.existsSync(mod+"/androidAPITest.java")){
-		mp.ns = env.cop + "." + env.name;
+		mp.ns = env.cop + "." + env.lcname;
 		env.androidAPITests.push({
 			name: mp.name, 
 			content:tmpl(fs.readFileSync(mod+"/androidAPITest.java").toString(), mp)
 		});
 	}
-	if(fs.existsSync(mod+"/androidController.js")){
+	if(fs.existsSync(mod+"/androidController.java")){
+		mp.ns = env.cop + "." + env.lcname;
 		env.androidControllers.push({
-			name: mp.name, 
-			content:tmpl(fs.readFileSync(mod+"/androidController.js").toString(), mp)
+			name: mp.name + "Controller.java", 
+			content:tmpl(fs.readFileSync(mod+"/androidController.java").toString(), mp)
 		});
 	}
-	if(fs.existsSync(mod+"/androidProvider.js")){
+	if(fs.existsSync(mod+"/androidProvider.java")){
+		mp.ns = env.cop + "." + env.lcname;
 		env.androidProviders.push({
 			name: mp.name, 
-			content:tmpl(fs.readFileSync(mod+"/androidProvider.js").toString(), mp)
+			content:tmpl(fs.readFileSync(mod+"/androidProvider.java").toString(), mp)
 		});
 	}
 

@@ -1,4 +1,4 @@
 {
 		"array": "partials",
-		"file": "name+'.html'"
+		"file": "^^=name$$.html"
 }

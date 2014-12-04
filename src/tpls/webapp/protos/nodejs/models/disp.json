@@ -1,4 +1,4 @@
 {
 		"array": "models",
-		"file": "name+'.js'"
+		"file": "^^=name$$.js"
 }
