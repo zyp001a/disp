@@ -6,7 +6,7 @@
 			HttpResult wr = HttpUtils.httpPost(
 				serverURI + "/api/signin", jo);
 			if (wr.statusCode == 200)
-				UsersUtils.saveToken(wr.response, context);
+				^^=ucfirst(auth)$$Utils.save(wr.response, context);
 			else
 				return new ExceptionCode(1, wr.value);
 			return ExceptionCode.NullException;

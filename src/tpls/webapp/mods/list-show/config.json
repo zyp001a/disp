@@ -1,5 +1,6 @@
 {
 		"jsDeps": ["ui-bootstrap.min.js","ui-bootstrap-tpls.min.js"],
 		"angularDeps": ["ui.bootstrap"],
-		"nodeDeps": []
+		"nodeDeps": [],
+		"mountSchema": "db"
 }

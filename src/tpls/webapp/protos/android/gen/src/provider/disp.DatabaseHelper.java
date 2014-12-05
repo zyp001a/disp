@@ -15,9 +15,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 
-^^androidProviders.forEach(function(pr){$$		
-			db.execSQL("Create table " + DatabaseConstant.^^=ucfirst(pr.name)$$Constant.TABLE_NAME + " (" 
- ^^var len = schemas[pr.name].fields.length;
+^^for (var smname in schemas){$$		
+			db.execSQL("Create table " + DatabaseConstant.^^=ucfirst(smname)$$Constant.TABLE_NAME + " (" 
+ ^^var len = schemas[smname].fields.length;
 								 function getSqlLiteString(str){
 									 switch(str){
 									 case "String":
@@ -31,14 +31,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 									 }
 								 }
  $$
- ^^schemas[pr.name].fields.forEach(function(f,i){$$
+ ^^schemas[smname].fields.forEach(function(f,i){$$
   ^^if(i!=len-1){$$
-				 + DatabaseConstant.^^=ucfirst(pr.name)$$Constant.^^=f.name.toUpperCase()$$ + " ^^=getSqlLiteString(f.type)$$,"
+				 + DatabaseConstant.^^=ucfirst(smname)$$Constant.^^=f.name.toUpperCase()$$ + " ^^=getSqlLiteString(f.type)$$,"
   ^^}else{$$
-				 + DatabaseConstant.^^=ucfirst(pr.name)$$Constant.^^=f.name.toUpperCase()$$ + " ^^=getSqlLiteString(f.type)$$);");
+				 + DatabaseConstant.^^=ucfirst(smname)$$Constant.^^=f.name.toUpperCase()$$ + " ^^=getSqlLiteString(f.type)$$"
   ^^}$$
  ^^})$$
-^^})$$
+ ^^if(schemas[smname].passwordField){$$
+				 + "," + DatabaseConstant.^^=ucfirst(smname)$$Constant.PRESENT + " INTEGER);");
+ ^^}else{$$
+				+");");
+ ^^}$$
+								 
+
+
+^^}$$
 
 	}
 

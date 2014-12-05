@@ -27,7 +27,7 @@ exports.^^=api.name$$ = function(req, res) {
  ^^}else if(api.type == "get"){$$
 exports.^^=api.name$$ = function(req, res) {
   // Use the Beer model to find a specific beer
-  Model.findOne({ _id: req.params.id }, function(err, model) {
+  Model.findOne({ ^^=idField$$: req.params.id }, function(err, model) {
     if (err)
       res.send(err);
 		^^if(api.field){$$
@@ -47,7 +47,7 @@ exports.^^=api.name$$ = function(req, res) {
 		json.^^=field.name$$ = req.body.^^=field.name$$;
 	^^})$$
 
-  Model.update({ _id: req.params.id }, json, function(err, num, raw) {
+  Model.update({ ^^=idField$$: req.params.id }, json, function(err, num, raw) {
     if (err)
       res.send(err);
 
@@ -58,7 +58,7 @@ exports.^^=api.name$$ = function(req, res) {
  ^^}else if(api.type == "delete"){$$
 exports.^^=api.name$$ = function(req, res) {
   // Use the Beer model to find a specific beer and remove it
-  Model.remove({ _id: req.params.id }, function(err) {
+  Model.remove({ ^^=usernameField$$: req.params.id }, function(err) {
     if (err)
       res.send(err);
 
@@ -87,7 +87,7 @@ exports.post = function(req, res) {
 
 exports.get = function(req, res) {
   // Use the Beer model to find a specific beer
-  Model.findOne({ _id: req.params.id }, function(err, model) {
+  Model.findOne({ ^^=idField$$: req.params.id }, function(err, model) {
     if (err)
       res.send(err);
     res.json(model);
@@ -105,7 +105,7 @@ exports.put = function(req, res) {
 		^^}$$
 	^^})$$
 
-  Model.update({ _id: req.params.id }, json, function(err, num, raw) {
+  Model.update({ ^^=idField$$: req.params.id }, json, function(err, num, raw) {
 		console.log(err);
     if (err)
       res.send(err);
@@ -117,7 +117,7 @@ exports.put = function(req, res) {
 // Create endpoint /api/beers/:beer_id for DELETE
 exports.delete = function(req, res) {
   // Use the Beer model to find a specific beer and remove it
-  Model.remove({ _id: req.params.id }, function(err) {
+  Model.remove({ ^^=idField$$: req.params.id }, function(err) {
     if (err)
       res.send(err);
 

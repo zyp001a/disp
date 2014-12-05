@@ -1,0 +1,7 @@
+{
+    "androidCodeDeps": [
+        "HttpsTrustModifier.java",
+        "HttpResult.java",        
+				"HttpUtils.java"
+    ]
+}

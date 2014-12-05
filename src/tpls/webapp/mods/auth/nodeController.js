@@ -1,6 +1,6 @@
 // Load required packages
 var passport = require('passport');
-var User = require('../models/^^=database$$');
+var User = require('../models/^^=db$$');
 
 
 ^^if(strategy == 'basic'){$$
@@ -33,6 +33,7 @@ exports.authMidware = passport.authenticate('^^=name$$', {
 //  failureFlash: true,
 	session : false 
 });
+
 ^^}else if(strategy == 'bearer'){$$
 var BearerStrategy = require('passport-http-bearer').Strategy;
 passport.use("^^=name$$", new BearerStrategy(

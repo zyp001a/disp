@@ -4,5 +4,6 @@
 				"passport": "*"
 		},
 		"jsDeps": ["angular-cookies.min.js"],
-		"angularDeps": ["ngCookies"]
+		"angularDeps": ["ngCookies"],
+		"mountSchema": "db"
 }

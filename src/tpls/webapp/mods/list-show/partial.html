@@ -1,22 +1,20 @@
 <div class="row">
 	<div class="col-sm-3">
-		<input ng-model="search.name" placeholder="搜索姓名"/>
-		<input ng-model="search._id" placeholder="搜索学号"/>
-		<input ng-model="search.$" placeholder="搜索关键字"/>
+		<input ng-model="search.^^=schema.usernameField$$" placeholder="search ^^=schema.usernameField$$"/>
+		<input ng-model="search.$" placeholder="search keywords"/>
 	</div>
 	<div class="col-sm-9 col-md-6">
 		<ul class="list-group">
 			<li class="list-group-item" ng-repeat="row in filtered = (data | filter: search) | slice:(currentPage-1)*itemsPerPage:currentPage*itemsPerPage">
 				<div class="row">
 					<div class="col-xs-3">
-						<a href="#/^^=details.name$$/{{row._id}}">
-						<img src="assets/img/default-portrait.jpg" class="img-responsive">
+						<a href="#/^^if(details){$$^^=details.name$$/{{row.^^=schema.usernameField$$}}^^}$$">details
 					</a>
 					</div>
 					<div class="col-xs-9">
-						<p>{{row.name}} - {{row._id}}</p>
-						<p>院系: {{row.majors.join(", ")}}</p>
-						<p>简介: {{row.des}}</p>
+^^schema.fields.forEach(function(f){$$
+						<p>^^=f.name$$: {{row.^^=f.name$$}}</p>
+^^})$$
 					</div>
 				</div>
 			</li>

@@ -42,12 +42,12 @@ function extendObj(obj){
 				return 1;
 			}
 			if(obj.hasOwnProperty("tpl")){
-				if(typeof obj["tpl"] === "object"){
-					loadMod(obj["tpl"].loader, obj["tpl"].name, obj);
-				}
-				else{
-					loadMod("_default", obj["tpl"], obj);
-				}
+				if(isArray(obj["tpl"]))
+					obj["tpl"].forEach(function(tpl){
+						loadMod(tpl, obj);
+					});
+				else
+					loadMod(obj["tpl"], obj);
 			}
 			for (var prop in obj){
 				if(extendObj(obj[prop])){
@@ -60,14 +60,28 @@ function extendObj(obj){
 		return 0;
 	}
 }
-function loadMod(loaderType, name, mp){
+function loadMod(modName, mp){
 	console.log("loadMod: " + mp.name);
-	var config = readJSONUnsafe(nsPath+"/mods/"+name + "/config.json");
+	var loaderType, name;
+	//TODO example for loaderType 
+	if(mp.loader){
+		loaderType = mp.loader;
+	}
+	else{
+		loaderType = "_default";
+	}
+	var modPath = nsPath+"/mods/"+modName;
+	if(!fs.existsSync(modPath)){
+		console.error("no modPath "+modPath);
+		process.exit(1);
+	}
+		
+	var config = readJSONUnsafe(modPath + "/config.json");
 	if(config.deps){
 //TODO
 	}
-// loaderType not used
-	loader[loaderType](nsPath+"/mods/"+name, mp, env, config);
+
+	loader[loaderType](modPath, mp, env, config);
 	mp.extended = true;
 }
 
@@ -186,6 +200,7 @@ function walk(dir){
 //		console.log("file:"+p);
 // if begin with disp, format the file
 		if(f.match(/^disp\./)){
+			console.log("file: " + f);
 			var t = tdir + '/' + f.replace(/^disp./, "");				
 			mkdirp.sync(dirname(t));
 			fs.writeFileSync(t, tmpl(fs.readFileSync(p).toString(), env));

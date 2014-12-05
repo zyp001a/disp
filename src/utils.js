@@ -15,7 +15,7 @@ function tmpl(str, data){
 	var win, wout;
 	var evalstr = "p.push('";
 	with(data){
-		str = str.replace(/\r/g,"").replace(/\\\"/g, "\\\\\\\"");
+		str = str.replace(/\r/g,"");
 		str = str.
 			replace(/[^\S\n]*(\^\^[^=]((?!\$\$).)*\$\$)\s*\n/g, "$1");
 		//[\s but not \n]* [^^] [not =] [not $$]* [$$] [\s*\n] 
@@ -31,7 +31,8 @@ function tmpl(str, data){
 			}
 			wout = wout.replace(/\\([nrt'])/g, "\\\\$1")
 				.replace(/\n/g, "\\n")
-				.replace(/'/g, "\\'");
+				.replace(/'/g, "\\'")
+				.replace(/\\\"/g, "\\\\\\\"");
 
 			if(win && win[0] == '='){
 				evalstr += (win.replace(/^=(.+)/, "',$1,'") + wout);

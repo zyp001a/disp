@@ -19,6 +19,8 @@ ns: the class of the project, if null from ./src
 proto: load prototype, if null from ./src
 env: environment
 
+name
+loader
 tpl: load templates
 mount: load json
 
@@ -37,3 +39,10 @@ Time
 Buffer
 
 Array
+
+
+getList
+get
+post
+put
+delete

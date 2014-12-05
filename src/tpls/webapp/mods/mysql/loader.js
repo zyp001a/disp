@@ -8,7 +8,6 @@ module.exports = function(mod, mp, env, config){
 	if(!mp.usernameField) mp.usernameField = false;
 	if(!mp.tokenField) mp.tokenField = false;
 	env.schemas[mp.name] = mp;
-	mp.mongodb = env.mongodb;
 	return 1;
 }
 

@@ -1,8 +1,8 @@
 package com.^^=cop$$.^^=name.toLowerCase()$$.provider;
 
-^^androidProviders.forEach(function(pr){$$
-import com.^^=cop$$.^^=name.toLowerCase()$$.provider.DatabaseConstant.^^=ucfirst(pr.name)$$Constant;
-^^})$$
+^^for (var smname in schemas){$$
+import com.^^=cop$$.^^=name.toLowerCase()$$.provider.DatabaseConstant.^^=ucfirst(smname)$$Constant;
+^^}$$
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -14,15 +14,15 @@ import android.net.Uri;
 
 public class Provider extends ContentProvider {
 	private DatabaseHelper dbHelper;
-^^androidProviders.forEach(function(pr, i){$$
-	private static final int ^^=pr.name.toUpperCase()$$_DATA = ^^=i+1$$;
-^^})$$
+^^i=0;for (var smname in schemas){i++;$$
+	private static final int ^^=smname.toUpperCase()$$_DATA = ^^=i$$;
+^^}$$
 	private static final UriMatcher URI_MATHER;
 	static {
 		URI_MATHER = new UriMatcher(UriMatcher.NO_MATCH);
-^^androidProviders.forEach(function(pr, i){$$
-		URI_MATHER.addURI(DatabaseConstant.AUTHORITY, ^^=ucfirst(pr.name)$$Constant.TABLE_NAME, ^^=pr.name.toUpperCase()$$_DATA);
-^^})$$
+^^for (var smname in schemas){$$
+		URI_MATHER.addURI(DatabaseConstant.AUTHORITY, ^^=ucfirst(smname)$$Constant.TABLE_NAME, ^^=smname.toUpperCase()$$_DATA);
+^^}$$
 	}
 
 	@Override
@@ -45,11 +45,11 @@ public class Provider extends ContentProvider {
 		String groupBy = null;
 		String having = null;
 		switch (URI_MATHER.match(uri)) {
-^^androidProviders.forEach(function(pr, i){$$
-		case ^^=pr.name.toUpperCase()$$_DATA:
-			qb.setTables(^^=ucfirst(pr.name)$$Constant.TABLE_NAME);
+^^for (var smname in schemas){$$
+		case ^^=smname.toUpperCase()$$_DATA:
+			qb.setTables(^^=ucfirst(smname)$$Constant.TABLE_NAME);
 			break;
-^^})$$
+^^}$$
 		default:
 			throw new IllegalArgumentException("unknown uri" + uri);
 		}
@@ -63,11 +63,11 @@ public class Provider extends ContentProvider {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		long rId = -1;
 		switch (URI_MATHER.match(uri)) {
-^^androidProviders.forEach(function(pr, i){$$
-		case ^^=pr.name.toUpperCase()$$_DATA:
-			rId = db.insert(^^=ucfirst(pr.name)$$Constant.TABLE_NAME, null, values);
+^^for (var smname in schemas){$$
+		case ^^=smname.toUpperCase()$$_DATA:
+			rId = db.insert(^^=ucfirst(smname)$$Constant.TABLE_NAME, null, values);
 			break;
-^^})$$
+^^}$$
 		default:
 			throw new IllegalArgumentException("unknown uri" + uri);
 		}
@@ -80,11 +80,11 @@ public class Provider extends ContentProvider {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		int count = -1;
 		switch (URI_MATHER.match(uri)) {
-^^androidProviders.forEach(function(pr, i){$$
-		case ^^=pr.name.toUpperCase()$$_DATA:
+^^for (var smname in schemas){$$
+		case ^^=smname.toUpperCase()$$_DATA:
 			count = updateOrInsert(db, uri, values, selection, selectionArgs);
 			break;
-^^})$$
+^^}$$
 		default:
 			throw new IllegalArgumentException("unknown uri" + uri);
 		}
@@ -95,16 +95,16 @@ public class Provider extends ContentProvider {
 			ContentValues values, String selection, String[] selectionArgs) {
 		int count;
 		switch (URI_MATHER.match(uri)) {
-^^androidProviders.forEach(function(pr, i){$$
-		case ^^=pr.name.toUpperCase()$$_DATA:
-			count = db.update(^^=ucfirst(pr.name)$$Constant.TABLE_NAME, values, selection,
+^^for (var smname in schemas){$$
+		case ^^=smname.toUpperCase()$$_DATA:
+			count = db.update(^^=ucfirst(smname)$$Constant.TABLE_NAME, values, selection,
 					selectionArgs);
 			if (count == 0) {
 				count = Integer.parseInt(insert(uri, values)
 						.getLastPathSegment());
 			}
 			break;
-^^})$$
+^^}$$
 		default:
 			throw new IllegalArgumentException("unknown uri" + uri);
 		}
@@ -115,11 +115,11 @@ public class Provider extends ContentProvider {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		int count = 0;
 		switch (URI_MATHER.match(uri)) {
-^^androidProviders.forEach(function(pr, i){$$
-		case ^^=pr.name.toUpperCase()$$_DATA:
-			count = db.delete(^^=ucfirst(pr.name)$$Constant.TABLE_NAME, selection, selectionArgs);
+^^for (var smname in schemas){$$
+		case ^^=smname.toUpperCase()$$_DATA:
+			count = db.delete(^^=ucfirst(smname)$$Constant.TABLE_NAME, selection, selectionArgs);
 			break;
-^^})$$
+^^}$$
 		default:
 			throw new IllegalArgumentException("unknown uri" + uri);
 		}

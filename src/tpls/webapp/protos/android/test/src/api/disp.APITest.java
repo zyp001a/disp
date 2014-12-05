@@ -4,8 +4,12 @@ import org.json.JSONObject;
 
 import com.^^=cop$$.^^=name.toLowerCase()$$.api.API;
 import com.^^=cop$$.^^=name.toLowerCase()$$.dep.ExceptionCode;
-import com.^^=cop$$.^^=name.toLowerCase()$$.provider.UsersUtils;
 import com.^^=cop$$.^^=name.toLowerCase()$$.test.TestActivity;
+
+^^androidProviders.forEach(function(pr){$$
+import com.^^=cop$$.^^=name.toLowerCase()$$.provider.^^=ucfirst(pr.name)$$Utils;
+^^})$$
+
 
 import android.app.Activity;
 import android.content.Context;

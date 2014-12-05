@@ -8,6 +8,7 @@ function _init(root, env){
 	if(!env.angularDeps) env.angularDeps = [];
 	if(!env.nodeDeps) env.nodeDeps = {};
 	if(!env.runs) env.runs=[];
+
 	if(!env.filters) env.filters = [];
 	if(!env.partials) env.partials = [];
 	if(!env.services) env.services = [];
@@ -15,8 +16,12 @@ function _init(root, env){
 	if(!env.directives) env.directives = [];
 	if(!env.controllers) env.controllers = [];
 	if(!env.routes) env.routes = [];
+	if(!env.angularTests) env.angularTests = [];
+
 	if(!env.nodeControllers) env.nodeControllers = [];
 	if(!env.nodeRoutes) env.nodeRoutes = [];
+	if(!env.nodeTests) env.nodeTests = [];
+	if(!env.nodeScripts) env.nodeScripts = [];
 	if(!env.models) env.models = [];
 
 	if(!env.androidDeps) env.androidDeps = [];
@@ -25,6 +30,8 @@ function _init(root, env){
 	if(!env.androidAPITests) env.androidAPITests = [];
 	if(!env.androidControllers) env.androidControllers = [];
 	if(!env.androidProviders) env.androidProviders = [];
+	if(!env.androidProviderTests) env.androidProviderTests = [];
+	if(!env.androidModels) env.androidModels = [];
 
 	if(!env.schemas) env.schemas = {};
 	if(!env.auths) env.auths = {};
@@ -91,6 +98,10 @@ function _default(mod, mp, env, config){
 		});
 
 	if(config.mountSchema){
+		if(!env.schemas[mp[config.mountSchema]]){
+			console.error("mountSchema failed: Schema "+mp[config.mountSchema]+" not exist");
+			process.exit(1);
+		}	
 		mp.schema = env.schemas[mp[config.mountSchema]];
 		mp.schema.extended = true;
 	}
@@ -190,6 +201,20 @@ function _default(mod, mp, env, config){
 			content:tmpl(fs.readFileSync(mod+"/androidProvider.java").toString(), mp)
 		});
 	}
+	if(fs.existsSync(mod+"/androidProviderTest.java")){
+		mp.ns = env.cop + "." + env.lcname;
+		env.androidProviderTests.push({
+			name: mp.name, 
+			content:tmpl(fs.readFileSync(mod+"/androidProviderTest.java").toString(), mp)
+		});
+	}
+	if(fs.existsSync(mod+"/androidModel.java")){
+		mp.ns = env.cop + "." + env.lcname;
+		env.androidModels.push({
+			name: mp.name, 
+			content:tmpl(fs.readFileSync(mod+"/androidModel.java").toString(), mp)
+		});
+	}
 
 
 //nodejs 
@@ -199,16 +224,30 @@ function _default(mod, mp, env, config){
 			content:tmpl(fs.readFileSync(mod+"/nodeController.js").toString(), mp)
 		});
 	}
-	if(fs.existsSync(mod+"/model.js")){
-		env.models.push({
+	if(fs.existsSync(mod+"/nodeScript.js")){
+		env.nodeScripts.push({
 			name: mp.name, 
-			content:tmpl(fs.readFileSync(mod+"/model.js").toString(), mp)
+			content:tmpl(fs.readFileSync(mod+"/nodeScript.js").toString(), mp)
+		});
+	}
+	if(fs.existsSync(mod+"/nodeTest.js")){
+		env.nodeTests.push({
+			name: mp.name, 
+			content:tmpl(fs.readFileSync(mod+"/nodeTest.js").toString(), mp)
 		});
 	}
 	if(fs.existsSync(mod+"/nodeRoute.js")){
 		env.nodeRoutes.push({
 			name: mp.name, 
 			content:tmpl(fs.readFileSync(mod+"/nodeRoute.js").toString(), mp)
+		});
+	}
+
+
+	if(fs.existsSync(mod+"/model.js")){
+		env.models.push({
+			name: mp.name, 
+			content:tmpl(fs.readFileSync(mod+"/model.js").toString(), mp)
 		});
 	}
 
