@@ -1,4 +1,4 @@
-package com.^^=cop$$.^^=name.toLowerCase()$$.provider;
+package com.^^=cop$$.^^=name.toLowerCase()$$.gen.provider;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

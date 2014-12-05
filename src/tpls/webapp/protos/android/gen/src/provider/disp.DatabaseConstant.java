@@ -1,9 +1,9 @@
-package com.^^=cop$$.^^=name.toLowerCase()$$.provider;
+package com.^^=cop$$.^^=name.toLowerCase()$$.gen.provider;
 
 import android.net.Uri;
 
 public class DatabaseConstant {
-	public static final String AUTHORITY = "com.^^=cop$$.^^=name.toLowerCase()$$.provider";
+	public static final String AUTHORITY = "com.^^=cop$$.^^=name.toLowerCase()$$.gen.provider";
 	public final static int FALSE = 0;
 	public final static int TRUE = 1;
 

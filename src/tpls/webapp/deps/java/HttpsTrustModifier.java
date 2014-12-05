@@ -1,4 +1,4 @@
-package com.^^=cop$$.^^=name.toLowerCase()$$.dep;
+package com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep;
 
 import java.net.HttpURLConnection;
 import java.security.KeyManagementException;

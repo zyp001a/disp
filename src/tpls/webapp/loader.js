@@ -39,6 +39,7 @@ function _init(root, env){
 	if(!env.static) env.static = false;
 	if(!env.navbar) env.navbar = false;
 	if(!env.mongodb) env.mongodb = false;
+	if(!env.mysql) env.mysql = false;
 	env.lcname = env.name.toLowerCase();
 	env.ucname = env.name.toUpperCase();
 	env.ucfirstname = ucfirst(env.name);

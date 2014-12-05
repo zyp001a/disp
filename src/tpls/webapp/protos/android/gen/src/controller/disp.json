@@ -1,4 +1,4 @@
 {
 		"array": "androidControllers",
-		"mv": "com/^^=cop$$/^^=name.toLowerCase()$$/controller"
+		"mv": "com/^^=cop$$/^^=name.toLowerCase()$$/gen/controller"
 }

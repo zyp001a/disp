@@ -1,36 +1,42 @@
 // Load required packages
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
-
+^^
+function getType(field){
+	if(field.isArray)
+		return Array;
+	switch(field.type){
+		case "Index":
+			return "Number";
+		case "Integer":
+			return "Number";
+		case "Number":
+			return "Number";
+		case "Boolean":
+			return "Boolean";
+		case "String":
+			return "String";
+		case "Text":
+			return "String";
+		case "Select":
+			return "String";
+		case "Date":
+			return "String";
+		case "Time":
+			return "String";
+		case "DateTime":
+			return "Date";
+		case "Buffer":
+			return "Buffer";
+		default:
+			return "String";
+	}
+}
+$$
 // Define our user schema
 var json = {};
 ^^fields.forEach(function(field){$$
-	json.^^=field.name$$ = 
-	{	
-		type: 
-^^if(field.isArray){$$
-Array
-^^}else if(field.type == "Index"){$$
-Number
-^^}else if(field.type == "Integer"){$$
-Number
-^^}else if(field.type == "Text"){$$
-String
-^^}else if(field.type == "Select"){$$
-String
-^^}else if(field.type == "Date"){$$
-String
-^^}else if(field.type == "Time"){$$
-String
-^^}else if(field.type == "DateTime"){$$
-Date
-^^}else{$$
-//Boolean Number String Buffer 
-^^=field.type$$
-^^}$$
-		^^if(field.required){$$
-		,required: true
-		^^}$$};
+	json.^^=field.name$$ = { type: ^^=getType(field)$$^^if(field.required){$$, required: true^^}$$ };
 ^^})$$
 var UserSchema = new mongoose.Schema(json);
 

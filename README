@@ -13,6 +13,8 @@ project.json
 file: new file name
 data: load file content from raw string
 path: load file content from path
+mv:
+ignore:
 
 dist: distribution path
 ns: the class of the project, if null from ./src

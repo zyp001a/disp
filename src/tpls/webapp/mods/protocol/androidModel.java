@@ -1,4 +1,4 @@
-package com.^^=ns$$.model;
+package com.^^=ns$$.gen.model;
 
 public class ^^=ucfirst(name)$$ {
 	public static ^^=ucfirst(name)$$ Empty^^=ucfirst(name)$$ = new ^^=ucfirst(name)$$();

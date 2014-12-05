@@ -1,7 +1,7 @@
-package com.^^=cop$$.^^=name.toLowerCase()$$.provider;
+package com.^^=cop$$.^^=name.toLowerCase()$$.gen.provider;
 
 ^^for (var smname in schemas){$$
-import com.^^=cop$$.^^=name.toLowerCase()$$.provider.DatabaseConstant.^^=ucfirst(smname)$$Constant;
+import com.^^=cop$$.^^=name.toLowerCase()$$.gen.provider.DatabaseConstant.^^=ucfirst(smname)$$Constant;
 ^^}$$
 import android.content.ContentProvider;
 import android.content.ContentUris;

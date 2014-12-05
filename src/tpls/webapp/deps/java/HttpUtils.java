@@ -1,6 +1,6 @@
-package com.^^=cop$$.^^=name.toLowerCase()$$.dep;
+package com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep;
 
-import com.^^=cop$$.^^=name.toLowerCase()$$.dep.HttpsTrustModifier.TrustModifier;
+import com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep.HttpsTrustModifier.TrustModifier;
 
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class HttpUtils {
 
 			return new HttpResult(urlConnection);
 		} catch (Exception e) {
-			return new HttpResult(e.getMessage());
+			return new HttpResult(e.getStackTrace().toString());
 		}
 	}
 
@@ -46,7 +46,7 @@ public class HttpUtils {
 					.setRequestProperty("Authorization", "Bearer " + token);
 			return new HttpResult(urlConnection);
 		} catch (Exception e) {
-			return new HttpResult(e.getMessage());
+			return new HttpResult(e.getStackTrace().toString());
 		}
 	}
 
@@ -61,7 +61,7 @@ public class HttpUtils {
 
 			return new HttpResult(urlConnection);
 		} catch (Exception e) {
-			return new HttpResult(e.getMessage());
+			return new HttpResult(e.getStackTrace().toString());
 		}
 	}
 
@@ -80,7 +80,7 @@ public class HttpUtils {
 			os.close();
 			return new HttpResult(urlConnection);
 		} catch (Exception e) {
-			return new HttpResult(e.getMessage());
+			return new HttpResult(e.getStackTrace().toString());
 		}
 	}
 
@@ -98,7 +98,7 @@ public class HttpUtils {
 			os.close();
 			return new HttpResult(urlConnection);
 		} catch (Exception e) {
-			return new HttpResult(e.getMessage());
+			return new HttpResult(e.getStackTrace().toString());
 		}
 	}
 
@@ -122,7 +122,7 @@ public class HttpUtils {
 			os.close();
 			return new HttpResult(urlConnection);
 		} catch (Exception e) {
-			return new HttpResult(e.getMessage());
+			return new HttpResult(e.getStackTrace().toString());
 		}
 	}
 
@@ -141,7 +141,7 @@ public class HttpUtils {
 
 			return new HttpResult(urlConnection);
 		} catch (Exception e) {
-			return new HttpResult(e.getMessage());
+			return new HttpResult(e.getStackTrace().toString());
 		}
 	}
 
@@ -154,7 +154,7 @@ public class HttpUtils {
 			TrustModifier.relaxHostChecking(urlConnection);
 			return new HttpResult(urlConnection);
 		} catch (Exception e) {
-			return new HttpResult(e.getMessage());
+			return new HttpResult(e.getStackTrace().toString());
 		}
 	}
 
@@ -177,7 +177,7 @@ public class HttpUtils {
 
 			return new HttpResult(urlConnection);
 		} catch (Exception e) {
-			return new HttpResult(e.getMessage());
+			return new HttpResult(e.getStackTrace().toString());
 		}
 	}
 
@@ -199,7 +199,7 @@ public class HttpUtils {
 			os.close();
 			return new HttpResult(urlConnection);
 		} catch (Exception e) {
-			return new HttpResult(e.getMessage());
+			return new HttpResult(e.getStackTrace().toString());
 		}
 	}
 
@@ -223,7 +223,7 @@ public class HttpUtils {
 			os.close();
 			return new HttpResult(urlConnection);
 		} catch (Exception e) {
-			return new HttpResult(e.getMessage());
+			return new HttpResult(e.getStackTrace().toString());
 		}
 	}
 
@@ -237,7 +237,7 @@ public class HttpUtils {
 					.setRequestProperty("Authorization", "Bearer " + token);
 			return new HttpResult(urlConnection);
 		} catch (Exception e) {
-			return new HttpResult(e.getMessage());
+			return new HttpResult(e.getStackTrace().toString());
 		}
 	}
 

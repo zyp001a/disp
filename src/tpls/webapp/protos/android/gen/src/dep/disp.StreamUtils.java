@@ -1,4 +1,4 @@
-package com.^^=cop$$.^^=name.toLowerCase()$$.dep;
+package com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep;
 
 import java.io.BufferedReader;
 import java.io.IOException;

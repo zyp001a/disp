@@ -27,5 +27,7 @@ proguard/
 
 #hide files
 .*
+!.project
+!.classpath
+!project.properties
 
-project.properties

@@ -6,11 +6,7 @@ var bodyParser = require('body-parser');
 var ^^=ctrl.name$$Controller = require('./controllers/^^=ctrl.name$$');
 ^^})$$
 
-^^if(mongodb){$$
-var mongoose = require("mongoose");
-mongoose.connect('mongodb://^^=mongodb.path$$');
-^^}$$
-
+require('./dbconn');
 // Create our Express application
 var app = express();
 

@@ -1,7 +1,7 @@
-package com.^^=ns$$.provider;
+package com.^^=ns$$.gen.provider;
 
-import com.^^=ns$$.provider.DatabaseConstant.^^=ucfirst(name)$$Constant;
-import com.^^=ns$$.model.^^=ucfirst(name)$$;
+import com.^^=ns$$.gen.provider.DatabaseConstant.^^=ucfirst(name)$$Constant;
+import com.^^=ns$$.gen.model.^^=ucfirst(name)$$;
 
 import java.util.List;
 import java.util.ArrayList;

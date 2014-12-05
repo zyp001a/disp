@@ -2,12 +2,12 @@
 package com.^^=cop$$.^^=name.toLowerCase()$$.test.api;
 import org.json.JSONObject;
 
-import com.^^=cop$$.^^=name.toLowerCase()$$.api.API;
-import com.^^=cop$$.^^=name.toLowerCase()$$.dep.ExceptionCode;
 import com.^^=cop$$.^^=name.toLowerCase()$$.test.TestActivity;
 
+import com.^^=cop$$.^^=name.toLowerCase()$$.gen.api.API;
+import com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep.ExceptionCode;
 ^^androidProviders.forEach(function(pr){$$
-import com.^^=cop$$.^^=name.toLowerCase()$$.provider.^^=ucfirst(pr.name)$$Utils;
+import com.^^=cop$$.^^=name.toLowerCase()$$.gen.provider.^^=ucfirst(pr.name)$$Utils;
 ^^})$$
 
 

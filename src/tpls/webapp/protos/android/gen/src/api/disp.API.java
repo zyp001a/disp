@@ -1,12 +1,12 @@
-package com.^^=cop$$.^^=name.toLowerCase()$$.api;
+package com.^^=cop$$.^^=name.toLowerCase()$$.gen.api;
 
 import org.json.JSONObject;
 
-import com.^^=cop$$.^^=name.toLowerCase()$$.dep.ExceptionCode;
-import com.^^=cop$$.^^=name.toLowerCase()$$.dep.HttpResult;
-import com.^^=cop$$.^^=name.toLowerCase()$$.dep.HttpUtils;
+import com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep.ExceptionCode;
+import com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep.HttpResult;
+import com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep.HttpUtils;
 ^^androidProviders.forEach(function(pr){$$
-import com.^^=cop$$.^^=name.toLowerCase()$$.provider.^^=ucfirst(pr.name)$$Utils;
+import com.^^=cop$$.^^=name.toLowerCase()$$.gen.provider.^^=ucfirst(pr.name)$$Utils;
 ^^})$$
 import android.content.Context;
 

@@ -1,5 +1,5 @@
 {
 		"array": "androidModels",
 		"file": "^^=ucfirst(name)$$.java",
-		"mv": "com/^^=cop$$/^^=name.toLowerCase()$$/model"
+		"mv": "com/^^=cop$$/^^=name.toLowerCase()$$/gen/model"
 }

@@ -6,7 +6,8 @@ exports.^^=api.name$$ = function(req, res) {
   Model.find(function(err, models) {
     if (err)
       res.send(err);
-    res.json(models);
+		else
+			res.json(models);
   });
 };
  ^^}else if(api.type == "post"){$$
@@ -20,8 +21,8 @@ exports.^^=api.name$$ = function(req, res) {
   model.save(function(err) {
     if (err)
       res.send(err);
-
-    res.json({ message: 'insert successful' });
+		else
+			res.json({ message: 'insert successful' });
   });
 };
  ^^}else if(api.type == "get"){$$

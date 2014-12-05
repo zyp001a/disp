@@ -1,4 +1,4 @@
-package com.^^=cop$$.^^=name.toLowerCase()$$.dep;
+package com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep;
 
 public class ExceptionCode {
 	public static ExceptionCode NullException = new ExceptionCode(0);

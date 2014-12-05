@@ -1,6 +1,6 @@
-package com.^^=ns$$.provider;
+package com.^^=ns$$.gen.provider;
 
-import com.^^=ns$$.provider.DatabaseConstant.^^=ucfirst(db)$$Constant;
+import com.^^=ns$$.gen.provider.DatabaseConstant.^^=ucfirst(db)$$Constant;
 
 
 import org.json.JSONObject;

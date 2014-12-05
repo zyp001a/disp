@@ -163,6 +163,10 @@ function walk(dir){
 		if(dj.mv){
 			tdir = dirname(tdir) + "/" + tmpl(dj.mv, env);
 		}
+		if(dj.ignore){
+			if(fs.existsSync(tdir))
+				return;
+		}
 		if(!dj.file) dj.file = "^^=name$$";
 		if(!dj.data) dj.data = "content";
 		if(!dj.path) dj.path = "path";

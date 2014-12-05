@@ -1,5 +1,5 @@
 {
 		"array": "androidProviders",
 		"file": "^^=ucfirst(name)$$Utils.java",
-		"mv": "com/^^=cop$$/^^=name.toLowerCase()$$/provider"
+		"mv": "com/^^=cop$$/^^=name.toLowerCase()$$/gen/provider"
 }

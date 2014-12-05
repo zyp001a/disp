@@ -1,4 +1,4 @@
 {
 		"array": "androidCodeDeps",
-		"mv": "com/^^=cop$$/^^=name.toLowerCase()$$/dep"
+		"mv": "com/^^=cop$$/^^=name.toLowerCase()$$/gen/dep"
 }
