@@ -11,7 +11,7 @@
 # Generated files
 bin/
 gen/
-
+!src/com/^^=cop$$/^^=name.toLowerCase()$$/gen
 # Gradle files
 .gradle/
 build/

@@ -20,9 +20,9 @@ $$
 
 if(process.argv[2] == "add"){
 	var json = {};
-	^^fields.forEach(function(field){$$
+	^^fields.forEach(function(field){if(!field.default){$$
 	json.^^=field.name$$ = ^^=getExample(field)$$;
-	^^})$$
+	^^}})$$
 	console.log(json);
   var model = new Model(json);
   model.save(function(err) {

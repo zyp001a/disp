@@ -1,4 +1,5 @@
 ^^if(restful){$$
+ ^^if(idField){$$
 	public void testGet^^=ucfirst(name)$$() throws Exception{
 		Context context = activity.getApplicationContext();
 		^^if(auth){$$
@@ -12,4 +13,5 @@
 
 		return;
 	}
+ ^^}$$
 ^^}$$

@@ -2,13 +2,20 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 ^^
+var autoIncField = false;
 function getType(field){
 	if(field.isArray)
 		return Array;
 	switch(field.type){
 		case "Index":
 			return "Number";
+		case "BigInteger":
+			return "Number";
 		case "Integer":
+			return "Number";
+		case "SmallInteger":
+			return "Number";
+		case "TinyInteger":
 			return "Number";
 		case "Number":
 			return "Number";
@@ -32,41 +39,87 @@ function getType(field){
 			return "String";
 	}
 }
+function getDefault(field){
+	switch(field.default){	
+		case "now":
+			return ", default: Date.now";
+			break;
+		case "autoinc":
+			autoIncField = field.name;
+			return "";
+			break;
+	}
+}
+
 $$
 // Define our user schema
 var json = {};
 ^^fields.forEach(function(field){$$
-	json.^^=field.name$$ = { type: ^^=getType(field)$$^^if(field.required){$$, required: true^^}$$ };
+json.^^=field.name$$ = { type: ^^=getType(field)$$^^if(field.required){$$, required: true^^}$$^^if(field.unique){$$, unique: true^^}$$^^if(field.default){$$^^=getDefault(field)$$^^}$$ };
 ^^})$$
-var UserSchema = new mongoose.Schema(json);
+var ^^=ucfirst(name)$$Schema = new mongoose.Schema(json);
+
+
+
+^^if(autoIncField){$$
+var AutoIncSchema = new mongoose.Schema({
+	next: Number
+});
+var AutoIncModel = mongoose.model('^^=name$$_next', AutoIncSchema);
+
+^^}$$
+// Define our user schema
+
+
+
+^^if(passwordField || autoIncField){$$
+// Execute before each user.save() call
+^^=ucfirst(name)$$Schema.pre('save', function(callback) {
+  var model = this;
+
+	^^if(passwordField){$$
+  // Break out if the password hasn't changed
+  if (model.isModified('^^=passwordField$$')){
+  // Password changed so we need to hash it
+		var salt = bcrypt.genSaltSync(5);
+
+		var hash = bcrypt.hashSync(model.^^=passwordField$$, salt);
+		model.^^=passwordField$$ = hash;
+	}
+	^^}$$
+	^^if(autoIncField){$$
+	if(!model.^^=autoIncField$$){
+		AutoIncModel.findOne({}, function(err, nexti){
+			model.^^=autoIncField$$ = nexti.next;
+			callback();
+		})
+	}else{
+		callback();
+	}
+	^^}else{$$
+	callback();
+	^^}$$
+	
+});
+^^}$$
+
+^^if(autoIncField){$$
+^^=ucfirst(name)$$Schema.post('save', function(callback) {
+	AutoIncModel.findOneAndUpdate({}, {"$inc": {"next":1}}, function(err, nexti){
+		callback();
+	});
+});
+^^}$$
 
 ^^if(passwordField){$$
-// Execute before each user.save() call
-UserSchema.pre('save', function(callback) {
-  var user = this;
-
-  // Break out if the password hasn't changed
-  if (!user.isModified('^^=passwordField$$')) return callback();
-
-  // Password changed so we need to hash it
-  bcrypt.genSalt(5, function(err, salt) {
-    if (err) return callback(err);
-
-    bcrypt.hash(user.^^=passwordField$$, salt, function(err, hash) {
-      if (err) return callback(err);
-      user.^^=passwordField$$ = hash;
-      callback();
-    });
-  });
-});
-
-UserSchema.methods.verifyPassword = function(password, cb) {
+^^=ucfirst(name)$$Schema.methods.verifyPassword = function(password, cb) {
   bcrypt.compare(password, this.^^=passwordField$$, function(err, isMatch) {
     if (err) return cb(err);
     cb(null, isMatch);
   });
 };
 ^^}$$
+
 ^^if(tokenField){$$
 function hat(bits, base) {                                               
   if (!base) base = 16;                                                         
@@ -94,7 +147,7 @@ function hat(bits, base) {
   else return res;
 }
 
-UserSchema.methods.getToken = function(cb) {
+^^=ucfirst(name)$$Schema.methods.getToken = function(cb) {
 	if(!this.^^=tokenField$$){
 		var token = hat();	
 		this.^^=tokenField$$ = token;
@@ -107,9 +160,20 @@ UserSchema.methods.getToken = function(cb) {
 }
 ^^}$$
 
-// Export the Mongoose model
-var Model = mongoose.model('^^=name$$', UserSchema);
+var Model = mongoose.model('^^=name$$', ^^=ucfirst(name)$$Schema);
+^^if(autoIncField){$$
+Model.autoinc = AutoIncModel;
+^^}$$
+
 module.exports = Model;
+
+
+^^if(autoIncField){$$
+AutoIncModel.findOne(function(err, json){
+	if(json && json.next) return;
+	var ai = new AutoIncModel({next: 1});
+	ai.save(function(err){
+^^}$$
 
 ^^if(passwordField && usernameField){$$
 
@@ -125,4 +189,13 @@ Model.remove({"^^=usernameField$$": "admin"}, function(err){
 });
 
 ^^}$$
+
+^^if(autoIncField){$$
+	})
+});
+^^}$$
+
+
+
+// Export the Mongoose model
 

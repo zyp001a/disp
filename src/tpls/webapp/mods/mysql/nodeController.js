@@ -19,7 +19,7 @@ exports.^^=api.name$$ = function(req, res) {
 			res.json({ message: 'insert successful' });
   });
 }
- ^^}else if(api.type == "get"){$$
+ ^^}else if(api.type == "get" && idField){$$
 exports.^^=api.name$$ = function(req, res) {
 	mysql.query("SELECT * FROM ^^=name$$ WHERE `^^=idField$$` = '" + req.params.id+ "'", function(err, models){
     if (err)
@@ -28,10 +28,10 @@ exports.^^=api.name$$ = function(req, res) {
 			res.json(models[0]);
   });
 }
- ^^}else if(api.type == "put"){$$
+ ^^}else if(api.type == "put" && idField){$$
 exports.^^=api.name$$ = function(req, res) {
 }
- ^^}else if(api.type == "delete"){$$
+ ^^}else if(api.type == "delete" && idField){$$
 exports.^^=api.name$$ = function(req, res) {
 };
  ^^}$$
@@ -47,7 +47,7 @@ exports.post = function(req, res) {
 			res.json({ message: 'insert successful' });
   });
 };
-
+ ^^if(idField){$$
 exports.get = function(req, res) {
 	mysql.query("SELECT * FROM ^^=name$$ WHERE `^^=idField$$` = '" + req.params.id+ "'", function(err, models){
     if (err)
@@ -63,4 +63,5 @@ exports.put = function(req, res) {
 
 exports.delete = function(req, res) {
 };
+ ^^}$$
 ^^}$$

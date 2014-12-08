@@ -10,7 +10,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 
-public class AuthUtils {
+public class ^^=ucfirst(name)$$Utils {
 	public static String getToken(Context context) {
 		Cursor c = context.getContentResolver().query(^^=ucfirst(db)$$Constant.CONTENT_URI, null, ^^=ucfirst(db)$$Constant.PRESENT + " = ? ", new String[] { "1" }, null);
 		if (c != null) {

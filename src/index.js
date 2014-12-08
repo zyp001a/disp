@@ -150,13 +150,16 @@ walk(srcRoot);
 
 //var cache = {};
 
-function walk(dir){
+function walk(dir, tdir){
 	if(!fs.existsSync(dir)){
 		return 0;
 	}
 
 // first look at  disp.json
-	var tdir = dir.replace(new RegExp("^"+quote(srcRoot)), distRoot);
+
+	if(!tdir)
+		tdir = dir.replace(new RegExp("^"+quote(srcRoot)), distRoot);
+
 	var dj = {};
 	if(fs.existsSync(dir+"/disp.json")){
 		dj = readJSON(dir+"/disp.json");
@@ -198,7 +201,7 @@ function walk(dir){
 
 		var	stat = fs.statSync(p);
 		if(stat.isDirectory()){
-			walk(p);
+			walk(p, tdir + "/" + f);
 			return 0;
 		}
 //		console.log("file:"+p);
