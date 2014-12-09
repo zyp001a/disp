@@ -23,6 +23,12 @@ function getType(f){
 			return "VARCHAR(100)";
 		case "Text":
 			return "VARCHAR(255)";
+		case "BigInteger":
+			return "BIGINT";
+		case "SmallInteger":
+			return "SMALLINT";
+		case "TinyInteger":
+			return "TINYINT";
 		default:
 			return f.type.toUpperCase();//boolean integer datetime
 	}
@@ -31,6 +37,12 @@ $$
 var createTableStr = "CREATE TABLE IF NOT EXISTS ^^=name$$ (";
 ^^len = fields.length;fields.forEach(function(f,i){$$
 createTableStr += '^^=f.name$$ ^^=getType(f)$$';
+ ^^if(f.default == "autoinc"){$$
+createTableStr += " AUTO_INCREMENT";
+ ^^}$$																		
+ ^^if(f.default == "now"){$$
+createTableStr += " DEFAULT NOW()";
+ ^^}$$
  ^^if(f.name == idField){$$
 createTableStr += " PRIMARY KEY";
  ^^}$$
@@ -42,7 +54,10 @@ createTableStr += ");";
 mysql.query(createTableStr, function(err, info){
 	if(err){
 		console.error("create table ^^=name$$ failed\n" + err.toString() + "\n" + createTableStr);
-		process.exit(1);
+		mysql.query("DROP TABLE ^^=name$$", function(err){
+			if(err) console.error("drop table ^^=name$$ failed\n");
+			process.exit(1);
+		});
 	}	
 });
 

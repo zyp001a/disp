@@ -1,6 +1,7 @@
 // Load required packages
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
+
 ^^
 var autoIncField = false;
 function getType(field){
@@ -35,6 +36,8 @@ function getType(field){
 			return "Date";
 		case "Buffer":
 			return "Buffer";
+		case "Path":
+			return "String";
 		default:
 			return "String";
 	}
@@ -54,11 +57,13 @@ function getDefault(field){
 $$
 // Define our user schema
 var json = {};
-^^fields.forEach(function(field){$$
-json.^^=field.name$$ = { type: ^^=getType(field)$$^^if(field.required){$$, required: true^^}$$^^if(field.unique){$$, unique: true^^}$$^^if(field.default){$$^^=getDefault(field)$$^^}$$ };
+^^var uniques = [];fields.forEach(function(field){$$
+json.^^=field.name$$ = { type: ^^=getType(field)$$^^if(field.required){$$, required: true^^}$$^^if(field.default){$$^^=getDefault(field)$$^^}$$ };
+^^if(field.unique){
+uniques.push("\""+field.name+"\": 1");
+}$$
 ^^})$$
 var ^^=ucfirst(name)$$Schema = new mongoose.Schema(json);
-
 
 
 ^^if(autoIncField){$$
@@ -122,17 +127,17 @@ var AutoIncModel = mongoose.model('^^=name$$_next', AutoIncSchema);
 
 ^^if(tokenField){$$
 function hat(bits, base) {                                               
-  if (!base) base = 16;                                                         
-  if (bits === undefined) bits = 128;                                           
-  if (bits <= 0) return '0';                                                    
-  var digits = Math.log(Math.pow(2, bits)) / Math.log(base);                    
-  for (var i = 2; digits === Infinity; i *= 2) {                                
-    digits = Math.log(Math.pow(2, bits / i)) / Math.log(base) * i;              
-  }                                                                             
-  var rem = digits - Math.floor(digits);                                        
-  var res = '';                                                                 
-  for (var i = 0; i < Math.floor(digits); i++) {                                
-    var x = Math.floor(Math.random() * base).toString(base);                    
+  if (!base) base = 16;                                                        
+  if (bits === undefined) bits = 128;
+  if (bits <= 0) return '0';
+  var digits = Math.log(Math.pow(2, bits)) / Math.log(base);
+  for (var i = 2; digits === Infinity; i *= 2) {
+    digits = Math.log(Math.pow(2, bits / i)) / Math.log(base) * i;
+  }  
+	var rem = digits - Math.floor(digits);
+	var res = '';
+  for (var i = 0; i < Math.floor(digits); i++) {
+    var x = Math.floor(Math.random() * base).toString(base);
     res = x + res;
   }
   if (rem) {
@@ -160,42 +165,60 @@ function hat(bits, base) {
 }
 ^^}$$
 
+
+
+
 var Model = mongoose.model('^^=name$$', ^^=ucfirst(name)$$Schema);
 ^^if(autoIncField){$$
 Model.autoinc = AutoIncModel;
 ^^}$$
 
-module.exports = Model;
-
+Model.populate = function(callback){
+//ensure uniqueness, mongoose unique has some unknown bug
+	Model.findOne({}, function(err, json){
+		if(err) {callback(err); return; }
+		if(json) return;
+^^if(uniques.length){$$
+Model.collection.ensureIndex({ ^^=uniques.join(", ")$$ }, { "unique": true }, function(err){
+	if(err) callback(err);
+^^}$$
 
 ^^if(autoIncField){$$
-AutoIncModel.findOne(function(err, json){
+AutoIncModel.findOne({}, function(err, json){
+	if(err){ callback(err); return; }
 	if(json && json.next) return;
 	var ai = new AutoIncModel({next: 1});
 	ai.save(function(err){
+		if(err){ callback(err); return; }
 ^^}$$
-
 ^^if(passwordField && usernameField){$$
-
-var user = new Model({
-
-	"^^=usernameField$$":"admin",
-	"password":"admin",
-	"token":"admin",
-	"isAdmin": true
-});
-Model.remove({"^^=usernameField$$": "admin"}, function(err){
-	user.save();
-});
+/*
+			var user = new Model({
+				"^^=usernameField$$":"admin",
+				"password":"admin",
+				"token":"admin",
+				"isAdmin": true
+			});
+			Model.remove({"^^=usernameField$$": "admin"}, function(err){
+				user.save();
+			});
+*/
 
 ^^}$$
-
+		callback(err);
 ^^if(autoIncField){$$
-	})
-});
+  });//ai.save
+});//AutoIncModel.findOne
 ^^}$$
 
 
+^^if(uniques.length){$$
+});//Model.collection.ensureIndex
+^^}$$
 
+
+	}); //Model.findOne({}
+
+}//Model.populate
 // Export the Mongoose model
-
+module.exports = Model;

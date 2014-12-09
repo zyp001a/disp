@@ -3,15 +3,20 @@ package com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep;
 import com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep.HttpsTrustModifier.TrustModifier;
 
 
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -23,226 +28,218 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class HttpUtils {
-	public static HttpResult httpGet(String urlString) {
-		try {
-			URL url = new URL(urlString);
-			HttpURLConnection urlConnection = (HttpURLConnection) url
-					.openConnection();
-			urlConnection.setConnectTimeout(7000);
-			urlConnection.setReadTimeout(7000);
+	public static int connectTimeout = 7000;
+	public static int readTimeout = 7000;
 
-			return new HttpResult(urlConnection);
-		} catch (Exception e) {
-			return new HttpResult(e.getStackTrace().toString());
-		}
-	}
-
-	public static HttpResult httpGetBearer(String urlString, String token) {
-		try {
-			URL url = new URL(urlString);
-			HttpURLConnection urlConnection = (HttpURLConnection) url
-					.openConnection();
-			urlConnection
-					.setRequestProperty("Authorization", "Bearer " + token);
-			return new HttpResult(urlConnection);
-		} catch (Exception e) {
-			return new HttpResult(e.getStackTrace().toString());
-		}
-	}
-
-	public static HttpResult httpPost(String urlString) {
-		try {
-			URL url = new URL(urlString);
-			HttpURLConnection urlConnection = (HttpURLConnection) url
-					.openConnection();
-			urlConnection.setRequestMethod("POST");
-			urlConnection
-					.setRequestProperty("Content-Type", "application/json");
-
-			return new HttpResult(urlConnection);
-		} catch (Exception e) {
-			return new HttpResult(e.getStackTrace().toString());
-		}
-	}
-
-	public static HttpResult httpPost(String urlString, JSONObject jo) {
-		try {
-			URL url = new URL(urlString);
-			HttpURLConnection urlConnection = (HttpURLConnection) url
-					.openConnection();
-			urlConnection.setRequestMethod("POST");
-			urlConnection
-					.setRequestProperty("Content-Type", "application/json");
-			byte[] outputInBytes = jo.toString().getBytes("UTF-8");
-			OutputStream os = urlConnection.getOutputStream();
-			os.write(outputInBytes);
-			os.flush();
-			os.close();
-			return new HttpResult(urlConnection);
-		} catch (Exception e) {
-			return new HttpResult(e.getStackTrace().toString());
-		}
-	}
-
-	public static HttpResult httpPostPlain(String urlString, String text) {
-		try {
-			URL url = new URL(urlString);
-			HttpURLConnection urlConnection = (HttpURLConnection) url
-					.openConnection();
-			urlConnection.setRequestMethod("POST");
-			urlConnection.setRequestProperty("Content-Type", "text/plain");
-			byte[] outputInBytes = text.getBytes("UTF-8");
-			OutputStream os = urlConnection.getOutputStream();
-			os.write(outputInBytes);
-			os.flush();
-			os.close();
-			return new HttpResult(urlConnection);
-		} catch (Exception e) {
-			return new HttpResult(e.getStackTrace().toString());
-		}
-	}
-
-	public static HttpResult httpPostBearer(String urlString, JSONObject jo,
-			String token) {
-		try {
-			URL url = new URL(urlString);
-			HttpURLConnection urlConnection = (HttpURLConnection) url
-					.openConnection();
-
-			urlConnection.setRequestMethod("POST");
-			urlConnection
-					.setRequestProperty("Content-Type", "application/json");
-			urlConnection
-					.setRequestProperty("Authorization", "Bearer " + token);
-
-			byte[] outputInBytes = jo.toString().getBytes("UTF-8");
-			OutputStream os = urlConnection.getOutputStream();
-			os.write(outputInBytes);
-			os.flush();
-			os.close();
-			return new HttpResult(urlConnection);
-		} catch (Exception e) {
-			return new HttpResult(e.getStackTrace().toString());
-		}
-	}
-
-	public static HttpResult httpPostBitMapBearer(String urlString,
-			String filename, Bitmap bitmap, String token) {
-		try {
-			URL url = new URL(urlString);
-			HttpURLConnection urlConnection = (HttpURLConnection) url
-					.openConnection();
-			urlConnection
-					.setRequestProperty("Authorization", "Bearer " + token);
-			urlConnection.setRequestMethod("POST");
-			urlConnection.setDoOutput(true);
-
-			HttpUtils.sendMultipartBitmap(urlConnection, filename, bitmap);
-
-			return new HttpResult(urlConnection);
-		} catch (Exception e) {
-			return new HttpResult(e.getStackTrace().toString());
-		}
-	}
-
-	public static HttpResult httpsGet(String urlString) {
-		try {
-			URL url = new URL(urlString);
+	public static HttpURLConnection createConnection(String urlString)
+		throws KeyManagementException, NoSuchAlgorithmException,
+		KeyStoreException, MalformedURLException, IOException,
+		JSONException {
+		URL url = new URL(urlString);
+		if (url.getProtocol() == "https") {
 			HttpsURLConnection urlConnection = (HttpsURLConnection) url
-					.openConnection();
-
+				.openConnection();
+			urlConnection.setConnectTimeout(connectTimeout);
+			urlConnection.setReadTimeout(readTimeout);
 			TrustModifier.relaxHostChecking(urlConnection);
-			return new HttpResult(urlConnection);
-		} catch (Exception e) {
-			return new HttpResult(e.getStackTrace().toString());
+			return urlConnection;
+		} else {
+			HttpURLConnection urlConnection = (HttpURLConnection) url
+				.openConnection();
+			urlConnection.setConnectTimeout(connectTimeout);
+			urlConnection.setReadTimeout(readTimeout);
+			return urlConnection;
 		}
 	}
 
-	public static HttpResult httpsPost(String urlString, JSONObject jo) {
-		try {
-			URL url = new URL(urlString);
-			HttpsURLConnection urlConnection = (HttpsURLConnection) url
-					.openConnection();
-
-			TrustModifier.relaxHostChecking(urlConnection);
-			urlConnection.setRequestMethod("POST");
-			urlConnection
-					.setRequestProperty("Content-Type", "application/json");
-			urlConnection.setDoOutput(true);
-			byte[] outputInBytes = jo.toString().getBytes("UTF-8");
-			OutputStream os = urlConnection.getOutputStream();
-			os.write(outputInBytes);
-			os.flush();
-			os.close();
-
-			return new HttpResult(urlConnection);
-		} catch (Exception e) {
-			return new HttpResult(e.getStackTrace().toString());
-		}
+	public static HttpResult get(String urlString) throws IOException,
+		JSONException, KeyManagementException, NoSuchAlgorithmException,
+		KeyStoreException {
+		HttpURLConnection urlConnection = createConnection(urlString);
+		urlConnection.setRequestMethod("GET");
+		return new HttpResult(urlConnection);
 	}
 
-	public static HttpResult httpsPostForm(String urlString, JSONObject jo) {
-		try {
-			URL url = new URL(urlString);
-			HttpsURLConnection urlConnection = (HttpsURLConnection) url
-					.openConnection();
-
-			TrustModifier.relaxHostChecking(urlConnection);
-
-			urlConnection.setRequestMethod("POST");
-			urlConnection.setRequestProperty("Content-Type",
-					"application/x-www-form-urlencoded");
-			byte[] outputInBytes = HttpUtils.encodeJson(jo).getBytes("UTF-8");
-			OutputStream os = urlConnection.getOutputStream();
-			os.write(outputInBytes);
-			os.flush();
-			os.close();
-			return new HttpResult(urlConnection);
-		} catch (Exception e) {
-			return new HttpResult(e.getStackTrace().toString());
-		}
+	public static HttpResult getBearer(String urlString, String token)
+		throws IOException, JSONException, KeyManagementException,
+		NoSuchAlgorithmException, KeyStoreException {
+		HttpURLConnection urlConnection = createConnection(urlString);
+		urlConnection.setRequestMethod("GET");
+		urlConnection.setRequestProperty("Authorization", "Bearer " + token);
+		return new HttpResult(urlConnection);
 	}
 
-	public static HttpResult httpsPostBearer(String urlString, JSONObject jo,
-			String token) {
-		try {
-			URL url = new URL(urlString);
-			HttpsURLConnection urlConnection = (HttpsURLConnection) url
-					.openConnection();
-			TrustModifier.relaxHostChecking(urlConnection);
-			urlConnection.setRequestMethod("POST");
-			urlConnection
-					.setRequestProperty("Content-Type", "application/json");
-			urlConnection
-					.setRequestProperty("Authorization", "Bearer " + token);
-
-			byte[] outputInBytes = jo.toString().getBytes("UTF-8");
-			OutputStream os = urlConnection.getOutputStream();
-			os.write(outputInBytes);
-			os.flush();
-			os.close();
-			return new HttpResult(urlConnection);
-		} catch (Exception e) {
-			return new HttpResult(e.getStackTrace().toString());
-		}
+	public static HttpResult delete(String urlString) throws IOException,
+		JSONException, KeyManagementException, NoSuchAlgorithmException,
+		KeyStoreException {
+		HttpURLConnection urlConnection = createConnection(urlString);
+		urlConnection.setRequestMethod("DELETE");
+		return new HttpResult(urlConnection);
 	}
 
-	public static HttpResult httpsGetBearer(String urlString, String token) {
-		try {
-			URL url = new URL(urlString);
-			HttpsURLConnection urlConnection = (HttpsURLConnection) url
-					.openConnection();
-			TrustModifier.relaxHostChecking(urlConnection);
-			urlConnection
-					.setRequestProperty("Authorization", "Bearer " + token);
-			return new HttpResult(urlConnection);
-		} catch (Exception e) {
-			return new HttpResult(e.getStackTrace().toString());
-		}
+	public static HttpResult deleteBearer(String urlString, String token)
+		throws IOException, JSONException, KeyManagementException,
+		NoSuchAlgorithmException, KeyStoreException {
+		HttpURLConnection urlConnection = createConnection(urlString);
+		urlConnection.setRequestMethod("DELETE");
+		urlConnection.setRequestProperty("Authorization", "Bearer " + token);
+		return new HttpResult(urlConnection);
+	}
+
+	public static HttpResult putJSON(String urlString, JSONObject jo)
+		throws IOException, JSONException, KeyManagementException,
+		NoSuchAlgorithmException, KeyStoreException {
+		HttpURLConnection urlConnection = createConnection(urlString);
+		urlConnection.setRequestMethod("PUT");
+		urlConnection.setRequestProperty("Content-Type", "application/json");
+		byte[] outputInBytes = jo.toString().getBytes("UTF-8");
+		OutputStream os = urlConnection.getOutputStream();
+		os.write(outputInBytes);
+		os.flush();
+		os.close();
+		return new HttpResult(urlConnection);
+	}
+
+	public static HttpResult putJSONBearer(String urlString, JSONObject jo, String token) throws IOException, JSONException,
+		KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+		HttpURLConnection urlConnection = createConnection(urlString);
+		urlConnection.setRequestMethod("PUT");
+		urlConnection.setRequestProperty("Content-Type", "application/json");
+		urlConnection.setRequestProperty("Authorization", "Bearer " + token);
+		byte[] outputInBytes = jo.toString().getBytes("UTF-8");
+		OutputStream os = urlConnection.getOutputStream();
+		os.write(outputInBytes);
+		os.flush();
+		os.close();
+		return new HttpResult(urlConnection);
+	}
+	
+	public static HttpResult postJSON(String urlString, JSONObject jo)
+		throws IOException, JSONException, KeyManagementException,
+		NoSuchAlgorithmException, KeyStoreException {
+		HttpURLConnection urlConnection = createConnection(urlString);
+		urlConnection.setRequestMethod("POST");
+		urlConnection.setRequestProperty("Content-Type", "application/json");
+
+		byte[] outputInBytes = jo.toString().getBytes("UTF-8");
+		OutputStream os = urlConnection.getOutputStream();
+		os.write(outputInBytes);
+		os.flush();
+		os.close();
+		return new HttpResult(urlConnection);
+	}
+
+	public static HttpResult postJSONBearer(String urlString, JSONObject jo, String token) throws IOException, JSONException,
+		KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+		HttpURLConnection urlConnection = createConnection(urlString);
+		urlConnection.setRequestMethod("POST");
+		urlConnection.setRequestProperty("Content-Type", "application/json");
+		urlConnection.setRequestProperty("Authorization", "Bearer " + token);
+		byte[] outputInBytes = jo.toString().getBytes("UTF-8");
+		OutputStream os = urlConnection.getOutputStream();
+		os.write(outputInBytes);
+		os.flush();
+		os.close();
+		return new HttpResult(urlConnection);
+	}
+
+	public static HttpResult postPlain(String urlString, String text)
+		throws IOException, JSONException, KeyManagementException,
+		NoSuchAlgorithmException, KeyStoreException {
+		HttpURLConnection urlConnection = createConnection(urlString);
+
+		urlConnection.setRequestMethod("POST");
+		urlConnection.setRequestProperty("Content-Type", "text/plain");
+		byte[] outputInBytes = text.getBytes("UTF-8");
+		OutputStream os = urlConnection.getOutputStream();
+		os.write(outputInBytes);
+		os.flush();
+		os.close();
+		return new HttpResult(urlConnection);
+	}
+
+	public static HttpResult postPlainBearer(String urlString, String text, String token) throws IOException, JSONException,
+		KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+		HttpURLConnection urlConnection = createConnection(urlString);
+
+		urlConnection.setRequestMethod("POST");
+		urlConnection.setRequestProperty("Content-Type", "text/plain");
+		urlConnection.setRequestProperty("Authorization", "Bearer " + token);
+		byte[] outputInBytes = text.getBytes("UTF-8");
+		OutputStream os = urlConnection.getOutputStream();
+		os.write(outputInBytes);
+		os.flush();
+		os.close();
+		return new HttpResult(urlConnection);
+	}
+	public static HttpResult postBitmap(String urlString,	String filename, Bitmap bitmap) throws IOException,
+		JSONException, KeyManagementException, NoSuchAlgorithmException,
+		KeyStoreException {
+		HttpURLConnection urlConnection = createConnection(urlString);
+		urlConnection.setConnectTimeout(connectTimeout);
+		urlConnection.setReadTimeout(readTimeout);
+		urlConnection.setRequestMethod("POST");
+		urlConnection.setDoOutput(true);
+		HttpUtils.sendMultipartBitmap(urlConnection, filename, bitmap);
+		return new HttpResult(urlConnection);
+	}
+	public static HttpResult postBitmapBearer(String urlString, String filename, Bitmap bitmap, String token) throws IOException,
+		JSONException, KeyManagementException, NoSuchAlgorithmException,
+		KeyStoreException {
+		HttpURLConnection urlConnection = createConnection(urlString);
+		urlConnection.setConnectTimeout(connectTimeout);
+		urlConnection.setReadTimeout(readTimeout);
+		urlConnection.setRequestProperty("Authorization", "Bearer " + token);
+		urlConnection.setRequestMethod("POST");
+		urlConnection.setDoOutput(true);
+		HttpUtils.sendMultipartBitmap(urlConnection, filename, bitmap);
+		return new HttpResult(urlConnection);
+	}
+
+	public static HttpResult postForm(String urlString, JSONObject jo)
+		throws IOException, JSONException, KeyManagementException,
+		NoSuchAlgorithmException, KeyStoreException {
+
+		HttpURLConnection urlConnection = createConnection(urlString);
+		urlConnection.setConnectTimeout(connectTimeout);
+		urlConnection.setReadTimeout(readTimeout);
+
+		TrustModifier.relaxHostChecking(urlConnection);
+
+		urlConnection.setRequestMethod("POST");
+		urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		byte[] outputInBytes = HttpUtils.encodeJson(jo).getBytes("UTF-8");
+		OutputStream os = urlConnection.getOutputStream();
+		os.write(outputInBytes);
+		os.flush();
+		os.close();
+		return new HttpResult(urlConnection);
+
+	}
+	public static HttpResult postFormBearer(String urlString, JSONObject jo, String token)
+		throws IOException, JSONException, KeyManagementException,
+		NoSuchAlgorithmException, KeyStoreException {
+
+		HttpURLConnection urlConnection = createConnection(urlString);
+		urlConnection.setConnectTimeout(connectTimeout);
+		urlConnection.setReadTimeout(readTimeout);
+
+		TrustModifier.relaxHostChecking(urlConnection);
+
+		urlConnection.setRequestMethod("POST");
+		urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		urlConnection.setRequestProperty("Authorization", "Bearer " + token);
+		byte[] outputInBytes = HttpUtils.encodeJson(jo).getBytes("UTF-8");
+		OutputStream os = urlConnection.getOutputStream();
+		os.write(outputInBytes);
+		os.flush();
+		os.close();
+		return new HttpResult(urlConnection);
+
 	}
 
 	public static String encodeJson(JSONObject jo)
-			throws UnsupportedEncodingException, JSONException {
+		throws UnsupportedEncodingException, JSONException {
 		String data = "";
 		Iterator<String> iterator = jo.keys();
 		String key;
@@ -258,30 +255,30 @@ public class HttpUtils {
 	}
 
 	public static void sendMultipartBitmap(HttpURLConnection urlConnection,
-			String fileName, Bitmap bitmap) throws JSONException, IOException {
+																				 String fileName, Bitmap bitmap) throws JSONException, IOException {
 		String boundary = "===" + System.currentTimeMillis() + "===";
 		String LINE_FEED = "\r\n";
 		String charset = "UTF-8";
-		String fieldName = "image";
+		String fieldName = "buffer";
 		urlConnection.setRequestProperty("Content-Type",
-				"multipart/form-data; boundary=" + boundary);
+																		 "multipart/form-data; boundary=" + boundary);
 
 		OutputStream outputStream = urlConnection.getOutputStream();
 		// OutputStream outputStream = new FileOutputStream(new
 		// File(ClassUtil.getDir()+"/a.jpeg"));
 		PrintWriter writer = new PrintWriter(new OutputStreamWriter(
-				outputStream, charset), true);
+																					 outputStream, charset), true);
 
 		// append image
 		writer.append("--" + boundary).append(LINE_FEED);
 		writer.append(
-				"Content-Disposition: form-data; name=\"" + fieldName
-						+ "\"; filename=\"" + fileName + "\"")
-				.append(LINE_FEED);
+			"Content-Disposition: form-data; name=\"" + fieldName
+			+ "\"; filename=\"" + fileName + "\"")
+			.append(LINE_FEED);
 		writer.append(
-				"Content-Type: "
-						+ URLConnection.guessContentTypeFromName(fileName))
-				.append(LINE_FEED);
+			"Content-Type: "
+			+ URLConnection.guessContentTypeFromName(fileName))
+			.append(LINE_FEED);
 		writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
 		writer.append(LINE_FEED);
 		writer.flush();
@@ -296,4 +293,46 @@ public class HttpUtils {
 		writer.close();
 		outputStream.close();
 	}
+
+	public static void sendMultipartFile(HttpURLConnection urlConnection,
+																			 String fileName) throws JSONException, IOException {
+		String boundary = "===" + System.currentTimeMillis() + "===";
+		String LINE_FEED = "\r\n";
+		String charset = "UTF-8";
+		String fieldName = "buffer";
+		urlConnection.setRequestProperty("Content-Type",
+																		 "multipart/form-data; boundary=" + boundary);
+
+		OutputStream outputStream = urlConnection.getOutputStream();
+		// OutputStream outputStream = new FileOutputStream(new
+		// File(ClassUtil.getDir()+"/a.jpeg"));
+		PrintWriter writer = new PrintWriter(new OutputStreamWriter(
+																					 outputStream, charset), true);
+
+		// append image
+		writer.append("--" + boundary).append(LINE_FEED);
+		writer.append(
+			"Content-Disposition: form-data; name=\"" + fieldName
+			+ "\"; filename=\"" + fileName + "\"")
+			.append(LINE_FEED);
+		writer.append(
+			"Content-Type: "
+			+ URLConnection.guessContentTypeFromName(fileName))
+			.append(LINE_FEED);
+		writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
+		writer.append(LINE_FEED);
+		writer.flush();
+		// bitmap.compress(CompressFormat.JPEG, 100, outputStream);
+		outputStream.flush();
+
+		writer.append(LINE_FEED);
+
+		// finish
+		writer.append(LINE_FEED).flush();
+		writer.append("--" + boundary + "--").append(LINE_FEED);
+		writer.close();
+		outputStream.close();
+	}
 }
+
+

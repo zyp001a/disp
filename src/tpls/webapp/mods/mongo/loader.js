@@ -15,6 +15,19 @@ module.exports = function(mod, mp, env, config){
 			"name": "_id",
 			"type": "ObjectId"
 		});
+	if(!mp.path) mp.path = false;
+	if(mp.path){
+		env.nodeDeps["connect-multiparty"]="*";
+		if(!mp.uploadApis) mp.uploadApis = [];
+		mp.fields.forEach(function(f){
+			if(f.type == "Path"){
+				mp.uploadApis.push({
+					"name": f.name,
+					"media": f.media || "image"
+				});
+			}
+		});
+	}
 	return 1;
 }
 

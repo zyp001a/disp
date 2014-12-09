@@ -1,14 +1,20 @@
 package com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep;
 
 public class ExceptionCode {
+
 	public static ExceptionCode NullException = new ExceptionCode(0);
+	public static int Null = 0;
+	public static int DefaultException = 253;
+	public static int DefaultMessage = 254;
+	public static int Default = 255;
+
 	public int code = 255;
 	public Exception e;
 	public String message;
 	public ExceptionCode(Exception e){
 		this.e = e;
 		this.message = e.getMessage();
-		this.code = 100;
+		this.code = ExceptionCode.DefaultException;
 	}
 	public ExceptionCode(int code, Exception e){
 		this.e = e;
@@ -24,6 +30,6 @@ public class ExceptionCode {
 	}
 	public ExceptionCode(String message){
 		this.message = message;
-		this.code = 101;
+		this.code = ExceptionCode.DefaultMessage;
 	}
 }

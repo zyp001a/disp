@@ -1,5 +1,6 @@
 ^^if(mongodb){$$
 var mongoose = require("mongoose");
+mongoose.set('debug', true);
 mongoose.connect('mongodb://^^=mongodb.path$$');
 ^^}$$
 ^^if(mysql){$$
@@ -24,16 +25,20 @@ mysqlConn.getInsertStr = function(json, table){
 	var cols = [];
 	var values = [];
 	for (var key in json){
-		cols.push(key);
 		switch(typeof json[key]){
 			case "string":
+				cols.push(key);
 				values.push("'"+json[key]+"'");
 				break;
+			case "object":
+				console.log(typeof json[key]);
+				break;
 			default:
+				cols.push(key);
 				values.push(json[key]);
 		}
 	}
-	return "INSERT INTO " + table + "(" + cols.join() + ") VALUES (" + values.join() + ");";
+	return "INSERT INTO " + table + "(" + cols.join(", ") + ") VALUES (" + values.join(", ") + ");";
 }
 exports.mysql = mysqlConn;
 ^^}$$

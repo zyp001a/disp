@@ -22,3 +22,18 @@ router.route('/^^=api.name$$/:id').^^=api.type$$(^^=auth$$Controller.authMidware
 																						 ^^=name$$Controller.^^=api.name$$);
  ^^}$$
 ^^})$$
+
+^^if(path){$$
+var mkdirp = require("mkdirp");
+var multipart = require('connect-multiparty');
+
+ ^^uploadApis.forEach(function(api){$$
+mkdirp.sync("^^=path$$/^^=api.name$$/");
+router.route('/upload^^=ucfirst(api.name)$$')
+			.post(^^=auth$$Controller.authMidware,
+						multipart({uploadDir: "^^=path$$/^^=api.name$$/"}),
+            ^^=name$$Controller.upload^^=ucfirst(api.name)$$);
+router.route('/download^^=ucfirst(api.name)$$/:id')
+			.get(^^=name$$Controller.download^^=ucfirst(api.name)$$);
+ ^^})$$
+^^}$$

@@ -1,5 +1,29 @@
 // Load required packages
 var Model = require('../models/^^=name$$');
+Model.populate();
+
+^^if(path){$$
+var path = require("path");
+var fs = require("fs");
+
+ ^^uploadApis.forEach(function(api){$$
+exports.upload^^=ucfirst(api.name)$$ = function(req, res){
+	if(!req.files.buffer){
+		res.send({error: true});
+    return;
+  }
+	var id = req.files.image.name.match(/(\S+)\.\S+$/)[1];
+	res.send({path: path.basename(req.files.image.path)});
+}
+
+exports.download^^=ucfirst(api.name)$$ = function(req, res){
+	res.send(fs.readFileSync("^^=path$$/^^=api.name$$/" + req.params.id));
+}
+ ^^})$$																		
+^^}$$
+
+
+
 ^^apis.forEach(function(api){$$
  ^^if(api.type == "getList"){$$
 exports.^^=api.name$$ = function(req, res) {
