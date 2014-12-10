@@ -42,3 +42,4 @@ app.listen(^^=port$$, function(err){
 	if(!err)
 		console.log("listen to port ^^=port$$");
 });
+module.exports = app;

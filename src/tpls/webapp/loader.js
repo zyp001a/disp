@@ -3,21 +3,23 @@ var utils = require("../../utils");
 var tmpl = utils.tmpl;
 var ucfirst = utils.ucfirst;
 function _init(root, env){
-	if(!env.jsDeps) env.jsDeps = [];
-	if(!env.cssDeps) env.cssDeps = [];
-	if(!env.angularDeps) env.angularDeps = [];
-	if(!env.nodeDeps) env.nodeDeps = {};
-	if(!env.runs) env.runs=[];
 
+	if(!env.cssDeps) env.cssDeps = [];
+	if(!env.csses) env.csses = [];
+
+	if(!env.angularDeps) env.angularDeps = [];
+	if(!env.jsDeps) env.jsDeps = [];
+	if(!env.runs) env.runs=[];
 	if(!env.filters) env.filters = [];
 	if(!env.partials) env.partials = [];
 	if(!env.services) env.services = [];
-	if(!env.csses) env.csses = [];
 	if(!env.directives) env.directives = [];
 	if(!env.controllers) env.controllers = [];
 	if(!env.routes) env.routes = [];
 	if(!env.angularTests) env.angularTests = [];
 
+	if(!env.nodeDeps) env.nodeDeps = {};
+	if(!env.nodeDevDeps) env.nodeDevDeps = {};
 	if(!env.nodeControllers) env.nodeControllers = [];
 	if(!env.nodeRoutes) env.nodeRoutes = [];
 	if(!env.nodeTests) env.nodeTests = [];
@@ -46,16 +48,13 @@ function _init(root, env){
 }
 function _default(mod, mp, env, config){
 	console.log("load mod " + mod);
-	if(fs.existsSync(mod+"/loader.js")){
-		require(mod+"/loader")(mod, mp, env, config);
-	}
-
 	var depPath = mod + "/../../deps";
+
+	// mount options
 	if(config.mountEnv){
 		env[config.mountEnv]=mp;
 		mp.extended = true;
 	}
-
 	if(config.mountSchema){
 		if(!env.schemas[mp[config.mountSchema]]){
 			console.error("mountSchema failed: Schema "+mp[config.mountSchema]+" not exist");
@@ -65,22 +64,13 @@ function _default(mod, mp, env, config){
 		mp.schema.extended = true;
 	}
 
-
-	if(config.jsDeps)
-		config.jsDeps.forEach(function(dep){
-			if(env.jsDeps.indexOf(dep) == -1)
-				env.jsDeps.push({
-					name: dep,
-					path: depPath + "/js/" + dep
-				});
-		});
-	//common js
-	if(fs.existsSync(mod+"/run.js")){
-		env.runs.push({
-			name: mp.name + "Run", 
-			content:tmpl(fs.readFileSync(mod+"/run.js").toString(), mp)
-		});
+	//exe loader.js
+	if(fs.existsSync(mod+"/loader.js")){
+		require(mod+"/loader")(mod, mp, env, config);
 	}
+
+
+	//config dependencies
 
 	if(config.cssDeps)
 		config.cssDeps.forEach(function(dep){
@@ -99,9 +89,23 @@ function _default(mod, mp, env, config){
 		});
 	}
 
-
+	// angular
 	if(!mp.notAngular){
-		// angular
+		if(config.jsDeps)
+			config.jsDeps.forEach(function(dep){
+				if(env.jsDeps.indexOf(dep) == -1)
+					env.jsDeps.push({
+						name: dep,
+						path: depPath + "/js/" + dep
+					});
+			});
+		if(fs.existsSync(mod+"/run.js")){
+			env.runs.push({
+				name: mp.name + "Run", 
+				content:tmpl(fs.readFileSync(mod+"/run.js").toString(), mp)
+			});
+		}
+
 		if(config.angularDeps)
 			config.angularDeps.forEach(function(dep){
 				if(env.angularDeps.indexOf(dep) == -1)
@@ -233,6 +237,10 @@ function _default(mod, mp, env, config){
 		if(config.nodeDeps)
 			for (var dep in config.nodeDeps){
 				env.nodeDeps[dep] = config.nodeDeps[dep];
+			};
+		if(config.nodeDevDeps)
+			for (var dep in config.nodeDevDeps){
+				env.nodeDevDeps[dep] = config.nodeDevDeps[dep];
 			};
 
 		if(fs.existsSync(mod+"/nodeController.js")){

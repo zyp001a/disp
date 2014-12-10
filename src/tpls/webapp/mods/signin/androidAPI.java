@@ -1,4 +1,4 @@
-	public static ExceptionCode signin(String username, String password, Context context) {
+	public static ExceptionCode ^^=name$$(String username, String password, Context context) {
 		try {
 			JSONObject jo = new JSONObject();
 			jo.put("username", username);

@@ -11,5 +11,10 @@
     "bcrypt": "*",
     "passport": "*",
     "passport-http": "*"
-  }
+  },
+	"devDependencies": {
+		"mocha": "*",
+		"should": "*",
+		"async": "*"
+	}
 }

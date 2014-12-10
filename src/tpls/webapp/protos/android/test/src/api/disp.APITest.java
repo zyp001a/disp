@@ -1,11 +1,12 @@
 
 package com.^^=cop$$.^^=name.toLowerCase()$$.test.api;
 import org.json.JSONObject;
-
+import com.^^=cop$$.^^=name.toLowerCase()$$.test.R;
 import com.^^=cop$$.^^=name.toLowerCase()$$.test.TestActivity;
 
 import com.^^=cop$$.^^=name.toLowerCase()$$.gen.api.API;
 import com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep.ExceptionCode;
+import com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep.ImageUtils;
 ^^androidProviders.forEach(function(pr){$$
 import com.^^=cop$$.^^=name.toLowerCase()$$.gen.provider.^^=ucfirst(pr.name)$$Utils;
 ^^})$$
@@ -14,6 +15,7 @@ import com.^^=cop$$.^^=name.toLowerCase()$$.gen.provider.^^=ucfirst(pr.name)$$Ut
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.test.ActivityUnitTestCase;
 import android.text.TextUtils;
 

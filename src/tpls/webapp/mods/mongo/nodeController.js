@@ -1,6 +1,8 @@
 // Load required packages
 var Model = require('../models/^^=name$$');
-Model.populate();
+Model.populate(function(err){
+	console.log(err);
+});
 
 ^^if(path){$$
 var path = require("path");
@@ -9,15 +11,19 @@ var fs = require("fs");
  ^^uploadApis.forEach(function(api){$$
 exports.upload^^=ucfirst(api.name)$$ = function(req, res){
 	if(!req.files.buffer){
-		res.send({error: true});
+		res.status(401).send({error: true});
     return;
   }
-	var id = req.files.image.name.match(/(\S+)\.\S+$/)[1];
-	res.send({path: path.basename(req.files.image.path)});
+//	var id = req.files.image.name.match(/(\S+)\.\S+$/)[1];
+	res.send({path: path.basename(req.files.buffer.path)});
 }
 
 exports.download^^=ucfirst(api.name)$$ = function(req, res){
-	res.send(fs.readFileSync("^^=path$$/^^=api.name$$/" + req.params.id));
+	var path = "^^=path$$/^^=api.path$$/" + req.params.id;
+	if(fs.existsSync(path))
+		res.send(fs.readFileSync(path).toString());
+	else
+		res.status(500).send({error: "not exist"});
 }
  ^^})$$																		
 ^^}$$

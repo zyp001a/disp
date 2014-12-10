@@ -8,7 +8,6 @@ function ucfirst(str) {
 	return f + str.substr(1);
 };
 
-
 function tmpl(str, data){
 	data.ucfirst = ucfirst;
 	var p=[];
@@ -67,6 +66,17 @@ function tmpl(str, data){
 function isArray(obj){
 	return Object.prototype.toString.call( obj ) === '[object Array]';
 }
+function tplMatch(obj, str){
+	var match = false;
+	if(isArray(obj))
+		obj.forEach(function(o){
+			if(o==str)
+				match = true;
+		});
+	else
+		match = (obj == str);
+	return match;
+}
 function readJSON(file){
 	if(fs.existsSync(file)){
 		return JSON.parse(fs.readFileSync(file));
@@ -93,6 +103,7 @@ module.exports.readJSON = readJSON;
 module.exports.readJSONUnsafe = readJSONUnsafe;
 module.exports.readDir = readDir;
 module.exports.ucfirst = ucfirst;
+module.exports.tplMatch = tplMatch;
 
 
 

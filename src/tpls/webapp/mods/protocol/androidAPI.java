@@ -28,9 +28,9 @@
 	public static ExceptionCode upload^^=ucfirst(api.name)$$(Bitmap bitmap, Context context) {
 		try {
 	^^if(!auth){$$
-			HttpResult wr = HttpUtils.postBitmap(serverURI + "/api/upload^^=ucfirst(api.name)$$/", "a.jpg", bitmap);
+			HttpResult wr = HttpUtils.postBitmap(serverURI + "/api/^^=api.path$$/", "a.jpg", bitmap);
 	^^}else{$$
-			HttpResult wr = HttpUtils.postBitmapBearer(serverURI + "/api/upload^^=ucfirst(api.name)$$/", "a.jpg", bitmap, ^^=ucfirst(auth)$$Utils.getToken(context));
+			HttpResult wr = HttpUtils.postBitmapBearer(serverURI + "/api/^^=api.path$$/", "a.jpg", bitmap, ^^=ucfirst(auth)$$Utils.getToken(context));
 	^^}$$
 			if (wr.statusCode != 200)
 				return new ExceptionCode(1, wr.value);

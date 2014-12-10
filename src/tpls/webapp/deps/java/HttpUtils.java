@@ -256,7 +256,7 @@ public class HttpUtils {
 
 	public static void sendMultipartBitmap(HttpURLConnection urlConnection,
 																				 String fileName, Bitmap bitmap) throws JSONException, IOException {
-		String boundary = "===" + System.currentTimeMillis() + "===";
+		String boundary = "----" + System.currentTimeMillis();
 		String LINE_FEED = "\r\n";
 		String charset = "UTF-8";
 		String fieldName = "buffer";
@@ -296,7 +296,7 @@ public class HttpUtils {
 
 	public static void sendMultipartFile(HttpURLConnection urlConnection,
 																			 String fileName) throws JSONException, IOException {
-		String boundary = "===" + System.currentTimeMillis() + "===";
+		String boundary = "----" + System.currentTimeMillis();
 		String LINE_FEED = "\r\n";
 		String charset = "UTF-8";
 		String fieldName = "buffer";

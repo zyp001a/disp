@@ -9,7 +9,7 @@
 
 		^^=ucfirst(auth)$$Utils.save(id, "", context);
 
-		ExceptionCode e = API.signin("testphone", "testpassword", context);
+		ExceptionCode e = API.^^=name$$("testphone", "testpassword", context);
 		assertNull(e.message);
 		assertTrue(!TextUtils.isEmpty(^^=ucfirst(auth)$$Utils.getToken(context)));
 
