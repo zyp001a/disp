@@ -1,7 +1,7 @@
 // Load required packages
 var Model = require('../models/^^=name$$');
 var mongoose = require("mongoose");
-mongoose.connect('mongodb://^^=mongodb.path$$');
+require("../dbconn");
 
 console.log(process.argv[2]);
 

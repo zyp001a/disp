@@ -2,6 +2,7 @@ var fs = require("fs");
 var utils = require("../../utils");
 var tmpl = utils.tmpl;
 var ucfirst = utils.ucfirst;
+var extend1 = utils.extend1;
 function _init(root, env){
 
 	if(!env.cssDeps) env.cssDeps = [];
@@ -40,11 +41,31 @@ function _init(root, env){
 
 	if(!env.static) env.static = false;
 	if(!env.navbar) env.navbar = false;
-	if(!env.mongodb) env.mongodb = false;
+	if(!env.mongo) env.mongo = false;
 	if(!env.mysql) env.mysql = false;
 	env.lcname = env.name.toLowerCase();
 	env.ucname = env.name.toUpperCase();
 	env.ucfirstname = ucfirst(env.name);
+
+	if(!env.port) env.port = 3000;
+
+	if(!env.test)
+		env.test = {};
+	if(env.mongo && !env.test.mongo){
+		env.test.mongo = extend1(env.mongo);
+		env.test.mongo.path+="_test";
+	}
+	if(env.mysql && !env.test.mysql){
+		env.test.mysql = extend1(env.mysql);
+		env.test.mysql.db+="_test";
+	}
+	if(!env.test.port){
+		env.test.port = env.port + 10;
+		
+	}
+	env.serverURI = env.host+":"+env.port;
+	env.test.serverURI = env.host+":"+env.test.port;
+		
 }
 function _default(mod, mp, env, config){
 	console.log("load mod " + mod);

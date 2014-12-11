@@ -1,0 +1,6 @@
+{
+		"mountSchema": "db",
+		"nodeDeps": {
+				"nodemailer": "*"
+		}
+}

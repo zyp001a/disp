@@ -9,6 +9,7 @@ var tmpl = utils.tmpl;
 var readJSON = utils.readJSON;
 var readJSONUnsafe = utils.readJSONUnsafe;
 var isArray = utils.isArray;
+var isExec = utils.isExec;
 var readDir = utils.readDir;
 var ucfirst = utils.ucfirst;
 
@@ -225,17 +226,20 @@ function quote(str){
 	return (str+'').replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
 }
 function copy(srcFile, destFile){
-
 	var newFp = fs.createWriteStream(destFile);     
 	var oldFp = fs.createReadStream(srcFile);
 	oldFp.pipe(newFp);
-
 }
 function copySync(srcFile, destFile){
 	var BUF_LENGTH = 64*1024;
   var buff = new Buffer(BUF_LENGTH);
   var fdr = fs.openSync(srcFile, 'r');
-  var fdw = fs.openSync(destFile, 'w');
+  var fdw;
+	if(isExec(srcFile))
+		fdw = fs.openSync(destFile, 'w', "775");
+	else	
+		fdw = fs.openSync(destFile, 'w');
+
   var bytesRead = 1;
   var pos = 0;
   while(bytesRead > 0){
@@ -245,6 +249,5 @@ function copySync(srcFile, destFile){
 	}
   fs.closeSync(fdr);
   fs.closeSync(fdw);
-
 }
 

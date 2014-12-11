@@ -1,7 +1,7 @@
 // Load required packages
 var Model = require('../models/^^=name$$');
 Model.populate(function(err){
-	console.log(err);
+	if(err) console.log(err);
 });
 
 ^^if(path){$$
@@ -110,9 +110,9 @@ exports.post = function(req, res) {
   var model = new Model(json);
   model.save(function(err) {
     if (err)
-      res.send(err);
-
-    res.json({ message: 'insert successful' });
+      res.status(401).send({error: err});
+		else
+			res.json({ success: true });
   });
 };
 
@@ -120,8 +120,9 @@ exports.get = function(req, res) {
   // Use the Beer model to find a specific beer
   Model.findOne({ ^^=idField$$: req.params.id }, function(err, model) {
     if (err)
-      res.send(err);
-    res.json(model);
+      res.status(401).send({error: err});
+		else
+			res.json(model);
   });
 };
 

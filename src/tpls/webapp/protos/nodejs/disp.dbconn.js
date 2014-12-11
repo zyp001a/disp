@@ -1,7 +1,12 @@
-^^if(mongodb){$$
+
+^^if(mongo){$$
 var mongoose = require("mongoose");
-mongoose.set('debug', true);
-mongoose.connect('mongodb://^^=mongodb.path$$');
+if(process.env.NODE_ENV == "test"){
+	mongoose.set('debug', true);
+	mongoose.connect('mongodb://^^=test.mongo.path$$');
+}else{
+	mongoose.connect('mongodb://^^=mongo.path$$');
+}
 ^^}$$
 ^^if(mysql){$$
 var mysql = require("mysql");
@@ -10,16 +15,33 @@ var libc = new FFI.Library(null, {
   "system": ["int32", ["string"]]
 });
 var run = libc.system;
-run('mysql -h ^^=mysql.host$$ -u ^^=mysql.user$$ ^^if(mysql.password){$$-p^^=mysql.password$$ ^^}$$-e "CREATE DATABASE IF NOT EXISTS ^^=mysql.db$$"');
-var mysqlConn = mysql.createPool({
-	connectionLimit : 10,
-  host     : '^^=mysql.host$$',
-  user     : '^^=mysql.user$$',
+
+if(process.env.NODE_ENV != "test"){
+	run('mysql -h ^^=mysql.host$$ -u ^^=mysql.user$$ ^^if(mysql.password){$$-p^^=mysql.password$$ ^^}$$-e "CREATE DATABASE IF NOT EXISTS ^^=mysql.db$$"');
+	var mysqlConn = mysql.createPool({
+		connectionLimit : 10,
+		host     : '^^=mysql.host$$',
+		user     : '^^=mysql.user$$',
 ^^if(mysql.password){$$
-  password : '^^=mysql.password$$',
+		password : '^^=mysql.password$$',
 ^^}$$
-	database : '^^=mysql.db$$'
-});
+		database : '^^=mysql.db$$'
+	});
+}else{
+	run('mysql -h ^^=test.mysql.host$$ -u ^^=test.mysql.user$$ ^^if(test.mysql.password){$$-p^^=test.mysql.password$$ ^^}$$-e "CREATE DATABASE IF NOT EXISTS ^^=test.mysql.db$$"');
+	var mysqlConn = mysql.createPool({
+		connectionLimit : 10,
+		host     : '^^=test.mysql.host$$',
+		user     : '^^=test.mysql.user$$',
+^^if(mysql.password){$$
+		password : '^^=test.mysql.password$$',
+^^}$$
+		database : '^^=test.mysql.db$$'
+	});
+
+}
+
+
 //mysqlConn.connect();
 mysqlConn.getInsertStr = function(json, table){
 	var cols = [];

@@ -1,6 +1,10 @@
 {
   "name": "^^=name$$",
   "main": "server.js",
+	"scripts": {
+			"start": "node server.js",
+			"test": "NODE_ENV=test sh scripts/test.sh"
+	},
   "dependencies": {
 		^^for (dep in nodeDeps){$$
 		"^^=dep$$": "^^=nodeDeps[dep]$$",
@@ -13,6 +17,9 @@
     "passport-http": "*"
   },
 	"devDependencies": {
+		^^for (dep in nodeDevDeps){$$
+    "^^=dep$$": "^^=nodeDevDeps[dep]$$",
+    ^^}$$
 		"mocha": "*",
 		"should": "*",
 		"async": "*"

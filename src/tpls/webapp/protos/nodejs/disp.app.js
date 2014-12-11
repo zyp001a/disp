@@ -37,9 +37,11 @@ var router = express.Router();
 app.use('/api', router);
 
 
-// Start the server
-app.listen(^^=port$$, function(err){
-	if(!err)
-		console.log("listen to port ^^=port$$");
-});
+if(process.env.NODE_ENV != "test")
+	app.set('port', ^^=port$$);
+else
+	app.set('port', ^^=test.port$$);
+
+
+
 module.exports = app;

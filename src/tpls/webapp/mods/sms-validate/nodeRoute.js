@@ -1,2 +1,2 @@
-app.post("/api/^^=name$$/sendSMS",^^=name$$Controller.sendSMS);
-app.post("/api/^^=name$$/verifySMS",^^=name$$Controller.verifySMS);
+router.route('/^^=name$$/sendSMS').get(^^=name$$Controller.sendSMS);
+router.route('/^^=name$$/verifySMS').get(^^=name$$Controller.verifySMS);

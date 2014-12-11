@@ -96,7 +96,7 @@ var AutoIncModel = mongoose.model('^^=name$$_next', AutoIncSchema);
 	if(!model.^^=autoIncField$$){
 		AutoIncModel.findOne({}, function(err, nexti){
 			model.^^=autoIncField$$ = nexti.next;
-			callback();
+			callback(err);
 		})
 	}else{
 		callback();
@@ -109,9 +109,11 @@ var AutoIncModel = mongoose.model('^^=name$$_next', AutoIncSchema);
 ^^}$$
 
 ^^if(autoIncField){$$
-^^=ucfirst(name)$$Schema.post('save', function(callback) {
+^^=ucfirst(name)$$Schema.post('save', function(doc) {
 	AutoIncModel.findOneAndUpdate({}, {"$inc": {"next":1}}, function(err, nexti){
-		callback();
+		if(err){
+			console.log(err);
+		}
 	});
 });
 ^^}$$
@@ -168,17 +170,6 @@ AutoIncModel.findOne({}, function(err, json){
 		if(err){ callback(err); return; }
 ^^}$$
 ^^if(passwordField && usernameField){$$
-/*
-			var user = new Model({
-				"^^=usernameField$$":"admin",
-				"password":"admin",
-				"token":"admin",
-				"isAdmin": true
-			});
-			Model.remove({"^^=usernameField$$": "admin"}, function(err){
-				user.save();
-			});
-*/
 
 ^^}$$
 		callback(err);
