@@ -4,44 +4,7 @@ var bcrypt = require('bcrypt');
 
 ^^
 var autoIncField = false;
-function getType(field){
-	if(field.isArray)
-		return Array;
-	switch(field.type){
-		case "Index":
-			return "Number";
-		case "BigInteger":
-			return "Number";
-		case "Integer":
-			return "Number";
-		case "SmallInteger":
-			return "Number";
-		case "TinyInteger":
-			return "Number";
-		case "Number":
-			return "Number";
-		case "Boolean":
-			return "Boolean";
-		case "String":
-			return "String";
-		case "Text":
-			return "String";
-		case "Select":
-			return "String";
-		case "Date":
-			return "String";
-		case "Time":
-			return "String";
-		case "DateTime":
-			return "Date";
-		case "Buffer":
-			return "Buffer";
-		case "Path":
-			return "String";
-		default:
-			return "String";
-	}
-}
+
 function getDefault(field){
 	switch(field.default){	
 		case "now":
@@ -58,7 +21,7 @@ $$
 // Define our user schema
 var json = {};
 ^^var uniques = [];fields.forEach(function(field){$$
-json.^^=field.name$$ = { type: ^^=getType(field)$$^^if(field.required){$$, required: true^^}$$^^if(field.default){$$^^=getDefault(field)$$^^}$$ };
+json.^^=field.name$$ = { type: ^^=dbdef.getType(field, "mongoose")$$^^if(field.required){$$, required: true^^}$$^^if(field.default){$$^^=getDefault(field)$$^^}$$ };
 ^^if(field.unique){
 uniques.push("\""+field.name+"\": 1");
 }$$

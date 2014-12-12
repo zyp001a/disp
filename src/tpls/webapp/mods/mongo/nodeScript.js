@@ -5,27 +5,13 @@ require("../dbconn");
 
 console.log(process.argv[2]);
 
-^^
-function getExample(field){
-	switch(field.type){
-		case "DateTime":
-			return "new Date(1)";
-		case "Number":
-			if(field.default == "autoinc")
-				return 1;
-			return "0.1";
-		default:
-			return "\"test"+field.name+"\"";
-	}		
-}
-$$
 
 switch(process.argv[2]){
 	case "add":
 		Model.populate(function(err){
 			var json = {};
 			^^fields.forEach(function(field){if(!field.default){$$
-			json.^^=field.name$$ = ^^=getExample(field)$$;
+			json.^^=field.name$$ = ^^=dbdef.getType(field, "jstest")$$;
 			^^}})$$
 			console.log(json);
   		var model = new Model(json);

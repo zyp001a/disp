@@ -13,6 +13,8 @@ module.exports = function(mod, mp, env, config){
 	if(!mp.signin) mp.signin = "signin";
 	if(!mp.signinTmp) mp.signinTmp = "signintmp";
 	if(!mp.signup) mp.signup = "signup";
+
+	if(!mp.codeDb) mp.codeDb = false;
 	env.auths[mp.name] = mp;
 	return 1;
 }

@@ -9,8 +9,8 @@ module.exports = function(mod, mp, env, config){
 	if(!mp.usernameField) mp.usernameField = false;
 	if(!mp.tokenField) mp.tokenField = false;
 	if(!mp.idField) mp.idField = false;
-	mp.mongodb = env.mongodb;
-
+	mp.mongo = env.mongo;
+	mp.dbdef = env.dbdef;
 	if(!mp.idField && mp.fields[0].name != "_id"){
 		mp.idField = "_id";
 		mp.fields.unshift({

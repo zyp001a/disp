@@ -58,7 +58,7 @@ function auth(username, password, done){
   User.findOne({ '^^=schema.usernameField$$': username }, function(err, user) {
     if (err) { return done(err); }
     if (!user) {
-      return done({ message: 'Incorrect username.' });
+      return done({ error: 'Incorrect username.', errorCode: 1 });
     }
     user.verifyPassword(password, function(err, isMatch){
 			if(err) return done(err);
@@ -73,15 +73,15 @@ function auth(username, password, done){
 					}
 				});
 			}
-      else return done({ message: 'Incorrect password.' });
+      else return done({ error: 'Incorrect password.', errorCode: 2 });
     });
   });
 }
 
 function signin(req, res){
 	auth(req.body.username, req.body.password, function(err, user, message){
-		if(err) res.status(401).send({error:err});
-		else if(!user) res.status(401).send({error:"no user"});
+		if(err) res.send({error:err});
+		else if(!user) res.send({error:"no user"});
 		else {
 			res.send(user);
 /*
@@ -94,30 +94,59 @@ function signin(req, res){
 	});
 }
 
+^^if(codeDb){$$
+var codeDb = require("../models/^^=codeDb$$");
+^^}$$
+
 function signup(req, res){
-	var json = {};
-^^schema.fields.forEach(function(field){$$
- ^^if(field.required && !field.default){$$	
-	if(req.body.^^=field.name$$)
-		json.^^=field.name$$ = req.body.^^=field.name$$;
-	else{
-		res.status(401).send({error: "param ^^=field.name$$ not exist"});
+	console.log(req.body);
+	if(!req.body.username || !req.body.password){
+		res.send({error: "no username or password", data: req.body});
 		return;
 	}
- ^^}$$
-^^})$$
-	var user = json.^^=schema.usernameField$$;
-	var pass = json.^^=schema.passwordField$$;
-  var model = new User(json);
-  model.save(function(err) {
-    if (err)
-      res.send(err);
-		else{
-			auth(user, pass, function(err, user, message){
-				res.send(user);
-			});
+
+^^if(codeDb){$$
+	if(!req.body.code){
+		res.send({error: "no validation code"});
+		return;
+	}
+	var json = {
+    "^^=schema1.idField$$": req.body.username,
+    "^^=schema1.codeField$$": req.body.code,
+    "^^=schema1.timeField$$": {
+      $gt: new Date().getTime() - 60*60000
+    }
+  };
+						 console.log(json);
+	codeDb.findOne(json, function(err, doc){
+		if(err){
+			res.send({error: err});
+			return;
 		}
-  });
+		if(!doc){
+			res.send({error: "validation code error"});
+			return;
+		}
+
+
+^^}$$
+
+		var json = {};
+		var user = json.^^=schema.usernameField$$ = req.body.username;
+		var pass = json.^^=schema.passwordField$$ = req.body.password;
+	  var model = new User(json);
+		model.save(function(err) {
+    	if (err)
+				res.send(err);
+			else{
+				auth(user, pass, function(err, user, message){
+					res.send(user);
+				});
+			}
+		});
+^^if(codeDb){$$
+	});//codeDb.findOne
+^^}$$
 }
 
 module.exports.auth = auth;

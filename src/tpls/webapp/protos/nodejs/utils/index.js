@@ -227,6 +227,7 @@ function readJSONUnsafe(file){
 
 module.exports = {
 	hat: hat,
+	genNum: genNum,
 	base64: base64,
 	webreq: webreq,
 	escapeRegExp: escapeRegExp,

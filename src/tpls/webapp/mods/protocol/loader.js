@@ -7,7 +7,7 @@ module.exports = function(mod, mp, env, config){
 	if(!mp.apis) mp.apis = [];
 	if(!mp.usernameField) mp.usernameField = false;
 	if(!mp.path) mp.path = false;
-			
+	mp.dbdef = env.dbdef;
 	if(mp.path){
 		env.upload = true;
 		env.nodeDeps["connect-multiparty"]="*";

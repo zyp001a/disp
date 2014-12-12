@@ -1,8 +1,10 @@
 var fs = require("fs");
 var utils = require("../../utils");
+var dbdef = require("./dbdef");
 var tmpl = utils.tmpl;
 var ucfirst = utils.ucfirst;
 var extend1 = utils.extend1;
+var isArray = utils.isArray;
 function _init(root, env){
 
 	if(!env.cssDeps) env.cssDeps = [];
@@ -65,7 +67,7 @@ function _init(root, env){
 	}
 	env.serverURI = env.host+":"+env.port;
 	env.test.serverURI = env.host+":"+env.test.port;
-		
+	env.dbdef = dbdef;
 }
 function _default(mod, mp, env, config){
 	console.log("load mod " + mod);
@@ -77,12 +79,24 @@ function _default(mod, mp, env, config){
 		mp.extended = true;
 	}
 	if(config.mountSchema){
-		if(!env.schemas[mp[config.mountSchema]]){
-			console.error("mountSchema failed: Schema "+mp[config.mountSchema]+" not exist");
-			process.exit(1);
-		}	
-		mp.schema = env.schemas[mp[config.mountSchema]];
-		mp.schema.extended = true;
+		if(!isArray(config.mountSchema))
+			config.mountSchema = [config.mountSchema];
+		config.mountSchema.forEach(function(sc, i){
+			if(mp[sc]){
+				if(!env.schemas[mp[sc]]){
+					console.error("mountSchema failed: Schema "+mp[sc]+" not exist");
+				process.exit(1);
+				}
+				if(i==0){
+					mp.schema = env.schemas[mp[sc]];
+					mp.schema.extended = true;
+				}
+				else{
+					mp["schema"+i] = env.schemas[mp[sc]];
+					mp["schema"+i].extended = true;
+				}
+			}
+		});
 	}
 
 	//exe loader.js

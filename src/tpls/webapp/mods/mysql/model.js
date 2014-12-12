@@ -2,41 +2,10 @@
 var mysql = require('../dbconn').mysql;
 var bcrypt = require('bcrypt');
 
-^^
-function getType(f){
-	if(f.isArray){
-		console.error("mysql don't support 'Array' field");
-		process.exit(1);
-	}
-	switch(f.type){
-		case "Number":
-			return "DOUBLE";
-		case "Index":
-			return "INTEGER";
-		case "Select":
-			return "VARCHAR(40)";
-		case "Date":
-			return "VARCHAR(40)";
-		case "Time":
-			return "VARCHAR(40)";
-		case "String":
-			return "VARCHAR(100)";
-		case "Text":
-			return "VARCHAR(255)";
-		case "BigInteger":
-			return "BIGINT";
-		case "SmallInteger":
-			return "SMALLINT";
-		case "TinyInteger":
-			return "TINYINT";
-		default:
-			return f.type.toUpperCase();//boolean integer datetime
-	}
-}
-$$
+
 var createTableStr = "CREATE TABLE IF NOT EXISTS ^^=name$$ (";
 ^^len = fields.length;fields.forEach(function(f,i){$$
-createTableStr += '^^=f.name$$ ^^=getType(f)$$';
+createTableStr += '^^=f.name$$ ^^=dbdef.getType(f, "mysql")$$';
  ^^if(f.default == "autoinc"){$$
 createTableStr += " AUTO_INCREMENT";
  ^^}$$																		
@@ -60,6 +29,15 @@ mysql.query(createTableStr, function(err, info){
 		});
 	}	
 });
+var Model = {};
+Model.find = function(){
+}
+Model.update = function(){
+}
+Model.findOne = function(){
+}
+Model.remove = function(){
+}
 
-
+module.exports = Model;
 

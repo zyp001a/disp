@@ -11,7 +11,7 @@ var fs = require("fs");
  ^^uploadApis.forEach(function(api){$$
 exports.upload^^=ucfirst(api.name)$$ = function(req, res){
 	if(!req.files.buffer){
-		res.status(401).send({error: true});
+		res.send({error: true});
     return;
   }
 //	var id = req.files.image.name.match(/(\S+)\.\S+$/)[1];

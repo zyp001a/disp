@@ -15,7 +15,7 @@ rootApp.factory('^^=name$$Service', function($http, $cookieStore, $location){
 		getUser: getUser,
     signin: function(user, done) {
 
-      $http.post('/api/^^=signin$$', user).success(function(data){
+      $http.post('/api/^^=name$$/^^=signin$$', user).success(function(data){
         $cookieStore.put("token", data.token);
         $cookieStore.put("username", data.username);
         $cookieStore.put("name", data.name);
@@ -26,7 +26,7 @@ rootApp.factory('^^=name$$Service', function($http, $cookieStore, $location){
 
     },
     signup: function(user) {
-      $http.post('/api/^^=signup$$', user).success(function(data) {
+      $http.post('/api/^^=name$$/^^=signup$$', user).success(function(data) {
       }).error(function(err){
 			});
     },
