@@ -1,7 +1,6 @@
-// Load required packages
+^^if(engine == "mongo"){$$
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
-
 ^^
 var autoIncField = false;
 
@@ -117,7 +116,12 @@ Model.autoinc = AutoIncModel;
 ^^}$$
 
 Model.method = {};
-Model.method.get = Model.findOne;
+Model.method.get = function(criteria, fields, fn){
+	Model.findOne(criteria, fields, fn);
+}
+Model.method.gets = function(criteria, fields, fn){
+	Model.find(criteria, fields, fn);
+}
 Model.method.post = function(doc, fn){
   var json = {};
 	^^fields.forEach(function(field){$$
@@ -129,13 +133,17 @@ Model.method.post = function(doc, fn){
     if (err)
 			fn(err);
 		else{
-			fn(null, {insertedId: doc.^^=idField$$});
+			fn(null, {insertId: doc.^^=idField$$});
 		}
   });
 }
-
-
-Model.populate = function(callback){
+Model.method.delete = function(json, fn){
+	Model.remove(json, function(err) {
+    if (err) fn(err);
+		else fn(null);
+  });
+}
+Model.method.populate = function(callback){
 //ensure uniqueness, mongoose unique has some unknown bug
 	Model.findOne({}, function(err, json){
 		if(err) {callback(err); return; }
@@ -169,5 +177,104 @@ AutoIncModel.findOne({}, function(err, json){
 	}); //Model.findOne({}
 
 }//Model.populate
-// Export the Mongoose model
+
+Model.method.drop = function(fn){
+	Model.collection.drop(function(err){
+		var error = {}; 
+		error.error = err;
+		if(Model.autoinc)
+			Model.autoinc.collection.drop(function(err){
+				error.error2 = err;
+				fn(error);
+			});
+		else
+			fn(error);
+	});
+}
+
+^^}else if(engine == "mysql"){$$
+var mysql = require('../dbconn').mysql;
+var bcrypt = require('bcrypt');
+
+var createTableStr = "CREATE TABLE IF NOT EXISTS ^^=name$$ (";
+^^len = fields.length;fields.forEach(function(f,i){$$
+createTableStr += '^^=f.name$$ ^^=dbdef.getType(f, "mysql")$$';
+ ^^if(dbdef.getType(f, "mysql") == "ENUM"){$$
+createTableStr += ""
+ ^^}$$
+ ^^if(f.default == "autoinc"){$$
+createTableStr += " AUTO_INCREMENT";
+ ^^}$$																		
+ ^^if(f.default == "now"){$$
+createTableStr += " DEFAULT NOW()";
+ ^^}$$
+ ^^if(f.name == idField){$$
+createTableStr += " PRIMARY KEY";
+ ^^}$$
+ ^^if(i != len-1){$$
+createTableStr += ", ";
+ ^^}$$									 
+^^})$$
+createTableStr += ");";
+var Model = {};
+Model.method = {};
+Model.method.populate = function(fn){
+	mysql.query(createTableStr, function(err, info){
+		if(err){
+			console.error("create table ^^=name$$ failed\n" + err.toString() + "\n" + createTableStr);
+			fn(err);
+		}else{
+			fn(null);
+		}
+	});
+};
+Model.method.gets = function(where, cols, fn){
+	mysql.query(mysql.getSelectStr(where, cols, "^^=name$$"), function(err, models){
+    if (err)
+      fn(err);
+		else
+			fn(null, models);
+  });
+}
+Model.method.get = function(where, cols, fn){
+	mysql.query(mysql.getSelectStr(where, cols, "^^=name$$") + " LIMIT 1", function(err, models){
+    if (err)
+      fn(err);
+		else
+			fn(null, models[0]);
+  });
+}
+Model.method.post = function(json, fn){
+  mysql.query(mysql.getInsertStr(json, "^^=name$$"), function(err, result){
+    if (err)
+      fn(err);
+		else
+			fn(null, result);//result contains insertId
+	});
+}
+Model.method.delete = function(json, fn){
+  mysql.query(mysql.getDeleteStr(json, "^^=name$$"), function(err, result){
+    if (err)
+      fn(err);
+		else
+			fn(null, result);//result contains insertId
+	});
+}
+Model.method.drop = function(fn){
+	mysql.query("DROP TABLE ^^=name$$", function(err, result){
+		fn(err);
+	});
+}
+
+^^}$$
+
+
+Model.method.generateTest = function(){
+	var json = {};
+	^^fields.forEach(function(field){if(!field.auto){$$
+	json.^^=field.name$$ = ^^=dbdef.getType(field, "jstest")$$;
+	^^}})$$
+	return json;
+}
+// Export the model
 module.exports = Model;

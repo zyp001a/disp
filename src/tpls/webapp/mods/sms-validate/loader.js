@@ -8,10 +8,7 @@ module.exports = function(mod, mp, env, config){
 		console.error("schema has no idField or codeField");
 		process.exit(1);
 	}
-	if(!tplMatch(mp.schema.tpl, "mongo")){
-		console.error("only mongo is supported");
-		process.exit(1);
-	}
+
 	if(!mp.userDb) mp.userDb = false;
 	return 1;
 }

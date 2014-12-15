@@ -11,7 +11,7 @@ router.route('/^^=name$$/:id').delete(^^=auth$$Controller.authMidware,
  ^^}$$
 ^^}$$
 ^^apis.forEach(function(api){$$
- ^^if(api.type == "getList"){$$
+ ^^if(api.type == "gets"){$$
 router.route('/^^=api.name$$').get(^^=auth$$Controller.authMidware, 
 																	 ^^=name$$Controller.^^=api.name$$);
  ^^}else if(api.type == "post"){$$

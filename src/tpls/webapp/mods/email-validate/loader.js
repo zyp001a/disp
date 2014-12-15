@@ -7,10 +7,7 @@ module.exports = function(mod, mp, env, config){
 		console.error("schema has no idField or codeField");
 		process.exit(1);
 	}
-	if(!tplMatch(mp.schema.tpl, "mongo")){
-		console.error("only mongo is supported");
-		process.exit(1);
-	}
+
 	if(!mp.port) mp.port = 25;
 	if(!mp.serverURI) mp.serverURI = env.serverURI;
 	if(!mp.test) mp.test = {};

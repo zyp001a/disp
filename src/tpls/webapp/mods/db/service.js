@@ -45,7 +45,7 @@ rootApp.factory('^^=name$$Service', ['$http', '^^=auth$$Service', function($http
 
 ^^}$$
 ^^apis.forEach(function(api){$$
- ^^if(api.type == "getList"){$$
+ ^^if(api.type == "gets"){$$
 	methods.^^=api.name$$ = function(){
 		return $http({
 			url: "/api/^^=api.name$$",

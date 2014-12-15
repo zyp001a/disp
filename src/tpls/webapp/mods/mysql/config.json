@@ -1,6 +1,0 @@
-{
-    "nodeDeps": {
-        "mysql": "*",
-				"node-ffi": "*"
-    }
-}

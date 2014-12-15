@@ -16,7 +16,7 @@ describe('^^=name$$Test', function() {
 
     utils.getapiAuth("/^^=name$$/" + id, function(err, doc){
 			assert.equal(err, null);
-			console.log(doc);
+			console.log(doc.data);
 			assert.equal(200, doc.statusCode);
 			assert.equal(undefined, doc.data.error);
       done();
@@ -29,14 +29,13 @@ describe('^^=name$$Test', function() {
 		^^}})$$
     utils.postapiAuth("/^^=name$$/", json, function(err, doc){
 			assert.equal(err, null);
-			console.log(doc);
+			console.log(doc.data);
 			assert.equal(200, doc.statusCode);
 			assert.equal(undefined, doc.data.error);
 			assert.equal(true, doc.data.success);
-			assert.notEqual(undefined, doc.data.id);
-			utils.deleteapiAuth("/^^=name$$/" + doc.data.id, function(err, doc){
+			assert.notEqual(undefined, doc.data.insertId);
+			utils.deleteapiAuth("/^^=name$$/" + doc.data.insertId, function(err, doc){
 				assert.equal(err, null);
-				console.log(doc);
 				assert.equal(200, doc.statusCode);
 				assert.equal(undefined, doc.data.error);
 				done();

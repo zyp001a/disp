@@ -1,6 +1,6 @@
 // Load required packages
 var Model = require('../models/^^=name$$');
-Model.populate(function(err){
+Model.method.populate(function(err){
 	if(err) console.log(err);
 });
 
@@ -31,7 +31,7 @@ exports.download^^=ucfirst(api.name)$$ = function(req, res){
 
 
 ^^apis.forEach(function(api){$$
- ^^if(api.type == "getList"){$$
+ ^^if(api.type == "gets"){$$
 exports.^^=api.name$$ = function(req, res) {
   Model.find(function(err, models) {
     if (err)
@@ -102,21 +102,26 @@ exports.^^=api.name$$ = function(req, res) {
 
 ^^if(restful){$$
 exports.post = function(req, res) {
+	console.log("POST ^^=name$$");
+	console.log(req.body);
 	Model.method.post(req.body, function(err, doc){
 		if(err)
       res.send({ error: err });
 		else{
-			res.json({ success: true, insertedId: doc.insertedId});
+
+			res.send({ success: true, insertId: doc.insertId});
 		}
   });
 };
 exports.get = function(req, res) {
+	console.log("GET ^^=name$$");
+	console.log(req.params);
   // Use the Beer model to find a specific beer
-  Model.method.get({ ^^=idField$$: req.params.id }, function(err, model) {
+  Model.method.get({ "^^=idField$$": req.params.id }, {}, function(err, model) {
     if (err)
       res.send({error: err});
 		else
-			res.json(model);
+			res.send(model);
   });
 };
 
@@ -131,23 +136,22 @@ exports.put = function(req, res) {
 		^^}$$
 	^^})$$
 
-  Model.update({ ^^=idField$$: req.params.id }, json, function(err, num, raw) {
+  Model.update({ "^^=idField$$": req.params.id }, json, function(err, num, raw) {
 		console.log(err);
     if (err)
       res.send(err);
-
-    res.json({ message: num + ' updated' });
+		else
+			res.json({success: true});
   });
 };
 
-// Create endpoint /api/beers/:beer_id for DELETE
+// Create endpoint  for DELETE
 exports.delete = function(req, res) {
-  // Use the Beer model to find a specific beer and remove it
-  Model.remove({ ^^=idField$$: req.params.id }, function(err) {
+  Model.method.delete({ "^^=idField$$": req.params.id }, function(err) {
     if (err)
-      res.send(err);
-
-    res.json({ message: 'removed!' });
+      res.send({error: err});
+		else
+			res.json({success: true});
   });
 };
 ^^}$$
