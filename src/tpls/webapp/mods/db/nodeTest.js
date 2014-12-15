@@ -9,7 +9,7 @@ describe('^^=name$$Test', function() {
 ^^if(restful){$$
   it('should successful get', function(done) {
 		^^if(fields[0].default == "autoinc"){$$
-		var id = "1";
+		var id = 1;
 		^^}else{$$
 		var id = "test^^=idField$$";
 		^^}$$
@@ -22,7 +22,14 @@ describe('^^=name$$Test', function() {
       done();
     });
   });
-  it('should successful post and delete', function(done) {
+
+  it('should successful post, put and delete', function(done) {
+		^^if(dbdef.getType(fields[1], "basic") == "string"){$$
+		var mod = "test0^^=fields[1].name$$";
+		^^}else{$$
+		var mod = 2;
+		^^}$$
+
 		var json = {};
 		^^fields.forEach(function(field){if(!field.default){$$
 		json.^^=field.name$$ = ^^=dbdef.getType(field, "jstest", "test2")$$;
@@ -34,11 +41,23 @@ describe('^^=name$$Test', function() {
 			assert.equal(undefined, doc.data.error);
 			assert.equal(true, doc.data.success);
 			assert.notEqual(undefined, doc.data.insertId);
-			utils.deleteapiAuth("/^^=name$$/" + doc.data.insertId, function(err, doc){
+			var id = doc.data.insertId;
+			utils.putapiAuth("/^^=name$$/" + id, {
+				"^^=fields[1].name$$": mod
+			}, function(err, doc){
 				assert.equal(err, null);
+				console.log(doc.data);
 				assert.equal(200, doc.statusCode);
 				assert.equal(undefined, doc.data.error);
-				done();
+				assert.equal(true, doc.data.success);
+				utils.deleteapiAuth("/^^=name$$/" + id, function(err, doc){
+					assert.equal(err, null);
+					console.log(doc.data);
+					assert.equal(200, doc.statusCode);
+					assert.equal(undefined, doc.data.error);
+					assert.equal(true, doc.data.success);
+					done();
+				});
 			});
     });
   });

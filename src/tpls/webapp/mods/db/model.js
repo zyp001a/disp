@@ -123,12 +123,7 @@ Model.method.gets = function(criteria, fields, fn){
 	Model.find(criteria, fields, fn);
 }
 Model.method.post = function(doc, fn){
-  var json = {};
-	^^fields.forEach(function(field){$$
-	if(doc.^^=field.name$$)
-		json.^^=field.name$$ = doc.^^=field.name$$;
-	^^})$$
-  var model = new Model(json);
+  var model = new Model(filter(doc));
   model.save(function(err, doc) {
     if (err)
 			fn(err);
@@ -136,6 +131,15 @@ Model.method.post = function(doc, fn){
 			fn(null, {insertId: doc.^^=idField$$});
 		}
   });
+}
+Model.method.put = function(where, doc, fn){
+  Model.update(where, filter(doc), function(err, num, raw) {
+    if (err)
+			fn(err);
+		else
+			fn(null);
+  });
+
 }
 Model.method.delete = function(json, fn){
 	Model.remove(json, function(err) {
@@ -244,8 +248,8 @@ Model.method.get = function(where, cols, fn){
 			fn(null, models[0]);
   });
 }
-Model.method.post = function(json, fn){
-  mysql.query(mysql.getInsertStr(json, "^^=name$$"), function(err, result){
+Model.method.post = function(doc, fn){
+  mysql.query(mysql.getInsertStr(filter(doc), "^^=name$$"), function(err, result){
     if (err)
       fn(err);
 		else
@@ -258,6 +262,11 @@ Model.method.delete = function(json, fn){
       fn(err);
 		else
 			fn(null, result);//result contains insertId
+	});
+}
+Model.method.put = function(where, doc, fn){
+	mysql.query(mysql.getUpdateStr(where, filter(doc), "^^=name$$"), function(err){
+		fn(err);
 	});
 }
 Model.method.drop = function(fn){
@@ -276,5 +285,14 @@ Model.method.generateTest = function(){
 	^^}})$$
 	return json;
 }
+function filter(doc){
+  var json = {};
+	^^fields.forEach(function(field){$$
+	if(doc.^^=field.name$$)
+		json.^^=field.name$$ = doc.^^=field.name$$;
+	^^})$$
+	return json;
+}
+Model.method.filter = filter;
 // Export the model
 module.exports = Model;

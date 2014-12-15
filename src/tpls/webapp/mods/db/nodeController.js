@@ -125,27 +125,17 @@ exports.get = function(req, res) {
   });
 };
 
-// Create endpoint /api/beers/:beer_id for PUT
+// Create endpoint for PUT
 exports.put = function(req, res) {
-  // Use the Beer model to find a specific beer
-  var json = {};
-	^^fields.forEach(function(field){$$
-		^^if(field.name!="_id"){$$
-	if(req.body.^^=field.name$$)
-		json.^^=field.name$$ = req.body.^^=field.name$$;
-		^^}$$
-	^^})$$
-
-  Model.update({ "^^=idField$$": req.params.id }, json, function(err, num, raw) {
-		console.log(err);
+  Model.method.put({ "^^=idField$$": req.params.id }, req.body, function(err) {
     if (err)
-      res.send(err);
+      res.send({error: err});
 		else
 			res.json({success: true});
   });
 };
 
-// Create endpoint  for DELETE
+// Create endpoint for DELETE
 exports.delete = function(req, res) {
   Model.method.delete({ "^^=idField$$": req.params.id }, function(err) {
     if (err)

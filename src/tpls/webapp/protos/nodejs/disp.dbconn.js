@@ -62,7 +62,8 @@ mysqlConn.getInsertStr = function(json, table){
 	}
 	return "INSERT INTO " + table + "(" + cols.join(", ") + ") VALUES (" + values.join(", ") + ")";
 }
-function genWhereStr(where, table){
+function genEqualStr(where, sep){
+	if(!sep) sep = " and ";
 	var whereStr, key;
 	if(!where)
 		whereStr = "";
@@ -80,21 +81,25 @@ function genWhereStr(where, table){
 					wheres.push(key + " = " + where[key]);
 			}
 		}
-		whereStr = wheres.join(" and ");
+		whereStr = wheres.join(sep);
 	}
 	return whereStr;
 }
 mysqlConn.getSelectStr = function(where, coljson, table){
-	var colStr, whereStr, key;
+	var colStr, key;
 	var cols = [];
 	for (key in coljson)	cols.push(key);
 	colStr = cols.join(", ");
 	if(!colStr) colStr = "*";
 	
-	return "SELECT "+colStr +" FROM " + table + " WHERE " +  genWhereStr(where, table);
+	return "SELECT "+colStr +" FROM " + table + " WHERE " +  genEqualStr(where);
+}
+mysqlConn.getUpdateStr = function(where, doc, table){
+	console.log("UPDATE "+table + " SET "+ genEqualStr(doc, ", ") + " WHERE " +  genEqualStr(where));
+	return "UPDATE "+table + " SET "+ genEqualStr(doc, ", ") + " WHERE " +  genEqualStr(where);
 }
 mysqlConn.getDeleteStr = function(where, table){
-	return "DELETE FROM " + table + " WHERE " +  genWhereStr(where, table);
+	return "DELETE FROM " + table + " WHERE " +  genEqualStr(where);
 }
 
 exports.mysql = mysqlConn;
