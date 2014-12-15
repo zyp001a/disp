@@ -6,7 +6,16 @@
 				serverURI + "/api/^^=name$$/sendSMS", jo);
 			if (wr.statusCode != 200)
 				return new ExceptionCode(1, wr.value);
-			return ExceptionCode.NullException;
+			else if(wr.response.has("error")){
+				if(wr.response.has("errorCode")){
+//1 duplicate phone error
+					return new ExceptionCode(wr.response.getInt("errorCode"), wr.response.getString("error"));
+				}else{
+//10 error with message
+					return new ExceptionCode(10, wr.value);
+				}
+			}else
+				return ExceptionCode.NullException;
 		} catch (SocketTimeoutException e) {
 			return new ExceptionCode(102,e);
 		} catch (ConnectException e) {

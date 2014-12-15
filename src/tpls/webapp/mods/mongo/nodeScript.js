@@ -17,7 +17,7 @@ switch(process.argv[2]){
   		var model = new Model(json);
   		model.save(function(err) {
 				console.error({error: err});
-				process.exit(1);
+			process.exit(1);
 			});
 		});
 		break;

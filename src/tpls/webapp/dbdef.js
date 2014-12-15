@@ -1,6 +1,7 @@
 var table = {};
 table.Boolean = table.bool = table.boolean = {
 	"name": "bool",
+	"basic": "int",
 	"mongoose": "Boolean",
 	"mysql": "BOOLEAN",
 	"sqlite": "INTEGER",
@@ -10,6 +11,7 @@ table.Boolean = table.bool = table.boolean = {
 };
 table.Integer = table.int = table.Int = {
 	"name": "int",
+	"basic": "int",
 	"mongoose": "Number",
   "mysql": "INT",
   "sqlite": "INTEGER",
@@ -19,15 +21,17 @@ table.Integer = table.int = table.Int = {
 };
 table.TinyInteger = table.tinyint = table.TinyInt = {
 	"name": "tinyint",
+	"basic": "int",
 	"mongoose": "Number",
   "mysql": "TINYINT",
   "sqlite": "INTEGER",
-  "java": "char",
+  "java": "int",
   "js": "number",
 	"jstest": "1"
 };
 table.SmallInteger = table.smallint = table.SmallInt = {
 	"name": "smallint",
+	"basic": "int",
 	"mongoose": "Number",
   "mysql": "SMALLINT",
   "sqlite": "INTEGER",
@@ -37,6 +41,7 @@ table.SmallInteger = table.smallint = table.SmallInt = {
 };
 table.MediumInteger = table.mediumint = table.MediumInt = {
 	"name": "mediumint",
+	"basic": "int",
 	"mongoose": "Number",
   "mysql": "MEDIUMINT",
   "sqlite": "INTEGER",
@@ -46,6 +51,7 @@ table.MediumInteger = table.mediumint = table.MediumInt = {
 };
 table.BigInteger = table.bigint = table.BigInt = {
 	"name": "bigint",
+	"basic": "int",
 	"mongoose": "Number",
   "mysql": "BIGINT",
   "sqlite": "INTEGER",
@@ -56,6 +62,7 @@ table.BigInteger = table.bigint = table.BigInt = {
 table.Number = table.number = table.num 
 	= table.double = table.Double = {
 		"name": "double",
+	"basic": "long",
 	"mongoose": "Number",
   "mysql": "DOUBLE",
   "sqlite": "REAL",
@@ -65,16 +72,18 @@ table.Number = table.number = table.num
 };
 table.Float = table.float = {
 	"name": "float",
+	"basic": "double",
 	"mongoose": "Number",
   "mysql": "FLOAT",
   "sqlite": "REAL",
-  "java": "float",
+  "java": "double",
   "js": "number",
 	"jstest": "0.1"
 };
 
 table.Date = table.date = {
 	"name": "date",
+	"basic": "string",
 	"mongoose": "String",
   "mysql": "DATE",
   "sqlite": "TEXT",
@@ -84,8 +93,9 @@ table.Date = table.date = {
 };
 table.DateTime = table.datetime = {
 	"name": "datetine",
+	"basic": "string",
 	"mongoose": "Date",
-  "mysql": "DATE",
+  "mysql": "DATETIME",
   "sqlite": "TEXT",
   "java": "Date",
   "js": "object",
@@ -93,6 +103,7 @@ table.DateTime = table.datetime = {
 };
 table.Char = table.char = {
 	"name": "char",
+	"basic": "string",
 	"mongoose": "String",
   "mysql": "CHAR",
   "sqlite": "TEXT",
@@ -111,12 +122,23 @@ table.VarChar = table.varchar = {
 };
 table.String = table.string = {
 	"name": "string",
+	"basic": "string",
 	"mongoose": "String",
   "mysql": "VARCHAR(100)",
   "sqlite": "TEXT",
   "java": "String",
   "js": "string",
 	"jstest": "'a'"
+};
+table.Array = table.array = {
+	"name": "string",
+	"basic": "string",
+	"mongoose": "Array",
+  "mysql": "VARCHAR(255)",
+  "sqlite": "TEXT",
+  "java": "String",
+  "js": "object",
+	"jstest": "['1','2']"
 };
 table.Text = table.text = {
 	"name": "string",
@@ -130,6 +152,7 @@ table.Text = table.text = {
 table["enum"] = table.Enum = table.Index = table.index 
 	= table.Select = table.select = {
 	"name": "enum",
+	"basic": "string",
 	"mongoose": "Number",
   "mysql": "ENUM",
   "sqlite": "INTEGER",
@@ -139,6 +162,7 @@ table["enum"] = table.Enum = table.Index = table.index
 };
 table.Path = table.path = {
 	"name": "path",
+	"basic": "string",
 	"mongoose": "String",
   "mysql": "VARCHAR(255)",
   "sqlite": "TEXT",
@@ -149,6 +173,7 @@ table.Path = table.path = {
 
 table.Buffer = table.buffer = table.Blob = table.blog = {
 	"name": "buffer",
+	"basic": "string",
 	"mongoose": "Buffer",
 	"mysql": "BLOB",
 	"sqlite": "BLOB",
@@ -164,15 +189,8 @@ table.Set = table.set = table.mulitselect = table.MultiSelect = {
 };
 */
 
-function getType(f, c){
-	if(f.isArray){
-		if(c=="mongoose"){
-			return "Array";
-		}
-		if(c=="jstest"){
-			return "['1','2']";
-		}
-	}
+function getType(f, c, prefix){
+
 	if(!f.type){
 		console.error("no type for schema "+JSON.stringify(f));
 		process.exit(1);
@@ -180,6 +198,10 @@ function getType(f, c){
 	if(!c){
 		console.error("no class, should be mongoose, mysql ... ");
 		process.exit(1);
+	}
+	if(c=="jstest" && table[f.type].basic == "string"){
+		if(!prefix) prefix = "test";
+		return "'" + prefix +f.name + "'";
 	}
 		
 	var v = table[f.type][c];

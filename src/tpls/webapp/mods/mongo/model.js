@@ -45,16 +45,18 @@ var AutoIncModel = mongoose.model('^^=name$$_next', AutoIncSchema);
 ^^=ucfirst(name)$$Schema.pre('save', function(callback) {
   var model = this;
 
-	^^if(passwordField){$$
+
+^^fields.forEach(function(f){if(f.encrypt){$$
   // Break out if the password hasn't changed
-  if (model.isModified('^^=passwordField$$')){
+  if (model.isModified('^^=f.name$$')){
   // Password changed so we need to hash it
 		var salt = bcrypt.genSaltSync(5);
 
-		var hash = bcrypt.hashSync(model.^^=passwordField$$, salt);
-		model.^^=passwordField$$ = hash;
+		var hash = bcrypt.hashSync(model.^^=f.name$$, salt);
+		model.^^=f.name$$ = hash;
 	}
-	^^}$$
+^^}})$$
+
 	^^if(autoIncField){$$
 	if(!model.^^=autoIncField$$){
 		AutoIncModel.findOne({}, function(err, nexti){
@@ -114,6 +116,25 @@ var Model = mongoose.model('^^=name$$', ^^=ucfirst(name)$$Schema);
 Model.autoinc = AutoIncModel;
 ^^}$$
 
+Model.method = {};
+Model.method.get = Model.findOne;
+Model.method.post = function(doc, fn){
+  var json = {};
+	^^fields.forEach(function(field){$$
+	if(doc.^^=field.name$$)
+		json.^^=field.name$$ = doc.^^=field.name$$;
+	^^})$$
+  var model = new Model(json);
+  model.save(function(err, doc) {
+    if (err)
+			fn(err);
+		else{
+			fn(null, {insertedId: doc.^^=idField$$});
+		}
+  });
+}
+
+
 Model.populate = function(callback){
 //ensure uniqueness, mongoose unique has some unknown bug
 	Model.findOne({}, function(err, json){
@@ -141,11 +162,9 @@ AutoIncModel.findOne({}, function(err, json){
 });//AutoIncModel.findOne
 ^^}$$
 
-
 ^^if(uniques.length){$$
 });//Model.collection.ensureIndex
 ^^}$$
-
 
 	}); //Model.findOne({}
 

@@ -7,25 +7,12 @@ var Model = require('../models/^^=name$$');
 
 console.log(process.argv[2]);
 
-^^
-function getExample(field){
-	switch(field.type){
-		case "DateTime":
-			return "new Date(1)";
-		case "Number":
-			if(field.default == "autoinc")
-				return 1;
-			return "0.1";
-		default:
-			return "\"test"+field.name+"\"";
-	}		
-}
-$$
-
 if(process.argv[2] == "add"){
 	var json = {};
 	^^fields.forEach(function(field){$$
-	json.^^=field.name$$ = ^^=getExample(field)$$;
+   ^^if(!field.default){$$
+		 json.^^=field.name$$ = ^^=dbdef.getType(field, "jstest")$$;
+   ^^}$$												
 	^^})$$
 	console.log(mysql.getInsertStr(json, "^^=name$$"));
 

@@ -240,7 +240,7 @@ function _default(mod, mp, env, config){
 		if(fs.existsSync(mod+"/androidController.java")){
 			mp.ns = env.cop + "." + env.lcname;
 			env.androidControllers.push({
-				name: mp.name + "Controller.java", 
+				name: mp.name, 
 				content:tmpl(fs.readFileSync(mod+"/androidController.java").toString(), mp)
 			});
 		}

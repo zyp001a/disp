@@ -12,6 +12,9 @@ import com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep.HttpUtils;
 ^^androidProviders.forEach(function(pr){$$
 import com.^^=cop$$.^^=name.toLowerCase()$$.gen.provider.^^=ucfirst(pr.name)$$Utils;
 ^^})$$
+^^androidModels.forEach(function(m){$$
+import com.^^=cop$$.^^=name.toLowerCase()$$.gen.model.^^=ucfirst(m.name)$$;
+^^})$$
 import android.content.Context;
 import android.graphics.Bitmap;
 

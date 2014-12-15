@@ -11,8 +11,7 @@
 //1 username error
 //2 password error
 						return new ExceptionCode(wr.response.getInt("errorCode"), wr.response.getString("error"));
-					}
-					else{
+					}else{
 //10 error with message
 						return new ExceptionCode(10, wr.value);
 					}

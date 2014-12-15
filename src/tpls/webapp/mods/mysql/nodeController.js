@@ -40,28 +40,35 @@ exports.^^=api.name$$ = function(req, res) {
 
 ^^if(restful){$$
 exports.post = function(req, res) {
-  mysql.query(mysql.getInsertStr(req.body, "^^=name$$"), function(err, models){
+  mysql.query(mysql.getInsertStr(req.body, "^^=name$$"), function(err, result){
     if (err)
-      res.send(err);
-		else
-			res.json({ message: 'insert successful' });
+      res.send({error: err});
+		else{
+			res.json({success: true, id: result.insertId});
+		}
   });
 };
  ^^if(idField){$$
 exports.get = function(req, res) {
 	mysql.query("SELECT * FROM ^^=name$$ WHERE `^^=idField$$` = '" + req.params.id+ "'", function(err, models){
     if (err)
-      res.send(err);
+      res.send({error: err});
 		else
 			res.json(models[0]);
   });
-
 };
 
 exports.put = function(req, res) {
 };
 
 exports.delete = function(req, res) {
+  mysql.query(mysql.getInsertStr(req.body, "^^=name$$"), function(err, result){
+    if (err)
+      res.send({error: err});
+		else{
+			res.json({success: true, id: result.insertId});
+		}
+  });
 };
  ^^}$$
 ^^}$$

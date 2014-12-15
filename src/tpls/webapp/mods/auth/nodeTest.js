@@ -14,19 +14,19 @@ describe('^^=name$$Test', function() {
   });
   it('should successful signin', function(done) {
     utils.postapi("/^^=name$$/^^=signin$$", {
-      password: "testpassword",
-      username: "testphone"
+      password: "test^^=schema.passwordField$$",
+      username: "test^^=schema.usernameField$$"
     }, function(err, doc){
 			assert.equal(err, null);
 			console.log(doc);
 			assert.equal(doc.statusCode, 200);
-			assert.equal("testphone", doc.data.username);
-			assert.equal("testtoken", doc.data.token);
+			assert.equal("test^^=schema.usernameField$$", doc.data.username);
+			assert.equal("test^^=schema.tokenField$$", doc.data.token);
       done();
     });
   });
   it('should successful signup', function(done) {
-
+		var json = {};
 ^^if(codeDb){$$
 		var Model = require("../models/^^=codeDb$$");
 		var model = new Model({
@@ -34,12 +34,11 @@ describe('^^=name$$Test', function() {
 			"^^=schema1.codeField$$": "testcode2"
 		});
 		model.save(function(err){
+			json.code="testcode2";
 ^^}$$
-
-			var json = {};
 			json.username = "test^^=schema.usernameField$$2";
 			json.password = "test^^=schema.passwordField$$2";
-			json.code="testcode2";
+
 
 			utils.postapi("/^^=name$$/^^=signup$$", json, function(err, doc){
 				assert.equal(err, null);

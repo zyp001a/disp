@@ -33,10 +33,12 @@ function tmpl(str, data){
 				win = subs[0];
 				wout = subs[1] || "";
 			}
-			wout = wout.replace(/\\([nrt'])/g, "\\\\$1")
+			wout = wout
+				.replace(/\\([nrt'])/g, "\\\\$1")
 				.replace(/\n/g, "\\n")
 				.replace(/'/g, "\\'")
-				.replace(/\\\"/g, "\\\\\\\"");
+				.replace(/\\([\"\?\*])/g, "\\\\\\$1");
+
 
 			if(win && win[0] == '='){
 				evalstr += (win.replace(/^=(.+)/, "',$1,'") + wout);

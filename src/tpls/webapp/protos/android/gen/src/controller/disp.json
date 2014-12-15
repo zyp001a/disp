@@ -1,4 +1,5 @@
 {
 		"array": "androidControllers",
+		"file": "^^=ucfirst(name)$$Controller.java",
 		"mv": "com/^^=cop$$/^^=name.toLowerCase()$$/gen/controller"
 }

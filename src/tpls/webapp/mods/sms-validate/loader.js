@@ -12,6 +12,7 @@ module.exports = function(mod, mp, env, config){
 		console.error("only mongo is supported");
 		process.exit(1);
 	}
+	if(!mp.userDb) mp.userDb = false;
 	return 1;
 }
 

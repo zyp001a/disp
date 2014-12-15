@@ -17,25 +17,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 ^^for (var smname in schemas){$$		
 			db.execSQL("Create table " + DatabaseConstant.^^=ucfirst(smname)$$Constant.TABLE_NAME + " (" 
- ^^var len = schemas[smname].fields.length;
-								 function getSqlLiteString(str){
-									 switch(str){
-									 case "String":
-										 return "TEXT";
-										 break;
-									 case "Integer":
-										 return "INTEGER";
-										 break;
-									 default:
-										 return "TEXT";
-									 }
-								 }
- $$
+ ^^var len = schemas[smname].fields.length;$$
  ^^schemas[smname].fields.forEach(function(f,i){$$
   ^^if(i!=len-1){$$
-				 + DatabaseConstant.^^=ucfirst(smname)$$Constant.^^=f.name.toUpperCase()$$ + " ^^=getSqlLiteString(f.type)$$,"
+				 + DatabaseConstant.^^=ucfirst(smname)$$Constant.^^=f.name.toUpperCase()$$ + " ^^=dbdef.getType(f, 'sqlite')$$,"
   ^^}else{$$
-				 + DatabaseConstant.^^=ucfirst(smname)$$Constant.^^=f.name.toUpperCase()$$ + " ^^=getSqlLiteString(f.type)$$"
+				 + DatabaseConstant.^^=ucfirst(smname)$$Constant.^^=f.name.toUpperCase()$$ + " ^^=dbdef.getType(f, 'sqlite')$$"
   ^^}$$
  ^^})$$
  ^^if(schemas[smname].passwordField){$$

@@ -2,7 +2,7 @@ package com.^^=ns$$.gen.provider;
 
 import com.^^=ns$$.gen.provider.DatabaseConstant.^^=ucfirst(name)$$Constant;
 import com.^^=ns$$.gen.model.^^=ucfirst(name)$$;
-
+import com.^^=ns$$.gen.dep.DateUtils;
 import java.util.List;
 import java.util.ArrayList;
 import org.json.JSONObject;
@@ -14,6 +14,20 @@ import android.database.Cursor;
 
 
 public class ^^=ucfirst(name)$$Utils {
+	public static ^^=ucfirst(name)$$ parseCursor(Cursor c){
+		^^=ucfirst(name)$$ item = new ^^=ucfirst(name)$$();
+				^^fields.forEach(function(f){
+						var type=dbdef.getType(f, "java");$$
+						^^if(type == "boolean"){$$ 
+		item.^^=f.name$$ = c.getInt(c.getColumnIndex(^^=ucfirst(name)$$Constant.^^=f.name.toUpperCase()$$)) == 1;
+						^^}else if(type=="Date"){$$
+		item.^^=f.name$$ = DateUtils.parseDate(c.getString(c.getColumnIndex(^^=ucfirst(name)$$Constant.^^=f.name.toUpperCase()$$)));
+						^^}else{$$
+		item.^^=f.name$$ = c.get^^=ucfirst(type)$$(c.getColumnIndex(^^=ucfirst(name)$$Constant.^^=f.name.toUpperCase()$$));
+						^^}$$
+				^^})$$
+		return item;
+	}
 	public static List<^^=ucfirst(name)$$> getList(Context context) {
 		^^if(usernameField){$$
 		Cursor c = context.getContentResolver().query(^^=ucfirst(name)$$Constant.CONTENT_URI,	null, 
@@ -25,11 +39,7 @@ public class ^^=ucfirst(name)$$Utils {
 		List<^^=ucfirst(name)$$> list = new ArrayList<^^=ucfirst(name)$$>();
 		if (c != null) {
 			while (c.moveToNext()) {
-				^^=ucfirst(name)$$ item = new ^^=ucfirst(name)$$();
-				^^fields.forEach(function(f){$$
-				item.^^=f.name$$ = c.getString(c.getColumnIndex(^^=ucfirst(name)$$Constant.^^=f.name.toUpperCase()$$));
-				^^})$$
-				list.add(item);
+				list.add(^^=ucfirst(name)$$Utils.parseCursor(c));
 			}
 			c.close();
 		}
@@ -41,12 +51,10 @@ public class ^^=ucfirst(name)$$Utils {
 																									^^=ucfirst(name)$$Constant.^^=idField.toUpperCase()$$ + " = ? ", 
 																									new String[] { id }, null);
 
-		^^=ucfirst(name)$$ item = new ^^=ucfirst(name)$$();
+		^^=ucfirst(name)$$ item = null;
 		if (c != null) {
 			if (c.moveToNext()) {
-				^^fields.forEach(function(f){$$
-				item.^^=f.name$$ = c.getString(c.getColumnIndex(^^=ucfirst(name)$$Constant.^^=f.name.toUpperCase()$$));
-				^^})$$
+				item = ^^=ucfirst(name)$$Utils.parseCursor(c);
 			}
 			c.close();
 		}

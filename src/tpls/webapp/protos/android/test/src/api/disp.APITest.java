@@ -10,7 +10,12 @@ import com.^^=cop$$.^^=name.toLowerCase()$$.gen.dep.ImageUtils;
 ^^androidProviders.forEach(function(pr){$$
 import com.^^=cop$$.^^=name.toLowerCase()$$.gen.provider.^^=ucfirst(pr.name)$$Utils;
 ^^})$$
-
+^^androidModels.forEach(function(m){$$
+import com.^^=cop$$.^^=name.toLowerCase()$$.gen.model.^^=ucfirst(m.name)$$;
+^^})$$
+^^androidControllers.forEach(function(c){$$
+import com.^^=cop$$.^^=name.toLowerCase()$$.gen.controller.^^=ucfirst(c.name)$$Controller;
+^^})$$
 
 import android.app.Activity;
 import android.content.Context;

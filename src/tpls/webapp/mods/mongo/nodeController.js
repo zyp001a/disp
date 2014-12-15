@@ -91,9 +91,9 @@ exports.^^=api.name$$ = function(req, res) {
   // Use the Beer model to find a specific beer and remove it
   Model.remove({ ^^=usernameField$$: req.params.id }, function(err) {
     if (err)
-      res.send(err);
-
-    res.json({ message: 'removed!' });
+      res.send({error: err});
+		else
+			res.json({ success: true });
   });
 };
  ^^}$$
@@ -102,25 +102,19 @@ exports.^^=api.name$$ = function(req, res) {
 
 ^^if(restful){$$
 exports.post = function(req, res) {
-  var json = {};
-	^^fields.forEach(function(field){$$
-	if(req.body.^^=field.name$$)
-		json.^^=field.name$$ = req.body.^^=field.name$$;
-	^^})$$
-  var model = new Model(json);
-  model.save(function(err) {
-    if (err)
-      res.status(401).send({error: err});
-		else
-			res.json({ success: true });
+	Model.method.post(req.body, function(err, doc){
+		if(err)
+      res.send({ error: err });
+		else{
+			res.json({ success: true, insertedId: doc.insertedId});
+		}
   });
 };
-
 exports.get = function(req, res) {
   // Use the Beer model to find a specific beer
-  Model.findOne({ ^^=idField$$: req.params.id }, function(err, model) {
+  Model.method.get({ ^^=idField$$: req.params.id }, function(err, model) {
     if (err)
-      res.status(401).send({error: err});
+      res.send({error: err});
 		else
 			res.json(model);
   });

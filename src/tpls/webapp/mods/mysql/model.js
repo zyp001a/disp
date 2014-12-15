@@ -6,6 +6,9 @@ var bcrypt = require('bcrypt');
 var createTableStr = "CREATE TABLE IF NOT EXISTS ^^=name$$ (";
 ^^len = fields.length;fields.forEach(function(f,i){$$
 createTableStr += '^^=f.name$$ ^^=dbdef.getType(f, "mysql")$$';
+ ^^if(dbdef.getType(f, "mysql") == "ENUM"){$$
+createTableStr += ""
+ ^^}$$
  ^^if(f.default == "autoinc"){$$
 createTableStr += " AUTO_INCREMENT";
  ^^}$$																		
