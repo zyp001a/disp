@@ -91,15 +91,22 @@ mysqlConn.getSelectStr = function(where, coljson, table){
 	for (key in coljson)	cols.push(key);
 	colStr = cols.join(", ");
 	if(!colStr) colStr = "*";
-	
-	return "SELECT "+colStr +" FROM " + table + " WHERE " +  genEqualStr(where);
+	var str = "SELECT "+colStr +" FROM " + table;
+	if(where && Object.keys(where).length)
+		str += " WHERE " +  genEqualStr(where);	
+	return str;
 }
 mysqlConn.getUpdateStr = function(where, doc, table){
-	console.log("UPDATE "+table + " SET "+ genEqualStr(doc, ", ") + " WHERE " +  genEqualStr(where));
-	return "UPDATE "+table + " SET "+ genEqualStr(doc, ", ") + " WHERE " +  genEqualStr(where);
+	var str = "UPDATE "+table + " SET "+ genEqualStr(doc, ", ");
+	if(!where && Object.keys(where).length)
+		str += " WHERE " +  genEqualStr(where);
+	return str;
 }
 mysqlConn.getDeleteStr = function(where, table){
-	return "DELETE FROM " + table + " WHERE " +  genEqualStr(where);
+	var str = "DELETE FROM " + table;
+	if(where && Object.keys(where).length)
+		str += " WHERE " +  genEqualStr(where);
+	return str;
 }
 
 exports.mysql = mysqlConn;

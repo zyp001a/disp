@@ -33,68 +33,59 @@ exports.download^^=ucfirst(api.name)$$ = function(req, res){
 ^^apis.forEach(function(api){$$
  ^^if(api.type == "gets"){$$
 exports.^^=api.name$$ = function(req, res) {
-  Model.find(function(err, models) {
+	^^if(!api.field){$$
+	var cols = {};
+	^^}else{$$
+	var cols = ^^=JSON.stringify(api.field)$$;
+	^^}$$
+	^^if(api.criteria){$$
+	var criteria = ^^=JSON.stringify(api.criteria)$$;
+	^^}else{$$
+	var criteria = {};
+	^^}$$
+  Model.method.gets(criteria, cols, function(err, models) {
     if (err)
       res.send(err);
 		else
-			res.json(models);
+			res.send(models);
   });
 };
  ^^}else if(api.type == "post"){$$
 exports.^^=api.name$$ = function(req, res) {
-  var json = {};
-	^^fields.forEach(function(field){$$
-	if(req.body.^^=field.name$$)
-		json.^^=field.name$$ = req.body.^^=field.name$$;
-	^^})$$
-  var model = new Model(json);
-  model.save(function(err) {
-    if (err)
-      res.send(err);
-		else
-			res.json({ message: 'insert successful' });
-  });
 };
  ^^}else if(api.type == "get"){$$
 exports.^^=api.name$$ = function(req, res) {
-  // Use the Beer model to find a specific beer
-  Model.findOne({ ^^=idField$$: req.params.id }, function(err, model) {
-    if (err)
-      res.send(err);
-		^^if(api.field){$$
-		res.send(model.^^=api.field$$);
-		^^}else{$$
-    res.json(model);
-		^^}$$
-  });
 };
 
  ^^}else if(api.type == "put"){$$
 exports.^^=api.name$$ = function(req, res) {
-  // Use the Beer model to find a specific beer
-  var json = {};
-	^^fields.forEach(function(field){$$
-	if(req.body.^^=field.name$$)
-		json.^^=field.name$$ = req.body.^^=field.name$$;
-	^^})$$
+	if(!req.params.id){
+		res.send({error: "no id"});
+		return;
+	}
+	if(!Object.keys(req.body).length){
+		res.send({error: "no postdata"});
+		return;
+	}
 
-  Model.update({ ^^=idField$$: req.params.id }, json, function(err, num, raw) {
+	^^if(!api.field){$$
+	var doc = req.body;
+	^^}else{$$
+	var doc = {}
+	 ^^for (var f in api.field){$$
+	doc.^^=f$$ = req.body.^^=f$$;
+	 ^^}$$
+	^^}$$
+  Model.method.put({ "^^=idField$$": req.params.id }, doc, function(err) {
     if (err)
-      res.send(err);
-
-    res.json({ message: num + ' updated' });
+      res.send({error: err});
+		else
+			res.json({success: true});
   });
 };
 
  ^^}else if(api.type == "delete"){$$
 exports.^^=api.name$$ = function(req, res) {
-  // Use the Beer model to find a specific beer and remove it
-  Model.remove({ ^^=usernameField$$: req.params.id }, function(err) {
-    if (err)
-      res.send({error: err});
-		else
-			res.json({ success: true });
-  });
 };
  ^^}$$
 ^^})$$
@@ -104,6 +95,12 @@ exports.^^=api.name$$ = function(req, res) {
 exports.post = function(req, res) {
 	console.log("POST ^^=name$$");
 	console.log(req.body);
+
+	if(!Object.keys(req.body).length){
+		res.send({error: "no postdata"});
+		return;
+	}
+
 	Model.method.post(req.body, function(err, doc){
 		if(err)
       res.send({ error: err });
@@ -116,6 +113,10 @@ exports.post = function(req, res) {
 exports.get = function(req, res) {
 	console.log("GET ^^=name$$");
 	console.log(req.params);
+	if(!req.params.id){
+		res.send({error: "no id"});
+		return;
+	}
   // Use the Beer model to find a specific beer
   Model.method.get({ "^^=idField$$": req.params.id }, {}, function(err, model) {
     if (err)
@@ -127,6 +128,14 @@ exports.get = function(req, res) {
 
 // Create endpoint for PUT
 exports.put = function(req, res) {
+	if(!req.params.id){
+		res.send({error: "no id"});
+		return;
+	}
+	if(!Object.keys(req.body).length){
+		res.send({error: "no postdata"});
+		return;
+	}
   Model.method.put({ "^^=idField$$": req.params.id }, req.body, function(err) {
     if (err)
       res.send({error: err});
@@ -137,6 +146,10 @@ exports.put = function(req, res) {
 
 // Create endpoint for DELETE
 exports.delete = function(req, res) {
+	if(!req.params.id){
+		res.send({error: "no id"});
+		return;
+	}
   Model.method.delete({ "^^=idField$$": req.params.id }, function(err) {
     if (err)
       res.send({error: err});

@@ -211,4 +211,30 @@ function getType(f, c, prefix){
 		process.exit(1);
 	}
 }
+function getField(name, fields){
+	var field;
+	fields.forEach(function(f){
+		if(f.name == name)
+			field = f;
+	});
+	return field;
+}
+/* wrong methd
+function generateTest(field, fields, prefix){
+	var json = {};
+	if(field){
+		for (var key in field){
+			json[key] = getType(getField(key, fields), "jstest", prefix);
+		}
+	}
+	else{
+		fields.forEach(function(f){
+			json[f.name] = getType(f, "jstest", prefix);
+		});
+	}
+	return json;
+}
+*/
 module.exports.getType = getType;
+module.exports.getField = getField;
+//module.exports.generateTest = generateTest;

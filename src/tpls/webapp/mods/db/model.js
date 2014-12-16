@@ -84,10 +84,14 @@ var AutoIncModel = mongoose.model('^^=name$$_next', AutoIncSchema);
 
 ^^if(passwordField){$$
 ^^=ucfirst(name)$$Schema.methods.verifyPassword = function(password, cb) {
+	^^if(dbdef.getField(passwordField, fields).encrypt){$$
   bcrypt.compare(password, this.^^=passwordField$$, function(err, isMatch) {
     if (err) return cb(err);
     cb(null, isMatch);
   });
+	^^}else{$$	
+	cb(null, this.^^=passwordField$$ == password);
+	^^}$$
 };
 ^^}$$
 
@@ -120,7 +124,34 @@ Model.method.get = function(criteria, fields, fn){
 	Model.findOne(criteria, fields, fn);
 }
 Model.method.gets = function(criteria, fields, fn){
-	Model.find(criteria, fields, fn);
+	var sort, limit, skip;
+	if(criteria.sort){
+		sort = criteria.sort;
+		delete criteria.sort;
+	}
+	if(criteria.skip){
+		skip = criteria.skip;
+		delete criteria.skip;
+	}
+	if(criteria.limit){
+		limit = criteria.limit;
+		delete criteria.limit;
+	}
+
+	var obj = Model.find(criteria, fields);
+	if(sort) obj = obj.sort(sort);
+	if(skip) obj = obj.skip(skip);
+	if(limit) obj = obj.limit(limit);
+	obj.exec(function(err, docs){
+    if (err)
+			fn(err);
+		else{
+			fn(null, docs);
+		}
+	});
+}
+Model.method.gets_page = function(criteria, fields, page, fn){
+
 }
 Model.method.post = function(doc, fn){
   var model = new Model(filter(doc));
@@ -133,12 +164,21 @@ Model.method.post = function(doc, fn){
   });
 }
 Model.method.put = function(where, doc, fn){
-  Model.update(where, filter(doc), function(err, num, raw) {
+	Model.findOne(where, function(err, ori_doc){
     if (err)
 			fn(err);
-		else
-			fn(null);
-  });
+
+		^^fields.forEach(function(field){$$
+	  if(doc.^^=field.name$$ && doc.^^=field.name$$ != ori_doc.^^=field.name$$)
+			ori_doc.^^=field.name$$ = doc.^^=field.name$$;
+		^^})$$
+		ori_doc.save(function(err){
+			if(err)
+				fn(err);
+			else
+				fn(null);
+		});
+	});
 
 }
 Model.method.delete = function(json, fn){
@@ -232,8 +272,42 @@ Model.method.populate = function(fn){
 		}
 	});
 };
-Model.method.gets = function(where, cols, fn){
-	mysql.query(mysql.getSelectStr(where, cols, "^^=name$$"), function(err, models){
+Model.method.gets = function(criteria, cols, fn){
+	var sort, limit, skip, key;
+	if(criteria.sort){
+		sort = criteria.sort;
+		delete criteria.sort;
+	}
+	if(criteria.skip){
+		skip = criteria.skip;
+		delete criteria.skip;
+	}
+	if(criteria.limit){
+		limit = criteria.limit;
+		delete criteria.limit;
+	}
+	var selectStr = mysql.getSelectStr(criteria, cols, "^^=name$$");
+	if(sort){
+		var sorts = [];
+		for (key in sort){
+			if(sorts[key]==-1)
+				sorts.push(key + " DESC");
+			else
+				sorts.push(key + " ASC");
+		}
+		selectStr += " ORDER BY " + sorts.join(", ");
+	}
+	if(limit){
+		selectStr += " LIMIT "+limit;
+		if(skip){
+			selectStr += ", "+skip;
+		}
+	}
+	console.log(selectStr);
+	if(skip && !limit)
+		console.error("skip must be used with limit for mysql");
+
+	mysql.query(selectStr, function(err, models){
     if (err)
       fn(err);
 		else
@@ -280,9 +354,11 @@ Model.method.drop = function(fn){
 
 Model.method.generateTest = function(){
 	var json = {};
+
 	^^fields.forEach(function(field){if(!field.auto){$$
 	json.^^=field.name$$ = ^^=dbdef.getType(field, "jstest")$$;
 	^^}})$$
+	
 	return json;
 }
 function filter(doc){
@@ -293,6 +369,8 @@ function filter(doc){
 	^^})$$
 	return json;
 }
+
+
 Model.method.filter = filter;
 // Export the model
 module.exports = Model;
