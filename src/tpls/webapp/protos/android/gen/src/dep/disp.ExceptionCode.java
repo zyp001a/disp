@@ -11,8 +11,9 @@ public class ExceptionCode {
 	public int code = 255;
 	public Exception e;
 	public String message;
-	public String strResult;
 	public int intResult;
+	public String strResult;
+	public Object res;
 	public static ExceptionCode withResult(int i){
 		ExceptionCode e = new ExceptionCode(0);
 		e.intResult = i;
@@ -21,6 +22,11 @@ public class ExceptionCode {
 	public static ExceptionCode withResult(String str){
 		ExceptionCode e = new ExceptionCode(0);
 		e.strResult = str;
+		return e;
+	}
+	public static ExceptionCode withResult(Object res){
+		ExceptionCode e = new ExceptionCode(0);
+		e.res = res;
 		return e;
 	}
 	public ExceptionCode(Exception e){

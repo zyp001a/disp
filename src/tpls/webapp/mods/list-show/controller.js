@@ -41,7 +41,8 @@ rootApp.controller('^^=name$$Controller', ['$scope', '^^=db$$Service', function(
 			// };
 		}
 		else if(result.status){
-			console.log(result.status + ": " + data.statusText);
+			console.log(result.status);
+			console.log($scope.data);
 		}
 	});
 

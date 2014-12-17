@@ -31,6 +31,7 @@ public class ^^=ucfirst(name)$$Utils {
 		}
 		return null;
 	}
+
 	public static boolean save(JSONObject jo, Context context) throws JSONException {
 		ContentValues values = new ContentValues();
 		

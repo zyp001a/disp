@@ -42,6 +42,19 @@ rootApp.factory('^^=name$$Service', ['$http', '^^=auth$$Service', function($http
 			return err;
 		});
 	}
+	methods.delete = function(id){
+		return $http({
+			url: "/api/^^=name$$/" + id,
+			method: "DELETE",
+			headers: {
+				"Authorization": "Bearer " + authService.getCred()
+			}
+		}).then(function(result){
+			return result;
+		}, function(err){
+			return err;
+		});
+	}
 
 ^^}$$
 ^^apis.forEach(function(api){$$

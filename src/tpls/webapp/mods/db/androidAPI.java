@@ -1,14 +1,14 @@
 ^^apis.forEach(function(api){$$
-			^^if(api.type == "getList"){$$
-	public static ExceptionCode get^^=ucfirst(api.name)$$(String id, Context context) {
+			^^if(api.type == "gets"){$$
+	public static ExceptionCode ^^=api.name$$(Context context) {
 		try {
 			^^if(!auth){$$
-			HttpResult wr = HttpUtils.get(serverURI + "/api/^^=api.name$$/"+id);
+			HttpResult wr = HttpUtils.get(serverURI + "/api/^^=api.name$$/");
 			^^}else{$$
-			HttpResult wr = HttpUtils.getBearer(serverURI + "/api/^^=api.name$$/"+id, ^^=ucfirst(auth)$$Utils.getToken(context));
+			HttpResult wr = HttpUtils.getBearer(serverURI + "/api/^^=api.name$$/", ^^=ucfirst(auth)$$Utils.getToken(context));
 			^^}$$
 			if (wr.statusCode == 200)
-				^^=ucfirst(name)$$Utils.save(wr.response, context);
+				^^=ucfirst(name)$$Utils.saveList(wr.responses, context);
 			else
 				return new ExceptionCode(1, wr.value);
 			return ExceptionCode.NullException;
@@ -23,53 +23,11 @@
 		}
 	}
 			^^}else if(api.type == "get"){$$
-	public static ExceptionCode get^^=ucfirst(api.name)$$(String id, Context context) {
-		try {
-			^^if(!auth){$$
-			HttpResult wr = HttpUtils.get(serverURI + "/api/^^=api.name$$/"+id);
-			^^}else{$$
-			HttpResult wr = HttpUtils.getBearer(serverURI + "/api/^^=api.name$$/"+id, ^^=ucfirst(auth)$$Utils.getToken(context));
-			^^}$$
-			if (wr.statusCode == 200)
-				^^=ucfirst(name)$$Utils.save(wr.response, context);
-			else
-				return new ExceptionCode(1, wr.value);
-			return ExceptionCode.NullException;
-		} catch (SocketTimeoutException e) {
-			return new ExceptionCode(102,e);
-		} catch (ConnectException e) {
-			return new ExceptionCode(101, e);
-		} catch (IOException e) {
-			return new ExceptionCode(100,e);
-		} catch (Exception e) {
-			return new ExceptionCode(e);
-		}
-	}
+
 			^^}else if(api.type == "post"){$$
-	public static ExceptionCode post^^=ucfirst(api.name)$$(String id, Context context) {
-		try {
-			^^if(!auth){$$
-			HttpResult wr = HttpUtils.get(serverURI + "/api/^^=api.name$$/"+id);
-			^^}else{$$
-			HttpResult wr = HttpUtils.getBearer(serverURI + "/api/^^=api.name$$/"+id, ^^=ucfirst(auth)$$Utils.getToken(context));
-			^^}$$
-			if (wr.statusCode == 200)
-				^^=ucfirst(name)$$Utils.save(wr.response, context);
-			else
-				return new ExceptionCode(1, wr.value);
-			return ExceptionCode.NullException;
-		} catch (SocketTimeoutException e) {
-			return new ExceptionCode(102,e);
-		} catch (ConnectException e) {
-			return new ExceptionCode(101, e);
-		} catch (IOException e) {
-			return new ExceptionCode(100,e);
-		} catch (Exception e) {
-			return new ExceptionCode(e);
-		}
-	}
+
 			^^}else if(api.type == "put"){$$
-	public static ExceptionCode get^^=ucfirst(api.name)$$(String id, Context context) {
+	public static ExceptionCode ^^=api.name$$(String id, Context context) {
 		try {
 			^^if(!auth){$$
 			HttpResult wr = HttpUtils.get(serverURI + "/api/^^=api.name$$/"+id);
@@ -104,10 +62,15 @@
 			HttpResult wr = HttpUtils.getBearer(serverURI + "/api/^^=name$$/"+id, ^^=ucfirst(auth)$$Utils.getToken(context));
 			^^}$$
 			if (wr.statusCode == 200)
-				^^=ucfirst(name)$$Utils.save(wr.response, context);
+				if(wr.response.has("error"))
+					return new ExceptionCode(1, wr.value);
+				else{
+					^^=ucfirst(name)$$Utils.save(wr.response, context);
+					return ExceptionCode.NullException;
+//					return ExceptionCode.withResult(new ^^=ucfirst(name)$$(wr.response));
+				}
 			else
-				return new ExceptionCode(1, wr.value);
-			return ExceptionCode.NullException;
+				return new ExceptionCode(10, wr.value);
 		} catch (SocketTimeoutException e) {
 			return new ExceptionCode(102,e);
 		} catch (ConnectException e) {
@@ -123,15 +86,19 @@
 			JSONObject jo = data.toJSONObject();
 			
 			^^if(!auth){$$
-						HttpResult wr = HttpUtils.postJSON(serverURI + "/api/^^=name$$/", jo);
+			HttpResult wr = HttpUtils.postJSON(serverURI + "/api/^^=name$$/", jo);
 			^^}else{$$
-					HttpResult wr = HttpUtils.postJSONBearer(serverURI + "/api/^^=name$$/", jo, ^^=ucfirst(auth)$$Utils.getToken(context));
+			HttpResult wr = HttpUtils.postJSONBearer(serverURI + "/api/^^=name$$/", jo, ^^=ucfirst(auth)$$Utils.getToken(context));
 			^^}$$
 			if (wr.statusCode == 200)
-				^^=ucfirst(name)$$Utils.save(wr.response, context);
+				if(wr.response.has("error"))
+					return new ExceptionCode(1, wr.value);
+				else{
+					return ExceptionCode.withResult(wr.response.getString("insertId"));
+				}
 			else
-				return new ExceptionCode(1, wr.value);
-			return ExceptionCode.NullException;
+				return new ExceptionCode(10, wr.value);
+
 		} catch (SocketTimeoutException e) {
 			return new ExceptionCode(102,e);
 		} catch (ConnectException e) {
@@ -147,9 +114,9 @@
 			JSONObject jo = data.toJSONObject();
 			
 			^^if(!auth){$$
-						HttpResult wr = HttpUtils.putJSON(serverURI + "/api/^^=name$$/"+id, jo);
+			HttpResult wr = HttpUtils.putJSON(serverURI + "/api/^^=name$$/"+id, jo);
 			^^}else{$$
-					HttpResult wr = HttpUtils.putJSONBearer(serverURI + "/api/^^=name$$/"+id, jo, ^^=ucfirst(auth)$$Utils.getToken(context));
+			HttpResult wr = HttpUtils.putJSONBearer(serverURI + "/api/^^=name$$/"+id, jo, ^^=ucfirst(auth)$$Utils.getToken(context));
 			^^}$$
 			if (wr.statusCode == 200)
 				if(wr.response.has("error"))

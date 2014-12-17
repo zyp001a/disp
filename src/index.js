@@ -2,9 +2,9 @@
 
 var fs = require("fs");
 var mkdirp = require("mkdirp");
-var dirname = require("path").dirname;
+var path = require("path");
+var dirname = path.dirname;
 var utils = require("./utils");
-//var modPath = __dirname + "/";
 var tmpl = utils.tmpl;
 var readJSON = utils.readJSON;
 var readJSONUnsafe = utils.readJSONUnsafe;
@@ -61,6 +61,14 @@ function extendObj(obj){
 		return 0;
 	}
 }
+function getPath(name, paths){
+	var modPath;
+	paths.forEach(function(path){
+		if(fs.existsSync(path + "/" +name))
+			modPath = path + "/" +name;
+	});
+	return modPath;
+}
 function loadMod(modName, mp){
 	console.log("loadMod: " + mp.name);
 	var loaderType, name;
@@ -71,9 +79,10 @@ function loadMod(modName, mp){
 	else{
 		loaderType = "_default";
 	}
-	var modPath = nsPath+"/mods/"+modName;
-	if(!fs.existsSync(modPath)){
-		console.error("no modPath "+modPath);
+	var modPath = getPath(mp.tpl, modPaths);;
+	if(!modPath){
+		console.error("no modPath "+ mp.name);
+		console.error(modPaths);
 		process.exit(1);
 	}
 		
@@ -93,8 +102,7 @@ var srcRoot, distDir, distRoot;
 //read ./project.json
 var config, env, loader;
 
-var modPath = dirname(dispCmd) + "/../src/tpls";
-//console.log(modPath);
+var tplPath = dirname(dispCmd) + "/../src/tpls";
 var nsPath;
 config = readJSON(dir + "/project.json");	
 if(config && config.hasOwnProperty("env")){
@@ -115,8 +123,16 @@ else
 mkdirp.sync(distDir);
 
 
+var modPaths = [path.resolve("./mods")];
+if(env.modPaths)
+	env.modPaths.forEach(function(m){
+		modPaths.push(m);
+	});
+
+
 if(config.hasOwnProperty("ns")){
-	nsPath = modPath + "/"+config.ns;
+	nsPath = tplPath + "/"+config.ns;
+	modPaths.push(nsPath+"/mods");
 	env.ns = readNsDir(nsPath);
 	env.ns.extended = true;
 	loader = require(nsPath + "/loader");

@@ -1,5 +1,8 @@
 ^^layout.forEach(function(e){$$
-	^^if(e.img)$$
+	^^if(e.img){$$
 <img src="assets/img/^^=e.img$$" class="img-responsive center">
+	^^}else if(e.text){$$
+^^=e.text$$
+	^^}$$
 ^^})$$
 

@@ -14,9 +14,12 @@ module.exports = function(mod, mp, env, config){
 	if(!mp.apis) mp.apis = [];
 	if(!mp.passwordField) mp.passwordField = false;
 	if(!mp.usernameField) mp.usernameField = false;
+	if(!mp.useridField) mp.useridField = false;
 	if(!mp.tokenField) mp.tokenField = false;
 	if(!mp.idField) mp.idField = false;
 	if(!mp.path) mp.path = false;
+	if(!mp.auth) mp.auth = false;
+
 	mp.dbdef = env.dbdef;
 
 	if(mp.idField){

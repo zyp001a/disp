@@ -290,7 +290,7 @@ Model.method.gets = function(criteria, cols, fn){
 	if(sort){
 		var sorts = [];
 		for (key in sort){
-			if(sorts[key]==-1)
+			if(sort[key]==-1)
 				sorts.push(key + " DESC");
 			else
 				sorts.push(key + " ASC");

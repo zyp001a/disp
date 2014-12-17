@@ -2,7 +2,9 @@ package com.^^=ns$$.gen.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import java.util.Date;
+import java.util.List;
 import android.text.TextUtils;
 import com.JAC.stubank.gen.dep.DateUtils;
 
@@ -12,6 +14,12 @@ public class ^^=ucfirst(name)$$ {
 	public ^^=dbdef.getType(f, "java")$$ ^^=f.name$$;
 ^^})$$
 	public ^^=ucfirst(name)$$(){
+	}
+	public ^^=ucfirst(name)$$(JSONObject jo){
+		
+	}
+	public static List<^^=ucfirst(name)$$> getList(JSONArray ja){
+		return null;
 	}
 	public boolean isNull(){
 		^^var type = dbdef.getType(fields[0], "basic");$$

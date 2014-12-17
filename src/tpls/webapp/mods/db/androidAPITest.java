@@ -1,3 +1,31 @@
+^^apis.forEach(function(api){$$
+			^^if(api.type == "gets"){$$
+	public void test^^=ucfirst(api.name)$$() throws Exception{
+		Context context = activity.getApplicationContext();
+
+		^^if(auth){$$
+		^^=ucfirst(name)$$Utils.clear(context);
+	  ^^=ucfirst(auth)$$Utils.save(^^=ucfirst(auth)$$Controller.getTestId(), ^^=ucfirst(auth)$$Controller.getTestToken(), context);
+		^^}$$
+
+		ExceptionCode e = API.^^=api.name$$(context);
+		assertNull(e.message);
+		assertEquals(0, e.code);
+
+
+		return;
+	}
+
+			^^}else if(api.type == "get"){$$
+
+			^^}else if(api.type == "post"){$$
+
+			^^}else if(api.type == "put"){$$
+			^^}$$
+^^})$$
+
+
+
 ^^if(restful){$$
 
 	public void testGet^^=ucfirst(name)$$() throws Exception{
@@ -31,12 +59,16 @@
 		Context context = activity.getApplicationContext();
 		^^if(auth){$$
 		^^=ucfirst(name)$$Utils.clear(context);
-	  ^^=ucfirst(auth)$$Utils.save(^^=ucfirst(auth)$$Controller.getTestId(), ^^=ucfirst(auth)$$Controller.getTestToken(), context);
+		^^=ucfirst(auth)$$Utils.save(^^=ucfirst(auth)$$Controller.getTestId(), ^^=ucfirst(auth)$$Controller.getTestToken(), context);
 		^^}$$
 	  
 		ExceptionCode e = API.post^^=ucfirst(name)$$(^^=ucfirst(name)$$.generateTest("atest"), context);
 		assertNull(e.message);
 		assertEquals(0, e.code);
+		assertNotNull(e.strResult);
+		ExceptionCode e2 = API.delete^^=ucfirst(name)$$(e.strResult, context);
+		assertNull(e2.message);
+		assertEquals(0, e2.code);
 		return;
 	}
 
