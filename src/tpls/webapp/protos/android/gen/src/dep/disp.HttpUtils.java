@@ -18,7 +18,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
-
+import java.io.FileInputStream;
 import javax.net.ssl.HttpsURLConnection;
 
 import android.graphics.Bitmap;
@@ -195,6 +195,26 @@ public class HttpUtils {
 		HttpUtils.sendMultipartBitmap(urlConnection, filename, bitmap);
 		return new HttpResult(urlConnection);
 	}
+	public static HttpResult postFile(String urlString,	String filename) throws IOException, JSONException, KeyManagementException, NoSuchAlgorithmException,
+		KeyStoreException {
+		HttpURLConnection urlConnection = createConnection(urlString);
+		urlConnection.setConnectTimeout(connectTimeout);
+		urlConnection.setReadTimeout(readTimeout);
+		urlConnection.setRequestMethod("POST");
+		urlConnection.setDoOutput(true);
+		HttpUtils.sendMultipartFile(urlConnection, filename);
+		return new HttpResult(urlConnection);
+	}
+	public static HttpResult postFileBearer(String urlString, String filename, String token) throws IOException, JSONException, KeyManagementException, NoSuchAlgorithmException,	KeyStoreException {
+		HttpURLConnection urlConnection = createConnection(urlString);
+		urlConnection.setConnectTimeout(connectTimeout);
+		urlConnection.setReadTimeout(readTimeout);
+		urlConnection.setRequestProperty("Authorization", "Bearer " + token);
+		urlConnection.setRequestMethod("POST");
+		urlConnection.setDoOutput(true);
+		HttpUtils.sendMultipartFile(urlConnection, filename);
+		return new HttpResult(urlConnection);
+	}
 
 	public static HttpResult postForm(String urlString, JSONObject jo)
 		throws IOException, JSONException, KeyManagementException,
@@ -282,7 +302,7 @@ public class HttpUtils {
 		writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
 		writer.append(LINE_FEED);
 		writer.flush();
-		bitmap.compress(CompressFormat.JPEG, 100, outputStream);
+		bitmap.compress(CompressFormat.JPEG, 50, outputStream);
 		outputStream.flush();
 
 		writer.append(LINE_FEED);
@@ -322,6 +342,12 @@ public class HttpUtils {
 		writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
 		writer.append(LINE_FEED);
 		writer.flush();
+		FileInputStream in = new FileInputStream(fileName);
+		int c;
+		while ((c = in.read()) != -1) {
+			outputStream.write(c);
+		}
+		in.close();
 		// bitmap.compress(CompressFormat.JPEG, 100, outputStream);
 		outputStream.flush();
 

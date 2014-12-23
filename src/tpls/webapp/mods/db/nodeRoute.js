@@ -25,13 +25,14 @@ var mkdirp = require("mkdirp");
 var multipart = require('connect-multiparty');
 
  ^^uploadApis.forEach(function(api){$$
-mkdirp.sync("^^=path$$/^^=api.path$$/");
-router.route('/^^=api.path$$')
-			.post(
-						^^=auth$$Controller.authMidware,
-						multipart({uploadDir: "^^=path$$/^^=api.path$$/"}), 						
+  ^^var apipath = name + "/"+api.name;$$
+mkdirp.sync("^^=path$$/^^=apipath$$/");
+router.route('/^^=apipath$$/:id')
+			.post(^^=auth$$Controller.authMidware,
+						multipart({uploadDir: "^^=path$$/^^=apipath$$/"}),
             ^^=name$$Controller.upload^^=ucfirst(api.name)$$);
-router.route('/^^=api.path$$/:id')
-			.get(^^=name$$Controller.download^^=ucfirst(api.name)$$);
+router.route('/^^=apipath$$/:filename')
+			.get(^^=auth$$Controller.authMidware,
+					^^=name$$Controller.download^^=ucfirst(api.name)$$);
  ^^})$$
 ^^}$$

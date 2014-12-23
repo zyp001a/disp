@@ -24,7 +24,22 @@ describe('^^=name$$Test', function() {
 		});
 	})
  ^^}else if(api.type == "post"){$$
+ ^^}else if(api.type == "get"){$$
+  it('should successful ^^=api.type$$ ^^=api.name$$', function(done) {
+		^^if(fields[0].default == "autoinc"){$$
+		var id = 1;
+		^^}else{$$
+		var id = "test^^=idField$$";
+		^^}$$
 
+		utils.getapiAuth("/^^=api.name$$/" + id, function(err, doc){
+			assert.equal(err, null);
+			console.log(doc.data);
+			assert.equal(200, doc.statusCode);
+			assert.equal(undefined, doc.data.error);
+			done();
+		});
+	});
  ^^}else if(api.type == "put"){$$
 
   it('should successful ^^=api.type$$ ^^=api.name$$', function(done) {
@@ -48,7 +63,10 @@ describe('^^=name$$Test', function() {
 		delete json.^^=tokenField$$;
 		delete json2.^^=tokenField$$;
 		^^}$$
-
+		^^if(api.code){$$
+		json.code = require("../models/^^=api.code$$").method.getTestCode("test");
+		json2.code = require("../models/^^=api.code$$").method.getTestCode("test");
+		^^}$$
 		utils.putapiAuth("/^^=api.name$$/" + id, json2, function(err, doc){
 			assert.equal(err, null);
 			console.log(doc.data);

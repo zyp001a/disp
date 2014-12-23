@@ -1,6 +1,6 @@
 rootApp.controller('^^=name$$Controller', function($rootScope, $scope, $location^^if(auth){$$, ^^=auth$$Service^^}$$){
 	$scope.isActive=function(path){
-		return $location.url() == path;
+		return path && $location.url() == path;
 	};
 
 ^^if(auth){$$

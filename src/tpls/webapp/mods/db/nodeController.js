@@ -10,22 +10,46 @@ var fs = require("fs");
 
  ^^uploadApis.forEach(function(api){$$
 exports.upload^^=ucfirst(api.name)$$ = function(req, res){
+	console.log("UPLOAD");
+	console.log(req.params);
+	console.log(req.files);
+	var id = req.params.id;
+	if(!id){
+		res.send({error: "no id " + id});
+    return;
+	}
 	if(!req.files.buffer){
-		res.send({error: true});
+		res.send({error: "no file"});
     return;
   }
 //	var id = req.files.image.name.match(/(\S+)\.\S+$/)[1];
-	res.send({path: path.basename(req.files.buffer.path)});
+	var name = path.basename(req.files.buffer.path);
+	Model.method.put(id, {"^^=api.name$$": name}, function(err){
+		if(err){
+			res.send({error: err});
+			return;
+		}
+		res.send({
+			"^^=idField$$": id,
+			"^^=api.name$$": name
+		});
+	});
 }
 
 exports.download^^=ucfirst(api.name)$$ = function(req, res){
-	var path = "^^=path$$/^^=api.path$$/" + req.params.id;
-	if(fs.existsSync(path))
-		res.send(fs.readFileSync(path).toString());
+	var path = "^^=path$$/^^=name$$/^^=api.name$$/" + req.params.filename;
+	console.log(path);
+	if(fs.existsSync(path)){
+^^if(api.media != "image"){$$
+^^}else{$$
+		res.setHeader('Content-Type', 'image/jpeg');
+^^}$$
+		res.send(fs.readFileSync(path));
+	}
 	else
 		res.status(500).send({error: "not exist"});
 }
- ^^})$$																		
+ ^^})$$
 ^^}$$
 
 
@@ -55,33 +79,99 @@ exports.^^=api.name$$ = function(req, res) {
 };
  ^^}else if(api.type == "get"){$$
 exports.^^=api.name$$ = function(req, res) {
-};
-
- ^^}else if(api.type == "put"){$$
-exports.^^=api.name$$ = function(req, res) {
+	console.log("GET ^^=api.name$$");
+	console.log(req.params);
 	if(!req.params.id){
 		res.send({error: "no id"});
 		return;
 	}
-	if(!Object.keys(req.body).length){
-		res.send({error: "no postdata"});
+	var json = {};
+	^^if(api.notEncrypt){
+		fields.forEach(function(f){
+			if(f.encrypt){$$
+	json.^^=f.name$$ = false;
+			^^}
+		});
+	}$$
+	^^if(api.field){$$
+	var field = ^^=JSON.stringify(api.field)$$;
+	for (var key in field)
+		json[key] = field[key];
+	^^}$$
+  // Use the Beer model to find a specific beer
+  Model.method.get({ "^^=idField$$": req.params.id }, json, function(err, model) {
+    if (err)
+      res.send({error: err});
+		else
+			res.send(model);
+  });
+};
+
+ ^^}else if(api.type == "put"){$$
+exports._^^=api.name$$ = _^^=api.name$$;
+exports.^^=api.name$$ = function(req, res){
+	_^^=api.name$$(req.params.id, req.body, function(err, result){
+		if(err) res.send({error: err});
+		else res.send(result);
+	});
+}
+function _^^=api.name$$(id, body, fn) {
+	console.log(body);
+	console.log(id);
+	if(!id){
+		fn("no id");
+		return;
+	}
+	if(!Object.keys(body).length){
+		fn("no postdata");
 		return;
 	}
 
 	^^if(!api.field){$$
-	var doc = req.body;
+	var doc = body;
 	^^}else{$$
 	var doc = {}
 	 ^^for (var f in api.field){$$
-	doc.^^=f$$ = req.body.^^=f$$;
+	doc.^^=f$$ = body.^^=f$$;
 	 ^^}$$
 	^^}$$
-  Model.method.put({ "^^=idField$$": req.params.id }, doc, function(err) {
-    if (err)
-      res.send({error: err});
-		else
-			res.json({success: true});
-  });
+
+	^^if(api.code){$$
+	if(!body.code){
+		fn("no validation code");
+		return;
+	}
+	Model.method.get({ "^^=idField$$": id }, { "^^=usernameField$$": 1}, function(err, userdoc){
+		console.log(userdoc);
+		if(err){
+			fn(err);
+			return;
+		}
+		require("../models/^^=api.code$$").method.VerifyCode({
+			id: userdoc.^^=usernameField$$,
+			code: body.code,
+			minutes: 60
+		}, function(err, valid){	
+			if(err){
+				fn(err);
+				return;
+			}
+			if(!valid){
+				fn("validation code error");
+				return;
+			}
+	^^}$$
+			Model.method.put({ "^^=idField$$": id }, doc, function(err) {
+    		if (err)
+					fn(err);
+				else
+					fn(null, {success: true});
+			});
+	^^if(api.code){$$
+		});
+	});
+	^^}$$
+
 };
 
  ^^}else if(api.type == "delete"){$$

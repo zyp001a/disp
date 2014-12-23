@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
+
 ^^if(static){$$
 app.use(express.static(__dirname + '/^^=static$$'));
 ^^}$$

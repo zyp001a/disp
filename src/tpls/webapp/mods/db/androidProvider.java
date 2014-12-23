@@ -15,20 +15,7 @@ import android.database.Cursor;
 
 
 public class ^^=ucfirst(name)$$Utils {
-	public static ^^=ucfirst(name)$$ parseCursor(Cursor c){
-		^^=ucfirst(name)$$ item = new ^^=ucfirst(name)$$();
-				^^fields.forEach(function(f){
-						var type=dbdef.getType(f, "java");$$
-						^^if(type == "boolean"){$$ 
-		item.^^=f.name$$ = c.getInt(c.getColumnIndex(^^=ucfirst(name)$$Constant.^^=f.name.toUpperCase()$$)) == 1;
-						^^}else if(type=="Date"){$$
-		item.^^=f.name$$ = DateUtils.parseDate(c.getString(c.getColumnIndex(^^=ucfirst(name)$$Constant.^^=f.name.toUpperCase()$$)));
-						^^}else{$$
-		item.^^=f.name$$ = c.get^^=ucfirst(type)$$(c.getColumnIndex(^^=ucfirst(name)$$Constant.^^=f.name.toUpperCase()$$));
-						^^}$$
-				^^})$$
-		return item;
-	}
+
 	public static List<^^=ucfirst(name)$$> getList(Context context) {
 		^^if(useridField){$$
 		Cursor c = context.getContentResolver().query(^^=ucfirst(name)$$Constant.CONTENT_URI,	null, ^^=ucfirst(name)$$Constant.^^=useridField.toUpperCase()$$ + " = ? ", new String[] { ^^=ucfirst(auth)$$Utils.getUser(context) }, null);
@@ -38,77 +25,52 @@ public class ^^=ucfirst(name)$$Utils {
 		List<^^=ucfirst(name)$$> list = new ArrayList<^^=ucfirst(name)$$>();
 		if (c != null) {
 			while (c.moveToNext()) {
-				list.add(^^=ucfirst(name)$$Utils.parseCursor(c));
+				list.add(new ^^=ucfirst(name)$$(c));
 			}
 			c.close();
 		}
 		return list;
 	}
-	^^if(idField){$$
-	public static ^^=ucfirst(name)$$ get(String id,Context context) {
-		Cursor c = context.getContentResolver().query(^^=ucfirst(name)$$Constant.CONTENT_URI,	null, 
-																									^^=ucfirst(name)$$Constant.^^=idField.toUpperCase()$$ + " = ? ", 
-																									new String[] { id }, null);
 
+	public static ^^=ucfirst(name)$$ get(String id, Context context) {
+		Cursor c = context.getContentResolver().query(^^=ucfirst(name)$$Constant.CONTENT_URI,	null, ^^=ucfirst(name)$$Constant.^^=idField.toUpperCase()$$ + " = ? ", new String[] { id }, null);
 		^^=ucfirst(name)$$ item = null;
 		if (c != null) {
 			if (c.moveToNext()) {
-				item = ^^=ucfirst(name)$$Utils.parseCursor(c);
+				item = new ^^=ucfirst(name)$$(c);
 			}
 			c.close();
 		}
 		return item;
 	}
-	^^}$$
 
-	public static boolean save(JSONObject jo, Context context) throws JSONException {
-		ContentValues values = new ContentValues();
-^^fields.forEach(function(f){$$
- ^^if(passwordField && f.name==passwordField){$$
- ^^}else if(tokenField && f.name==tokenField){$$
- ^^}else{$$
-		if(jo.has("^^=f.name$$"))
-			values.put(^^=ucfirst(name)$$Constant.^^=f.name.toUpperCase()$$, jo.getString("^^=f.name$$"));
- ^^}$$
-^^})$$
+
+	public static boolean save(^^=ucfirst(name)$$ obj, Context context) throws JSONException {
+		ContentValues values = obj.toContentValues();
  ^^if(passwordField){$$
 		values.put(^^=ucfirst(name)$$Constant.PRESENT, 1);
  ^^}$$
 		int count = context.getContentResolver().update(
 			^^=ucfirst(name)$$Constant.CONTENT_URI, values, null, null);
-		
 		return count > 0;
 	}
-	public static boolean saveList(JSONArray ja, Context context) throws JSONException {
-		for (int i=0; i<ja.length(); i++){
-			JSONObject jo = ja.getJSONObject(i);
 
-			ContentValues values = new ContentValues();
-
-^^fields.forEach(function(f){$$
- ^^if(passwordField && f.name==passwordField){$$
- ^^}else if(tokenField && f.name==tokenField){$$
- ^^}else{$$
-			if(jo.has("^^=f.name$$"))
-				values.put(^^=ucfirst(name)$$Constant.^^=f.name.toUpperCase()$$, jo.getString("^^=f.name$$"));
- ^^}$$
-^^})$$
- ^^if(passwordField){$$
-			values.put(^^=ucfirst(name)$$Constant.PRESENT, 1);
- ^^}$$
+	public static boolean saveList(List<^^=ucfirst(name)$$> li, Context context) throws JSONException {
+		for(int i=0; i<li.size(); i++){
+			ContentValues values = li.get(i).toContentValues();
 			int count = context.getContentResolver().update(
 				^^=ucfirst(name)$$Constant.CONTENT_URI, values, null, null);
 		}
 		return true;
 	}
 	^^if(useridField){$$
-	public static void deleteByUser(String ^^=useridField$$, Context context){
+	public static void delete(String ^^=useridField$$, Context context){
 		ContentResolver mContentResolver = context.getApplicationContext()
 			.getContentResolver();
 		mContentResolver.delete(^^=ucfirst(name)$$Constant.CONTENT_URI, ^^=ucfirst(name)$$Constant.^^=useridField.toUpperCase()$$ + "=?",
 														new String[] { ^^=useridField$$ });
 	}
-		^^}$$
+	^^}$$
 	public static void clear(Context context){
 		ContentResolver mContentResolver = context.getApplicationContext()
 			.getContentResolver();

@@ -11,10 +11,11 @@ module.exports = function(mod, mp, env, config){
 		env.nodeDeps["passport-http-bearer"]="*";
 	}
 	if(!mp.signin) mp.signin = "signin";
-	if(!mp.signinTmp) mp.signinTmp = "signintmp";
 	if(!mp.signup) mp.signup = "signup";
+	if(!mp.newpass) mp.newpass = "newpass";
+	if(!mp.signinAfterSignup) mp.signinAfterSignup = false;
 
-	if(!mp.codeDb) mp.codeDb = false;
+	if(!mp.code) mp.code = false;
 	env.auths[mp.name] = mp;
 	return 1;
 }

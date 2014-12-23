@@ -13,7 +13,7 @@
 
 		return;
 	}
-^^if(!codeDb){$$
+^^if(!code){$$
 	public void test^^=ucfirst(name)+ucfirst(signup)$$() throws Exception{
 	
 		Context context = activity.getApplicationContext();

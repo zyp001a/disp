@@ -6,6 +6,7 @@ var ucfirst = utils.ucfirst;
 var extend1 = utils.extend1;
 var isArray = utils.isArray;
 function _init(root, env){
+	if(!env.isolatedHtmls) env.isolatedHtmls = [];
 
 	if(!env.cssDeps) env.cssDeps = [];
 	if(!env.csses) env.csses = [];
@@ -107,39 +108,18 @@ function _default(mod, mp, env, config){
 
 	//config dependencies
 
-	if(config.cssDeps)
-		config.cssDeps.forEach(function(dep){
-			if(env.cssDeps.indexOf(dep) == -1)
-				env.cssDeps.push({
-					name: dep,
-					path: depPath + "/css/" + dep
-				});
-		});
+	utils.setEnvArrayDep(config.cssDeps, env.cssDeps, depPath + "/css/");
 
 	//css
-	if(fs.existsSync(mod+"/style.css")){
-		env.csses.push({
-			name: mp.name, 
-			content:tmpl(fs.readFileSync(mod+"/style.css").toString(), mp)
-		});
-	}
+	utils.setEnvContent(env.csses, mod+"/style.css", mp);
+	utils.setEnvContent(env.isolatedHtmls, mod+"/isolated.html", mp);
 
 	// angular
 	if(!mp.notAngular){
-		if(config.jsDeps)
-			config.jsDeps.forEach(function(dep){
-				if(env.jsDeps.indexOf(dep) == -1)
-					env.jsDeps.push({
-						name: dep,
-						path: depPath + "/js/" + dep
-					});
-			});
-		if(fs.existsSync(mod+"/run.js")){
-			env.runs.push({
-				name: mp.name + "Run", 
-				content:tmpl(fs.readFileSync(mod+"/run.js").toString(), mp)
-			});
-		}
+		utils.setEnvArrayDep(config.jsDeps, env.jsDeps, depPath + "/js/");
+
+		utils.setEnvContent(env.csses, mod+"/style.css", mp);
+		utils.setEnvContent(env.runs, mod+"/run.js", mp);
 
 		if(config.angularDeps)
 			config.angularDeps.forEach(function(dep){
@@ -147,12 +127,8 @@ function _default(mod, mp, env, config){
 					env.angularDeps.push(dep);
 			});
 
-		if(fs.existsSync(mod+"/filter.js")){
-			env.filters.push({
-				name: mp.name + "Filter", 
-				content:tmpl(fs.readFileSync(mod+"/filter.js").toString(), mp)
-			});
-		}
+		utils.setEnvContent(env.filters, mod+"/filter.js", mp);
+
 		if(fs.existsSync(mod+"/controller.js")){
 			env.controllers.push({
 				name: mp.name + "Controller", 
@@ -244,18 +220,20 @@ function _default(mod, mp, env, config){
 				content:tmpl(fs.readFileSync(mod+"/androidController.java").toString(), mp)
 			});
 		}
-		if(fs.existsSync(mod+"/androidProvider.java")){
-			mp.ns = env.cop + "." + env.lcname;
-			env.androidProviders.push({
-				name: mp.name, 
-				content:tmpl(fs.readFileSync(mod+"/androidProvider.java").toString(), mp)
-			});
-			if(fs.existsSync(mod+"/androidProviderTest.java")){
+		if(mp.androidProvider){
+			if(fs.existsSync(mod+"/androidProvider.java")){
 				mp.ns = env.cop + "." + env.lcname;
-				env.androidProviderTests.push({
+				env.androidProviders.push({
 					name: mp.name, 
-					content:tmpl(fs.readFileSync(mod+"/androidProviderTest.java").toString(), mp)
+					content:tmpl(fs.readFileSync(mod+"/androidProvider.java").toString(), mp)
 				});
+				if(fs.existsSync(mod+"/androidProviderTest.java")){
+					mp.ns = env.cop + "." + env.lcname;
+					env.androidProviderTests.push({
+						name: mp.name, 
+						content:tmpl(fs.readFileSync(mod+"/androidProviderTest.java").toString(), mp)
+					});
+				}
 			}
 		}
 		if(fs.existsSync(mod+"/androidModel.java")){
@@ -314,5 +292,6 @@ function _default(mod, mp, env, config){
 	
 	return 1;
 }
+
 module.exports._default = _default;
 module.exports._init = _init;

@@ -24,17 +24,26 @@ function _post(protocol, options, content, fn){
 					doc.data = data;
 				}
         fn(null, doc);
-				//        console.log('over');
 			});
 		});
 	}else if(protocol == "https:"){
 		req = https.request(options,function(res){
 			res.setEncoding('utf8');
 			res.on('data', function (chunk) {
-        fn(res.status, JSON.parse(chunk));
+				data += chunk;
 			});
+			res.on('error', function (e) {
+        fn(e, {statusCode: res.statusCode});
+			});			
 			res.on('end',function(){
-				//        console.log('over');
+				var doc = {};
+				doc.statusCode = res.statusCode;
+				try {
+					doc.data = JSON.parse(data);
+				}catch(e){
+					doc.data = data;
+				}
+        fn(null, doc);
 			});
 		});
 	}else{
@@ -65,17 +74,26 @@ function _get(protocol, options, fn){
 					doc.data = data;
 				}
         fn(null, doc);
-				//        console.log('over');
 			});
 		});
 	}else if(protocol == "https:"){
 		req = https.request(options,function(res){
 			res.setEncoding('utf8');
 			res.on('data', function (chunk) {
-        fn(res.status, JSON.parse(chunk));
+				data += chunk;
 			});
+			res.on('error', function (e) {
+        fn(e, {statusCode: res.statusCode});
+			});			
 			res.on('end',function(){
-				//        console.log('over');
+				var doc = {};
+				doc.statusCode = res.statusCode;
+				try {
+					doc.data = JSON.parse(data);
+				}catch(e){
+					doc.data = data;
+				}
+        fn(null, doc);
 			});
 		});
 	}else{
@@ -112,6 +130,7 @@ function _delete_(urlStr, fn){
 function postForm(urlStr, json, fn){
 	var urlParsed = url.parse(urlStr);	
 	var content = querystring.stringify(json);
+//	console.log(content);
 	var options = {
     host: urlParsed.hostname,
     path: urlParsed.path,

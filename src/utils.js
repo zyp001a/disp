@@ -1,4 +1,22 @@
 var fs = require("fs");
+function setEnvContent(obj, filename, mp){
+	if(fs.existsSync(filename)){
+		obj.push({
+			name: mp.name, 
+			content:tmpl(fs.readFileSync(filename).toString(), mp)
+		});
+	}
+}
+function setEnvArrayDep(confs, array, path_prefix){
+	if(confs)
+		confs.forEach(function(dep){
+			if(array.indexOf(dep) == -1)
+				array.push({
+					name: dep,
+					path: path_prefix + dep
+				});
+		});
+}
 function ucfirst(str) {
   //  discuss at: http://phpjs.org/functions/lcfirst/
   // original by: Brett Zamir (http://brett-zamir.me)
@@ -34,7 +52,7 @@ function tmpl(str, data){
 				wout = subs[1] || "";
 			}
 			wout = wout
-				.replace(/\\([nrt'])/g, "\\\\$1")
+				.replace(/\\([\[\]\{\}a-zA-Z0-9'])/g, "\\\\$1")
 				.replace(/\n/g, "\\n")
 				.replace(/'/g, "\\'")
 				.replace(/\\([\"\?\*])/g, "\\\\\\$1");
@@ -131,6 +149,7 @@ module.exports.tplMatch = tplMatch;
 module.exports.extend1 = extend1;
 module.exports.isExec = isExec;
 module.exports.isExecForUser = isExecForUser;
-
+module.exports.setEnvArrayDep = setEnvArrayDep;
+module.exports.setEnvContent = setEnvContent;
 
 

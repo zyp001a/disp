@@ -1,6 +1,6 @@
+var utils = require('../utils');
 ^^if(engine == "mongo"){$$
 var mongoose = require('mongoose');
-var bcrypt = require('bcrypt');
 ^^
 var autoIncField = false;
 
@@ -49,10 +49,7 @@ var AutoIncModel = mongoose.model('^^=name$$_next', AutoIncSchema);
   // Break out if the password hasn't changed
   if (model.isModified('^^=f.name$$')){
   // Password changed so we need to hash it
-		var salt = bcrypt.genSaltSync(5);
-
-		var hash = bcrypt.hashSync(model.^^=f.name$$, salt);
-		model.^^=f.name$$ = hash;
+		model.^^=f.name$$ = utils.encrypt.bcrypt(model.^^=f.name$$, 5);
 	}
 ^^}})$$
 
@@ -85,7 +82,7 @@ var AutoIncModel = mongoose.model('^^=name$$_next', AutoIncSchema);
 ^^if(passwordField){$$
 ^^=ucfirst(name)$$Schema.methods.verifyPassword = function(password, cb) {
 	^^if(dbdef.getField(passwordField, fields).encrypt){$$
-  bcrypt.compare(password, this.^^=passwordField$$, function(err, isMatch) {
+  utils.encrypt.bcryptcompare(password, this.^^=passwordField$$, function(err, isMatch) {
     if (err) return cb(err);
     cb(null, isMatch);
   });
@@ -120,8 +117,10 @@ Model.autoinc = AutoIncModel;
 ^^}$$
 
 Model.method = {};
-Model.method.get = function(criteria, fields, fn){
-	Model.findOne(criteria, fields, fn);
+Model.method.get = function(where, fields, fn){
+	if(typeof where == "string" || typeof where == "number")
+		where = {^^=idField$$: where};
+	Model.findOne(where, fields, fn);
 }
 Model.method.gets = function(criteria, fields, fn){
 	var sort, limit, skip;
@@ -150,7 +149,7 @@ Model.method.gets = function(criteria, fields, fn){
 		}
 	});
 }
-Model.method.gets_page = function(criteria, fields, page, fn){
+Model.method.getsPage = function(criteria, fields, page, fn){
 
 }
 Model.method.post = function(doc, fn){
@@ -164,14 +163,16 @@ Model.method.post = function(doc, fn){
   });
 }
 Model.method.put = function(where, doc, fn){
+	if(typeof where == "string" || typeof where == "number")
+		where = {^^=idField$$: where};
 	Model.findOne(where, function(err, ori_doc){
     if (err)
 			fn(err);
-
 		^^fields.forEach(function(field){$$
 	  if(doc.^^=field.name$$ && doc.^^=field.name$$ != ori_doc.^^=field.name$$)
 			ori_doc.^^=field.name$$ = doc.^^=field.name$$;
 		^^})$$
+		console.log(ori_doc);
 		ori_doc.save(function(err){
 			if(err)
 				fn(err);
@@ -179,8 +180,31 @@ Model.method.put = function(where, doc, fn){
 				fn(null);
 		});
 	});
-
 }
+^^if(Object.keys(category).length){$$
+^^for(var cate in category){$$
+Model.method.put^^=ucfirst(cate)$$ = function(where, doc, fn){
+	if(typeof where == "string" || typeof where == "number")
+		where = {^^=idField$$: where};
+	Model.findOne(where, function(err, ori_doc){
+    if (err)
+			fn(err);
+
+		^^fields.forEach(function(field){if(field.category == cate){$$
+	  if(doc.^^=field.name$$ && doc.^^=field.name$$ != ori_doc.^^=field.name$$)
+			ori_doc.^^=field.name$$ = doc.^^=field.name$$;
+		^^}})$$
+		console.log(ori_doc);
+		ori_doc.save(function(err){
+			if(err)
+				fn(err);
+			else
+				fn(null);
+		});
+	});
+}
+^^}$$
+^^}$$
 Model.method.delete = function(json, fn){
 	Model.remove(json, function(err) {
     if (err) fn(err);
@@ -236,7 +260,48 @@ Model.method.drop = function(fn){
 	});
 }
 
+^^if(codeField){$$
+^^
+if(!idField || !timeField){
+	console.error("has codeField but no idField and timeField");
+	process.exit(1);
+}
+$$
+Model.method.getTestCode = function(prefix){
+	return prefix + "^^=codeField$$";
+}
+Model.method.VerifyCode = function(params, fn){
+	var json = {
+    "^^=idField$$": params.id,
+    "^^=codeField$$": params.code,
+    "^^=timeField$$": {
+      $gt: new Date().getTime() - params.minutes*60000
+    }
+  };
+	console.log(json);
+	Model.findOne(json, function(err, doc){
+		if(err){
+			fn(err);
+			return;
+		}
+		if(!doc){
+			fn(null, false);
+			return;
+		}
+		fn(null, true);
+	});
+}
+^^}$$
+
 ^^}else if(engine == "mysql"){$$
+^^
+if(usernameField || passwordField || tokenField || codeField){
+	console.error("usernameField || passwordField || tokenField || codeField is not supported");
+	process.exit(1);
+}
+$$	
+
+
 var mysql = require('../dbconn').mysql;
 var bcrypt = require('bcrypt');
 
@@ -252,6 +317,9 @@ createTableStr += " AUTO_INCREMENT";
  ^^if(f.default == "now"){$$
 createTableStr += " DEFAULT NOW()";
  ^^}$$
+ ^^if(f.unique){$$
+createTableStr += " UNIQUE";
+ ^^}$$		
  ^^if(f.name == idField){$$
 createTableStr += " PRIMARY KEY";
  ^^}$$
@@ -303,7 +371,6 @@ Model.method.gets = function(criteria, cols, fn){
 			selectStr += ", "+skip;
 		}
 	}
-	console.log(selectStr);
 	if(skip && !limit)
 		console.error("skip must be used with limit for mysql");
 
@@ -315,11 +382,18 @@ Model.method.gets = function(criteria, cols, fn){
   });
 }
 Model.method.get = function(where, cols, fn){
+	if(typeof where == "string" || typeof where == "number")
+		where = {"^^=idField$$": where};
+
 	mysql.query(mysql.getSelectStr(where, cols, "^^=name$$") + " LIMIT 1", function(err, models){
     if (err)
       fn(err);
 		else
-			fn(null, models[0]);
+			if(models.length){
+				fn(null, models[0]);
+			}else{
+				fn(null, null);
+			}
   });
 }
 Model.method.post = function(doc, fn){
@@ -339,6 +413,8 @@ Model.method.delete = function(json, fn){
 	});
 }
 Model.method.put = function(where, doc, fn){
+	if(typeof where == "string" || typeof where == "number")
+		where = {"^^=idField$$": where};
 	mysql.query(mysql.getUpdateStr(where, filter(doc), "^^=name$$"), function(err){
 		fn(err);
 	});

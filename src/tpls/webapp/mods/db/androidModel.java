@@ -6,20 +6,93 @@ import org.json.JSONArray;
 import java.util.Date;
 import java.util.List;
 import android.text.TextUtils;
-import com.JAC.stubank.gen.dep.DateUtils;
+import com.^^=ns$$.gen.dep.DateUtils;
+import com.^^=ns$$.gen.provider.DatabaseConstant.^^=ucfirst(name)$$Constant;
+^^if(auth){$$
+import com.^^=ns$$.gen.provider.^^=ucfirst(auth)$$Utils;
+^^}$$
+import android.database.Cursor;
+import android.content.ContentValues;
+import android.content.Context;
+import java.util.ArrayList;
+import com.^^=ns$$.gen.api.API;
+
+^^function toJava(obj){$$
+ ^^fields.forEach(function(f){
+		 var type = dbdef.getType(f, "java");$$
+			^^if(type == 'int' || type == 'long' || type == "double"){$$
+		if(^^=f.name$$>0)
+			^^=obj$$.put("^^=f.name$$", ^^=f.name$$);
+			^^}else if(type == 'String'){$$
+		if(!TextUtils.isEmpty(^^=f.name$$))
+			^^=obj$$.put("^^=f.name$$", ^^=f.name$$);
+			^^}else if(type == 'boolean'){$$
+		if(^^=f.name$$)
+			^^=obj$$.put("^^=f.name$$", ^^=f.name$$);
+			^^}else if(type == 'Date'){$$
+		if(^^=f.name$$ != null)
+			^^=obj$$.put("^^=f.name$$", DateUtils.getString(^^=f.name$$));
+			^^}$$
+ ^^})$$
+
+^^}$$
 
 public class ^^=ucfirst(name)$$ {
 	public static ^^=ucfirst(name)$$ Empty^^=ucfirst(name)$$ = new ^^=ucfirst(name)$$();
 ^^fields.forEach(function(f){$$
-	public ^^=dbdef.getType(f, "java")$$ ^^=f.name$$;
+	public ^^=dbdef.getType(f, "java")$$ ^^=f.name$$; //^^=f.text$$
 ^^})$$
 	public ^^=ucfirst(name)$$(){
 	}
-	public ^^=ucfirst(name)$$(JSONObject jo){
+	public ^^=ucfirst(name)$$(JSONObject jo) throws JSONException{
+ ^^fields.forEach(function(f){var type = dbdef.getType(f, "java");$$
+		if(jo.has("^^=f.name$$"))
+  ^^if(type == 'Date'){$$
+			this.^^=f.name$$ = DateUtils.parseDate(jo.getString("^^=f.name$$"));
+  ^^}else{$$
+			this.^^=f.name$$ = jo.get^^=ucfirst(type)$$("^^=f.name$$");
+  ^^}$$
+ ^^})$$
+	}
+	public ^^=ucfirst(name)$$(Cursor c){
+				^^fields.forEach(function(f){
+						var type=dbdef.getType(f, "java");$$
+						^^if(type == "boolean"){$$ 
+		this.^^=f.name$$ = c.getInt(c.getColumnIndex(^^=ucfirst(name)$$Constant.^^=f.name.toUpperCase()$$)) == 1;
+						^^}else if(type=="Date"){$$
+		this.^^=f.name$$ = DateUtils.parseDate(c.getString(c.getColumnIndex(^^=ucfirst(name)$$Constant.^^=f.name.toUpperCase()$$)));
+						^^}else{$$
+		this.^^=f.name$$ = c.get^^=ucfirst(type)$$(c.getColumnIndex(^^=ucfirst(name)$$Constant.^^=f.name.toUpperCase()$$));
+						^^}$$
+				^^})$$
 		
 	}
-	public static List<^^=ucfirst(name)$$> getList(JSONArray ja){
-		return null;
+	public void setId(String id){
+		^^if(fields[0].default == "autoinc"){$$
+		this.^^=idField$$ = Integer.parseInt(id);
+				^^}else{$$
+		this.^^=idField$$ = id;
+				^^}$$
+	}
+^^if(path){$$
+ ^^uploadApis.forEach(function(api){$$
+  ^^if(api.media == "image"){$$
+	public String getPath^^=ucfirst(api.name)$$(Context context){
+		return API.serverURI + "/api/^^=name$$/^^=api.name$$/" 
+			+ this.^^=api.name$$ 
+			+"?access_token="+^^=ucfirst(auth)$$Utils.getToken(context);
+	}
+  ^^}$$
+ ^^})$$
+^^}$$
+
+	public static List<^^=ucfirst(name)$$> getList(JSONArray ja)  throws JSONException{
+		List<^^=ucfirst(name)$$> li = new ArrayList<^^=ucfirst(name)$$>();
+		for (int i=0; i<ja.length(); i++){
+			JSONObject jo = ja.getJSONObject(i);
+			li.add(new ^^=ucfirst(name)$$(jo));
+		}
+		return li;
 	}
 	public boolean isNull(){
 		^^var type = dbdef.getType(fields[0], "basic");$$
@@ -29,42 +102,14 @@ public class ^^=ucfirst(name)$$ {
 			return ^^=idField$$ != 0;
 		^^}$$		
 	}
-	public JSONObject toJSONObjectFull() throws JSONException{
-		JSONObject jo = new JSONObject();
-^^fields.forEach(function(f){var type = dbdef.getType(f, "java");$$
-			^^if(!f.auto){$$
-			 ^^if(type != 'Date'){$$
-		jo.put("^^=f.name$$", ^^=f.name$$);
-			 ^^}else{$$
-		jo.put("^^=f.name$$", DateUtils.getString(^^=f.name$$));
-			 ^^}$$
-			^^}$$
-^^})$$
-		return jo;
+	public ContentValues toContentValues(){
+		ContentValues cv = new ContentValues();
+		^^toJava("cv")$$
+		return cv;
 	}
 	public JSONObject toJSONObject() throws JSONException{
 		JSONObject jo = new JSONObject();
-^^fields.forEach(function(f){var type = dbdef.getType(f, "java");$$
-	^^if(!f.auto){$$
-			^^if(type == 'int' || type == 'long' || type == "double"){$$
-		if(^^=f.name$$>0){					
-			jo.put("^^=f.name$$", ^^=f.name$$);
-		}
-			^^}else if(type == 'String'){$$
-		if(!TextUtils.isEmpty(^^=f.name$$)){					
-			jo.put("^^=f.name$$", ^^=f.name$$);
-		}
-			^^}else if(type == 'boolean'){$$
-		if(^^=f.name$$){
-			jo.put("^^=f.name$$", ^^=f.name$$);
-		}
-			^^}else if(type == 'Date'){$$
-		if(^^=f.name$$ != null){
-			jo.put("^^=f.name$$", DateUtils.getString(^^=f.name$$));
-		}
-			^^}$$
-	^^}$$
-^^})$$
+		^^toJava("jo")$$
 		return jo;
 	}
 	public static ^^=ucfirst(name)$$ generateTest(String fix){

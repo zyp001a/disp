@@ -36,11 +36,30 @@ function extendObj(obj){
 			});
 		}
 		else{
-			if(obj.hasOwnProperty('extended')){
-				return 0;
-			}
 			if(obj.hasOwnProperty("mount")){
 				return 1;
+			}
+			for (var prop in obj){
+				if(extendObj(obj[prop])){
+					obj[prop]= JSON.parse(fs.readFileSync(dir+"/"+obj[prop].mount));
+				}
+			}
+		}
+	}
+	else{
+		return 0;
+	}
+}
+function tplObj(obj){
+	if(typeof obj === "object"){
+		if(isArray(obj)){
+			obj.forEach(function(e, i){
+				tplObj(e);
+			});
+		}
+		else{
+			if(obj.hasOwnProperty('extended')){
+				return 0;
 			}
 			if(obj.hasOwnProperty("tpl")){
 				if(isArray(obj["tpl"]))
@@ -51,9 +70,7 @@ function extendObj(obj){
 					loadMod(obj["tpl"], obj);
 			}
 			for (var prop in obj){
-				if(extendObj(obj[prop])){
-					obj[prop]= JSON.parse(fs.readFileSync(dir+"/"+obj[prop].mount));
-				}
+				tplObj(obj[prop]);
 			}
 		}
 	}
@@ -142,6 +159,7 @@ if(config.hasOwnProperty("ns")){
 
 
 extendObj(config);
+tplObj(config);
 
 
 //iterate proto

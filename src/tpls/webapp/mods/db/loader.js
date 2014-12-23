@@ -16,6 +16,8 @@ module.exports = function(mod, mp, env, config){
 	if(!mp.usernameField) mp.usernameField = false;
 	if(!mp.useridField) mp.useridField = false;
 	if(!mp.tokenField) mp.tokenField = false;
+	if(!mp.codeField) mp.codeField = false;
+	if(!mp.timeField) mp.timeField = false;
 	if(!mp.idField) mp.idField = false;
 	if(!mp.path) mp.path = false;
 	if(!mp.auth) mp.auth = false;
@@ -42,14 +44,22 @@ module.exports = function(mod, mp, env, config){
 			mp.fields.forEach(function(f){
 				if(f.type == "Path"){
 					mp.uploadApis.push({
-						"name": mp.name + ucfirst(f.name),
-						"path": mp.name + "/" + f.name,
+						"name": f.name,
 						"media": f.media || "image"
 					});
 				}
 			});
 		}
 	}
+	if(!mp.categorical) mp.categorical = false;
+
+	mp.category = {};
+	mp.fields.forEach(function(f){
+		if(f.category){
+			mp.category[f.category] = true;
+		}
+	});
+	
 	env.schemas[mp.name] = mp;
 	return 1;
 

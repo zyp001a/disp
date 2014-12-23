@@ -4,8 +4,15 @@ public class ExceptionCode {
 
 	public static ExceptionCode NullException = new ExceptionCode(0);
 	public static int Null = 0;
-	public static int DefaultException = 253;
-	public static int DefaultMessage = 254;
+	public static int UnclassifiedError = 10; //contain error message but not error code
+	public static int UnAuthorized = 11; //401 status code
+	public static int IgnoredStatusCode = 12; //status code other than 200, 401
+
+	public static int IOException = 100;
+	public static int ConnectException = 101;
+	public static int SocketTimeoutException = 102;
+	public static int DefaultException = 253; //throw exception without specified code
+	public static int DefaultMessage = 254;//git message without specified code
 	public static int Default = 255;
 
 	public int code = 255;

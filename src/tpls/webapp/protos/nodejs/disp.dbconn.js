@@ -98,7 +98,7 @@ mysqlConn.getSelectStr = function(where, coljson, table){
 }
 mysqlConn.getUpdateStr = function(where, doc, table){
 	var str = "UPDATE "+table + " SET "+ genEqualStr(doc, ", ");
-	if(!where && Object.keys(where).length)
+	if(where && Object.keys(where).length)
 		str += " WHERE " +  genEqualStr(where);
 	return str;
 }

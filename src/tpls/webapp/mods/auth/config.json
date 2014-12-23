@@ -5,5 +5,5 @@
 		},
 		"jsDeps": ["angular-cookies.min.js"],
 		"angularDeps": ["ngCookies"],
-		"mountSchema": ["db", "codeDb"]
+		"mountSchema": ["db", "code"]
 }

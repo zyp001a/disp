@@ -1,7 +1,7 @@
 var assert = require('assert');
 var fs = require('fs');
 var utils = require("./utils");
-^^if(codeDb){$$
+^^if(code){$$
 require("../dbconn");
 ^^}$$
 
@@ -27,8 +27,8 @@ describe('^^=name$$Test', function() {
   });
   it('should successful signup', function(done) {
 		var json = {};
-^^if(codeDb){$$
-		var Model = require("../models/^^=codeDb$$");
+^^if(code){$$
+		var Model = require("../models/^^=code$$");
 		var model = new Model({
 			"^^=schema1.idField$$": "test^^=schema.usernameField$$2",
 			"^^=schema1.codeField$$": "testcode2"
@@ -44,11 +44,13 @@ describe('^^=name$$Test', function() {
 				assert.equal(err, null);
 				console.log(doc);
 				assert.equal(doc.statusCode, 200);
+^^if(signinAfterSignup){$$
 				assert.equal("testphone2", doc.data.username);
+^^}$$
 				done();
 			});
 		});
-^^if(codeDb){$$
+^^if(code){$$
 	});
 ^^}$$
 });

@@ -1,5 +1,7 @@
 ^^apis.forEach(function(api){$$
+	^^if(!api.notAndroid){$$
 			^^if(api.type == "gets"){$$
+
 	public void test^^=ucfirst(api.name)$$() throws Exception{
 		Context context = activity.getApplicationContext();
 
@@ -11,8 +13,6 @@
 		ExceptionCode e = API.^^=api.name$$(context);
 		assertNull(e.message);
 		assertEquals(0, e.code);
-
-
 		return;
 	}
 
@@ -22,6 +22,7 @@
 
 			^^}else if(api.type == "put"){$$
 			^^}$$
+	^^}$$
 ^^})$$
 
 
@@ -77,7 +78,7 @@
 			 ^^uploadApis.forEach(function(api){$$
 						 ^^if(api.media == "image"){$$
 
-	public void testUpload^^=ucfirst(api.name)$$() throws Exception{
+	public void testUpload^^=ucfirst(name)$$^^=ucfirst(api.name)$$() throws Exception{
 		Context context = activity.getApplicationContext();
 		Bitmap bitmap = ImageUtils.drawableToBitmap(context.getResources().getDrawable(R.drawable.ic_launcher));
 
@@ -86,7 +87,7 @@
 	  ^^=ucfirst(auth)$$Utils.save(^^=ucfirst(auth)$$Controller.getTestId(), ^^=ucfirst(auth)$$Controller.getTestToken(), context);
 		^^}$$
 
-		ExceptionCode e = API.upload^^=ucfirst(api.name)$$(bitmap, context);
+		ExceptionCode e = API.upload^^=ucfirst(name)$$^^=ucfirst(api.name)$$(^^=ucfirst(auth)$$Controller.getTestId(), bitmap, context);
 		assertNull(e.message);
 
 		return;
