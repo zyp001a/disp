@@ -8,6 +8,7 @@ describe('^^=name$$Test', function() {
   });
 ^^apis.forEach(function(api){$$
  ^^if(api.type == "gets"){$$
+  ^^if(!api.by){$$
   it('should successful ^^=api.type$$ ^^=api.name$$', function(done) {
 		utils.getapiAuth("/^^=api.name$$", function(err, doc){
 			assert.equal(err, null);
@@ -23,6 +24,7 @@ describe('^^=name$$Test', function() {
 			done();
 		});
 	})
+  ^^}$$
  ^^}else if(api.type == "post"){$$
  ^^}else if(api.type == "get"){$$
   it('should successful ^^=api.type$$ ^^=api.name$$', function(done) {

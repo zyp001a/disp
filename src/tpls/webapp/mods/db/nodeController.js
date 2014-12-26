@@ -67,6 +67,9 @@ exports.^^=api.name$$ = function(req, res) {
 	^^}else{$$
 	var criteria = {};
 	^^}$$
+	^^if(api.by){$$
+	criteria.^^=api.by$$ = req.params.^^=api.by$$;
+  ^^}$$
   Model.method.gets(criteria, cols, function(err, models) {
     if (err)
       res.send(err);

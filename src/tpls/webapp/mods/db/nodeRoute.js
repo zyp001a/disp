@@ -12,7 +12,11 @@ router.route('/^^=name$$/:id').delete(^^=auth$$Controller.authMidware,
 
 ^^apis.forEach(function(api){$$
  ^^if(api.type == "gets"){$$
+  ^^if(!api.by){$$
 router.route('/^^=api.name$$').get(^^=auth$$Controller.authMidware, ^^=name$$Controller.^^=api.name$$);
+  ^^}else{$$
+router.route('/^^=api.name$$/:^^=api.by$$').get(^^=auth$$Controller.authMidware, ^^=name$$Controller.^^=api.name$$);
+  ^^}$$
  ^^}else if(api.type == "post"){$$
 router.route('/^^=api.name$$').post(^^=auth$$Controller.authMidware, ^^=name$$Controller.^^=api.name$$);
  ^^}else {$$

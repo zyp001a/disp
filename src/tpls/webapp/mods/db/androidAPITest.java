@@ -1,7 +1,7 @@
 ^^apis.forEach(function(api){$$
 	^^if(!api.notAndroid){$$
 			^^if(api.type == "gets"){$$
-
+  			^^if(!api.by){$$
 	public void test^^=ucfirst(api.name)$$() throws Exception{
 		Context context = activity.getApplicationContext();
 
@@ -15,7 +15,7 @@
 		assertEquals(0, e.code);
 		return;
 	}
-
+				^^}$$
 			^^}else if(api.type == "get"){$$
 
 			^^}else if(api.type == "post"){$$

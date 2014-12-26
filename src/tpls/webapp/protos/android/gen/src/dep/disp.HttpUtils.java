@@ -92,6 +92,7 @@ public class HttpUtils {
 		HttpURLConnection urlConnection = createConnection(urlString);
 		urlConnection.setRequestMethod("PUT");
 		urlConnection.setRequestProperty("Content-Type", "application/json");
+		urlConnection.setDoOutput(true);
 		byte[] outputInBytes = jo.toString().getBytes("UTF-8");
 		OutputStream os = urlConnection.getOutputStream();
 		os.write(outputInBytes);
@@ -106,6 +107,7 @@ public class HttpUtils {
 		urlConnection.setRequestMethod("PUT");
 		urlConnection.setRequestProperty("Content-Type", "application/json");
 		urlConnection.setRequestProperty("Authorization", "Bearer " + token);
+		urlConnection.setDoOutput(true);
 		byte[] outputInBytes = jo.toString().getBytes("UTF-8");
 		OutputStream os = urlConnection.getOutputStream();
 		os.write(outputInBytes);
@@ -120,7 +122,7 @@ public class HttpUtils {
 		HttpURLConnection urlConnection = createConnection(urlString);
 		urlConnection.setRequestMethod("POST");
 		urlConnection.setRequestProperty("Content-Type", "application/json");
-
+		urlConnection.setDoOutput(true);
 		byte[] outputInBytes = jo.toString().getBytes("UTF-8");
 		OutputStream os = urlConnection.getOutputStream();
 		os.write(outputInBytes);
@@ -135,6 +137,7 @@ public class HttpUtils {
 		urlConnection.setRequestMethod("POST");
 		urlConnection.setRequestProperty("Content-Type", "application/json");
 		urlConnection.setRequestProperty("Authorization", "Bearer " + token);
+		urlConnection.setDoOutput(true);
 		byte[] outputInBytes = jo.toString().getBytes("UTF-8");
 		OutputStream os = urlConnection.getOutputStream();
 		os.write(outputInBytes);
@@ -150,6 +153,7 @@ public class HttpUtils {
 
 		urlConnection.setRequestMethod("POST");
 		urlConnection.setRequestProperty("Content-Type", "text/plain");
+		urlConnection.setDoOutput(true);
 		byte[] outputInBytes = text.getBytes("UTF-8");
 		OutputStream os = urlConnection.getOutputStream();
 		os.write(outputInBytes);
@@ -165,6 +169,7 @@ public class HttpUtils {
 		urlConnection.setRequestMethod("POST");
 		urlConnection.setRequestProperty("Content-Type", "text/plain");
 		urlConnection.setRequestProperty("Authorization", "Bearer " + token);
+		urlConnection.setDoOutput(true);
 		byte[] outputInBytes = text.getBytes("UTF-8");
 		OutputStream os = urlConnection.getOutputStream();
 		os.write(outputInBytes);
@@ -228,6 +233,7 @@ public class HttpUtils {
 
 		urlConnection.setRequestMethod("POST");
 		urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		urlConnection.setDoOutput(true);
 		byte[] outputInBytes = HttpUtils.encodeJson(jo).getBytes("UTF-8");
 		OutputStream os = urlConnection.getOutputStream();
 		os.write(outputInBytes);
@@ -249,6 +255,7 @@ public class HttpUtils {
 		urlConnection.setRequestMethod("POST");
 		urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 		urlConnection.setRequestProperty("Authorization", "Bearer " + token);
+		urlConnection.setDoOutput(true);
 		byte[] outputInBytes = HttpUtils.encodeJson(jo).getBytes("UTF-8");
 		OutputStream os = urlConnection.getOutputStream();
 		os.write(outputInBytes);

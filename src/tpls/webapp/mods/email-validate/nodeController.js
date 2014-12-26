@@ -1,4 +1,4 @@
-var DB = require('../models/^^=db$$');
+var Db = require('../models/^^=db$$');
 var utils = require('../utils');
 
 var nodemailer = require('nodemailer');
@@ -13,43 +13,75 @@ var transporter = nodemailer.createTransport({
 	}
 });
 
-module.exports.sendEmail = function(req, res){
-	var code = utils.hat();
-	var url;
-	if(process.env.NODE_ENV=="test"){
-		url = "^^=test.serverURI$$/api/^^=name$$/verifyEmail?code=" + code;
-	}else{
-		url = "^^=serverURI$$/api/^^=name$$/verifyEmail?code=" + code;
+function _sendEmail(body, fn){
+	if(!body.email){
+		fn("no email");
+		return;
 	}
-	DB.findOneAndUpdate({"^^=schema.idField$$":req.body.email}, {
-		"^^=schema.idField$$": req.body.email,
-		"^^=schema.codeField$$": code
-	}, {upsert:true}, function(err, doc){
-		var mailOptions = {
-			from: '^^=username$$ <^^=user$$>', // sender address
-			to: req.body.email, // list of receivers
-			subject: '^^=subject$$', // Subject line
-			text: '^^=textpre$$' + url + "^^=textafter$$" // plaintext body
-//	html: ""
-		};
-		transporter.sendMail(mailOptions, function(err, info){
+	
+	Db.method.get({"^^=schema.idField$$": body.email}, {}, function(err, doc){
+		if(err){ fn(err);	return;	}	
+		var code = utils.hat();	
+		if(!doc){
+			doc = new Db({
+				"^^=schema.idField$$": body.email,
+				"^^=schema.codeField$$": code,
+				"^^=schema.timeField$$": new Date()
+			});
+		}else if(new Date().getTime() - doc.^^=schema.timeField$$.getTime() < 60000){
+			fn("邮件已发送，请等待60s后再发");
+			return;
+		}
+		doc.^^=schema.codeField$$ = code;
+		doc.^^=schema.timeField$$ = new Date();
+		console.log(doc);
+		doc.save(function(err){
 			if(err){
-				res.status(401).send({"error": err});
-			}else{
-				res.send('Message sent: ' + info.response);
+				fn(err);
+				return;
 			}
+			var url;
+			if(process.env.NODE_ENV=="test"){
+				url = "^^=test.serverURI$$";
+			}else{
+				url = "^^=serverURI$$";
+			}
+			url += "/api/^^=name$$/verifyEmail?email=" + body.email + "&code=" + code;
+			var mailOptions = {
+				from: '^^=username$$ <^^=user$$>', // sender address
+				to: body.email, // list of receivers
+				subject: '^^=subject$$', // Subject line
+				text: '^^=textpre$$' +  url + "^^=textafter$$" // plaintext body
+				//	html: ""
+			};
+			console.log(mailOptions);
+			transporter.sendMail(mailOptions, function(err, info){
+				if(err){ fn(err); return;}
+				fn(null, info.response);
+			});
+
 		});
+	});
+
+}
+
+module.exports.sendEmail = function(req, res){
+	
+	_sendEmail(req.body, function(err, result){
+		if(err){res.send({error:err}); return;}
+		res.send({success:true,result:result});
 	});
 }
 module.exports.verifyEmail = function(req, res){
-	DB.findOne({
-    "^^=schema.codeField$$":req.params.code
+	Db.method.VerifyCode({
+		"id":req.param("email"),
+    "code":req.param("code"),
+		"minutes": 3
 	}, function(err, doc){
-		if(err)
-			res.status(401).send({error: err});
-		else if(doc)
+		if(err){res.send({error: err}); return;}
+		if(doc)
 			res.send({result: true});
 		else
 			res.send({result: false});
-	})
+	});
 }

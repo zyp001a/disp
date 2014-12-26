@@ -6,14 +6,32 @@ import java.util.Date;
 import java.util.Locale;
 
 public class DateUtils {
+	public static SimpleDateFormat jsFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
 	public static String getAbsoluteString(Date date) {
 		SimpleDateFormat format = new SimpleDateFormat("MM月dd日HH时",
 																									 Locale.getDefault());
 		String dateStr = format.format(date);
 		return dateStr;// 10月03日 23时
 	}
+	public static Date parseDate(String dateString) {
+		Date date = null;
+		try {
+			date = jsFormat.parse(dateString);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return date;
+	}
+	public static Date parseDate(long i) {
+		return new Date(i);
+	}
 
-	public static String getString(Date date) {
+	public static String getString(Date date){
+		String dateStr = jsFormat.format(date);
+		return dateStr;
+	}
+	public static String getRelativeString(Date date) {
 		String dateStr;
 		long min = (new Date().getTime() - date.getTime()) / 1000 / 60;
 		if (min == 0) {
@@ -36,18 +54,6 @@ public class DateUtils {
 
 
 
-	public static Date parseDate(String dateString) {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd",
-																									 Locale.getDefault());
-		Date date = null;
-		try {
-			date = format.parse(dateString);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return date;
-	}
 	public static Date getNow(){
 		return new Date(System.currentTimeMillis());
 	}

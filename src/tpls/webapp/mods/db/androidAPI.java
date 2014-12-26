@@ -7,7 +7,7 @@
 			HttpResult wr = HttpUtils.getBearer(serverURI + "/api/^^=apiname$$/", ^^=ucfirst(auth)$$Utils.getToken(context));
   ^^}$$
 
- ^^}else if(method == "get"){$$
+ ^^}else if(method == "get" || method == "getsBy"){$$
 
   ^^if(!auth){$$
 			HttpResult wr = HttpUtils.get(serverURI + "/api/^^=apiname$$/" + id);
@@ -57,7 +57,7 @@
 	
  ^^}$$
 			if (wr.statusCode == 200)
-				if(wr.response.has("error")){
+				if(wr.response != null && wr.response.has("error")){
 					if(wr.response.has("errorCode")){
 						return new ExceptionCode(wr.response.getInt("errorCode"), wr.response.getString("error"));
 					}else{
@@ -86,9 +86,17 @@
 ^^apis.forEach(function(api){$$
 	^^if(!api.notAndroid){$$
 			^^if(api.type == "gets"){$$
+					^^if(api.by){$$
+	public static ExceptionCode ^^=api.name$$(String id, Context context) {
+// id is ^^=api.by$$
+		try{
+ ^^prequery("getsBy", api.name);$$
+
+					^^}else{$$
 	public static ExceptionCode ^^=api.name$$(Context context) {
 		try{
  ^^prequery("gets", api.name);$$
+					^^}$$
   ^^if(androidProvider){$$
 							^^=ucfirst(name)$$Utils.saveList(^^=ucfirst(name)$$.getList(wr.responses), context);
 							return ExceptionCode.NullException;
@@ -157,6 +165,7 @@ $$
  ^^prequery("post", api.name);$$
 				return ExceptionCode.NullException;
  ^^postquery();$$
+		}
 	}
 			^^}else if(api.type == "delete"){$$
 	public static ExceptionCode ^^=api.name$$(String id, Context context) {

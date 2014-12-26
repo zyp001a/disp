@@ -188,6 +188,17 @@ function _checkDuplicateUser(username, fn){
 			fn(null, !result);
 	});
 }
+^^schema.fields.forEach(function(f){$$
+ ^^if(f.encrypt){$$
+function verifyId^^=ucfirst(f.name)$$(req, res){
+	User.method.verifyId^^=ucfirst(f.name)$$(req.params.id, req.body.password, function(err, isMatch){
+		if(err) {res.send({error: err}); return;}
+		res.send({result: isMatch});
+	});
+}
+module.exports.verifyId^^=ucfirst(f.name)$$ = verifyId^^=ucfirst(f.name)$$;
+ ^^}$$
+^^})$$
 module.exports.auth = auth;
 module.exports.signup = signup;
 module.exports.signin = signin;

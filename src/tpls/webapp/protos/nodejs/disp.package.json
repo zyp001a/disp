@@ -11,17 +11,18 @@
 		^^}$$
     "express": "^4.*",
     "mongoose": "*",
+		"ursa": "*",
     "body-parser": "*",
     "bcrypt": "*",
     "passport": "*",
-    "passport-http": "*"
+    "passport-http": "*",
+		"async": "*"
   },
 	"devDependencies": {
 		^^for (dep in nodeDevDeps){$$
     "^^=dep$$": "^^=nodeDevDeps[dep]$$",
     ^^}$$
 		"mocha": "*",
-		"should": "*",
-		"async": "*"
+		"should": "*"
 	}
 }

@@ -14,6 +14,7 @@ module.exports = function(mod, mp, env, config){
 	if(!mp.signup) mp.signup = "signup";
 	if(!mp.newpass) mp.newpass = "newpass";
 	if(!mp.signinAfterSignup) mp.signinAfterSignup = false;
+	if(!mp.noSignup) mp.noSignup = false;
 
 	if(!mp.code) mp.code = false;
 	env.auths[mp.name] = mp;

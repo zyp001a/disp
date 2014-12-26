@@ -10,7 +10,7 @@ if(process.env.NODE_ENV == "test"){
 ^^}$$
 ^^if(mysql){$$
 var mysql = require("mysql");
-var FFI = require("node-ffi");
+var FFI = require("ffi");
 var libc = new FFI.Library(null, {
   "system": ["int32", ["string"]]
 });

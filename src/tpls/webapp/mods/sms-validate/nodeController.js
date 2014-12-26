@@ -11,7 +11,7 @@ function _sendSMS(body, fn){
 	var code = utils.genNum(6);
 	json.^^=codeField$$ = code;
 
-	Db.findOne({"^^=schema.idField$$": body.phone}, function(err, doc){
+	Db.method.get({"^^=schema.idField$$": body.phone}, {}, function(err, doc){
 		if(err){
 			fn(err);
 			return;
@@ -67,7 +67,7 @@ module.exports.sendSMSSignup = function(req, res){
 	if(!req.body.phone)
 		res.send({error: "no phone"});
 	else{
-		userDb.findOne({"^^=userDbPhoneField$$":req.body.phone}, function(err, doc){
+		userDb.method.get({"^^=userDbPhoneField$$":req.body.phone}, {}, function(err, doc){
 			if(err){
 				res.send({error: err, message: "database error: findOne failed: "+req.body.phone});
 				return;
@@ -87,9 +87,10 @@ module.exports.sendSMSSignup = function(req, res){
 }
 ^^}$$
 module.exports.verifySMS = function(req, res){
-	Db.findOne({
-		"^^=schema.idField$$":req.body.phone,
-    "^^=schema.codeField$$":req.body.code
+	Db.method.VerifyCode({
+		"id":req.body.phone,
+    "code":req.body.code,
+		"minutes": 3
 	}, function(err, doc){
 		if(err)
 			res.send({error: err});

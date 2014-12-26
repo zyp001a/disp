@@ -6,9 +6,9 @@ module.exports = function(mod, mp, env, config){
 	if(!mp.engine) mp.engine = "mongo";
 	if(mp.engine == "mongo" || mp.engine == "mongodb"){
 		env.nodeDeps["mongoose"]="*";
-	}else if(mp.strategy == "mysql"){
+	}else if(mp.engine == "mysql"){
 		env.nodeDeps["mysql"]="*";
-		env.nodeDeps["nodeffi"]="*";
+		env.nodeDeps["ffi"]="*";
 	}
 	if(!mp.restful) mp.restful = false;
 	if(!mp.apis) mp.apis = [];
@@ -21,6 +21,7 @@ module.exports = function(mod, mp, env, config){
 	if(!mp.idField) mp.idField = false;
 	if(!mp.path) mp.path = false;
 	if(!mp.auth) mp.auth = false;
+	if(!mp.androidProvider) mp.androidProvider = false;
 
 	mp.dbdef = env.dbdef;
 

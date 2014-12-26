@@ -8,14 +8,9 @@ rootApp.factory('^^=name$$Service', ['$http', '^^=auth$$Service', function($http
 	methods.request = function(data){
 		var url = "/api/^^=posturl$$/";
 		^^}$$
-		^^if(method == "post"){$$
-		var method = "POST";
-		^^}else if(method = "put"){$$
-		var method = "PUT";
-		^^}$$
 		return $http({
 			url: url,
-			method: method,
+			method: "^^=method.toUpperCase()$$",
 			data: data,
 			headers: {
 				"Authorization": "Bearer " + authService.getCred()

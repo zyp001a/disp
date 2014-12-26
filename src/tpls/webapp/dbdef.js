@@ -136,7 +136,7 @@ table.Array = table.array = {
 	"mongoose": "Array",
   "mysql": "VARCHAR(255)",
   "sqlite": "TEXT",
-  "java": "String",
+  "java": "List<String>",
   "js": "object",
 	"jstest": "['1','2']"
 };

@@ -1,6 +1,6 @@
 ^^function prequery(){$$
 			if (wr.statusCode == 200)
-				if(wr.response.has("error")){
+				if(wr.response != null && wr.response.has("error")){
 					if(wr.response.has("errorCode")){
 						return new ExceptionCode(wr.response.getInt("errorCode"), wr.response.getString("error"));
 					}else{

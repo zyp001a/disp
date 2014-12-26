@@ -143,7 +143,7 @@ mkdirp.sync(distDir);
 var modPaths = [path.resolve("./mods")];
 if(env.modPaths)
 	env.modPaths.forEach(function(m){
-		modPaths.push(m);
+		modPaths.push(path.resolve(m));
 	});
 
 

@@ -1,4 +1,5 @@
 var utils = require('../utils');
+var async = require('async');
 ^^if(engine == "mongo"){$$
 var mongoose = require('mongoose');
 ^^
@@ -164,15 +165,17 @@ Model.method.post = function(doc, fn){
 }
 Model.method.put = function(where, doc, fn){
 	if(typeof where == "string" || typeof where == "number")
-		where = {^^=idField$$: where};
+		where = {"^^=idField$$": where};
 	Model.findOne(where, function(err, ori_doc){
-    if (err)
-			fn(err);
+    if (err){	fn(err); return;}
+		if(!ori_doc){
+			fn(null, {success: false});
+			return;
+		}
 		^^fields.forEach(function(field){$$
 	  if(doc.^^=field.name$$ && doc.^^=field.name$$ != ori_doc.^^=field.name$$)
 			ori_doc.^^=field.name$$ = doc.^^=field.name$$;
 		^^})$$
-		console.log(ori_doc);
 		ori_doc.save(function(err){
 			if(err)
 				fn(err);
@@ -320,6 +323,9 @@ createTableStr += " DEFAULT NOW()";
  ^^if(f.unique){$$
 createTableStr += " UNIQUE";
  ^^}$$		
+ ^^if(f.required){$$
+createTableStr += " NOT NULL";
+ ^^}$$		
  ^^if(f.name == idField){$$
 createTableStr += " PRIMARY KEY";
  ^^}$$
@@ -415,8 +421,12 @@ Model.method.delete = function(json, fn){
 Model.method.put = function(where, doc, fn){
 	if(typeof where == "string" || typeof where == "number")
 		where = {"^^=idField$$": where};
-	mysql.query(mysql.getUpdateStr(where, filter(doc), "^^=name$$"), function(err){
-		fn(err);
+	mysql.query(mysql.getUpdateStr(where, filter(doc), "^^=name$$"), function(err, result){
+		if(err) {fn(err); return;}
+		if(result.affectedRows)
+			fn(null, {success: true});
+		else
+			fn(null, {success: false});
 	});
 }
 Model.method.drop = function(fn){
@@ -427,6 +437,24 @@ Model.method.drop = function(fn){
 
 ^^}$$
 
+
+^^fields.forEach(function(f){if(f.encrypt){$$
+Model.method.verifyId^^=ucfirst(f.name)$$ = function(id, password, cb) {
+	Model.method.get(id, {"^^=f.name$$":1}, function(err, result){
+		utils.encrypt.bcryptcompare(password, result.^^=f.name$$, function(err, isMatch) {
+			if (err) return cb(err);
+			cb(null, isMatch);
+		});
+	});
+}
+^^}})$$
+
+Model.method.posts = function(array, fn){
+	async.eachSeries(array, Model.method.post, function(err){
+		if(err) fn(err);
+		else fn(null, {success: true});
+	});
+}
 
 Model.method.generateTest = function(){
 	var json = {};
@@ -445,8 +473,6 @@ function filter(doc){
 	^^})$$
 	return json;
 }
-
-
 Model.method.filter = filter;
 // Export the model
 module.exports = Model;

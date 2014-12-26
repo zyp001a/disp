@@ -1,6 +1,6 @@
 ^^function prequery(){$$
 			if (wr.statusCode == 200)
-				if(wr.response.has("error")){
+				if(wr.response != null && wr.response.has("error")){
 					if(wr.response.has("errorCode")){
 						return new ExceptionCode(wr.response.getInt("errorCode"), wr.response.getString("error"));
 					}else{
@@ -58,4 +58,21 @@
 			^^postquery()$$
 		}
 	}
+^^schema.fields.forEach(function(f){$$
+ ^^if(f.encrypt){$$
 
+	public static ExceptionCode ^^=name+"VerifyId"+ucfirst(f.name)$$(String id, String password, Context context) {
+		try {
+			JSONObject jo = new JSONObject();
+			jo.put("id", id);
+			jo.put("password", password);
+			HttpResult wr = HttpUtils.postJSON(
+				serverURI + "/api/^^=name$$/verifyId^^=ucfirst(f.name)$$", jo);
+			^^prequery()$$
+					return ExceptionCode.withResult(wr.response.getInt("result"));
+			^^postquery()$$
+		}
+	}
+
+ ^^}$$
+^^})$$
