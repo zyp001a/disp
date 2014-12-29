@@ -1,4 +1,4 @@
-
+var utils = require("./utils");
 ^^if(mongo){$$
 var mongoose = require("mongoose");
 if(process.env.NODE_ENV == "test"){
@@ -43,6 +43,7 @@ if(process.env.NODE_ENV != "test"){
 
 
 //mysqlConn.connect();
+
 mysqlConn.getInsertStr = function(json, table){
 	var cols = [];
 	var values = [];
@@ -53,7 +54,8 @@ mysqlConn.getInsertStr = function(json, table){
 				values.push("'"+json[key]+"'");
 				break;
 			case "object":
-				console.log(typeof json[key]);
+				cols.push(key);
+				values.push("'"+utils.formatDate(json[key], "yyyy-MM-dd hh:mm:ss")+"'");
 				break;
 			default:
 				cols.push(key);

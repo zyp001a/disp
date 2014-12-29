@@ -18,7 +18,7 @@ public class ^^=ucfirst(name)$$Utils {
 
 	public static List<^^=ucfirst(name)$$> getList(Context context) {
 		^^if(useridField){$$
-		Cursor c = context.getContentResolver().query(^^=ucfirst(name)$$Constant.CONTENT_URI,	null, ^^=ucfirst(name)$$Constant.^^=useridField.toUpperCase()$$ + " = ? ", new String[] { ^^=ucfirst(auth)$$Utils.getUser(context) }, null);
+		Cursor c = context.getContentResolver().query(^^=ucfirst(name)$$Constant.CONTENT_URI,	null, ^^=ucfirst(name)$$Constant.^^=useridField.toUpperCase()$$ + " = ? ", new String[] { ^^=ucfirst(auth)$$Utils.getId(context) }, null);
 		^^}else{$$
 		Cursor c = context.getContentResolver().query(^^=ucfirst(name)$$Constant.CONTENT_URI,	null, null, null, null);
 		^^}$$
