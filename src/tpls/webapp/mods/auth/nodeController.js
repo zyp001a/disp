@@ -191,8 +191,8 @@ function _checkDuplicateUser(username, fn){
 ^^schema.fields.forEach(function(f){$$
  ^^if(f.encrypt){$$
 function verifyId^^=ucfirst(f.name)$$(req, res){
-	User.method.verifyId^^=ucfirst(f.name)$$(req.params.id, req.body.password, function(err, isMatch){
-		if(err) {res.send({error: err}); return;}
+	User.method.verifyId^^=ucfirst(f.name)$$(req.body.id, req.body.password, function(err, isMatch){
+		if(err) {res.send({error: err}); return; }
 		res.send({result: isMatch});
 	});
 }

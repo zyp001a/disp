@@ -97,6 +97,9 @@
 		try{
  ^^prequery("gets", api.name);$$
 					^^}$$
+  ^^if(api.clear){$$
+								 ^^=ucfirst(name)$$Utils.clear(context);
+  ^^}$$
   ^^if(androidProvider){$$
 							^^=ucfirst(name)$$Utils.saveList(^^=ucfirst(name)$$.getList(wr.responses), context);
 							return ExceptionCode.NullException;

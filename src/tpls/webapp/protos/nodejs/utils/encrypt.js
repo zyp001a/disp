@@ -109,10 +109,12 @@ var Base64 = {
   }
 }
 
-module.exports.md5 = function(str){
-  var hash = crypto.createHash("md5");
-  hash.update(str);
-  return hash.digest("hex");
+module.exports.md5 = function(data){
+  var Buffer = require("buffer").Buffer;
+  var buf = new Buffer(data);
+  var str = buf.toString("binary");
+  var crypto = require("crypto");
+  return crypto.createHash("md5").update(str).digest("hex");
 }
 module.exports.rsa = function(str, key){
 	return ursa.createPublicKey(key).encrypt(str, 'utf8', 'base64',ursa.RSA_PKCS1_PADDING);

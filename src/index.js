@@ -21,6 +21,7 @@ var dist = process.argv[3];
 if(!dir){
 	dir=".";
 }
+
 function readNsDir(nsPath){
 	return {};
 }
@@ -133,16 +134,50 @@ else{
 	process.exit(1);
 }
 
+extendObj(config); // process mount
+
+if(process.env.NODE_ENV == "prod" && config.prod){
+	distDir = dir + "/" + "prod";
+	for (var key in config.prod){
+
+		if(typeof config.prod[key] == "string" || typeof config.prod[key] == "number" || typeof config.prod[key] == "boolean")
+			env[key] = config.prod[key];
+		else if(typeof config.prod[key] == "object"){
+			if(isArray(config.prod[key])){
+				config.prod[key].forEach(function(moddist){
+					env[key].forEach(function(mod){
+						if(moddist.name == mod.name){
+							for (var key in moddist){
+								mod[key] = moddist[key];
+							}
+						}
+					});
+				});
+			}
+			else{
+			console.log(key);
+				if(!env[key])
+					env[key] = {};
+				for(var key2 in config.prod[key]){
+					env[key][key2] = config.prod[key][key2];
+				}
+			}
+		}
+	}
+}
+else{
+	distDir = dir + "/" + "dev";
+}
+
 if(dist)
-	distDir = dist;
-else
-	distDir = dir + "/dist";
+	distDir = dir + "/" + dist;
+
 mkdirp.sync(distDir);
 
 
 var modPaths = [path.resolve("./mods")];
-if(env.modPaths)
-	env.modPaths.forEach(function(m){
+if(config.modPaths)
+	config.modPaths.forEach(function(m){
 		modPaths.push(path.resolve(m));
 	});
 
@@ -158,7 +193,7 @@ if(config.hasOwnProperty("ns")){
 }
 
 
-extendObj(config);
+
 tplObj(config);
 
 

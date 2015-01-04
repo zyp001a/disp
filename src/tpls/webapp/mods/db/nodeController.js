@@ -37,14 +37,14 @@ exports.upload^^=ucfirst(api.name)$$ = function(req, res){
 }
 
 exports.download^^=ucfirst(api.name)$$ = function(req, res){
-	var path = "^^=path$$/^^=name$$/^^=api.name$$/" + req.params.filename;
-	console.log(path);
-	if(fs.existsSync(path)){
+	var fpath = path.resolve("^^=path$$/^^=name$$/^^=api.name$$/" + req.params.filename);
+	console.log(fpath);
+	if(fs.existsSync(fpath)){
 ^^if(api.media != "image"){$$
 ^^}else{$$
 		res.setHeader('Content-Type', 'image/jpeg');
 ^^}$$
-		res.send(fs.readFileSync(path));
+		res.send(fs.readFileSync(fpath));
 	}
 	else
 		res.status(500).send({error: "not exist"});
@@ -79,6 +79,22 @@ exports.^^=api.name$$ = function(req, res) {
 };
  ^^}else if(api.type == "post"){$$
 exports.^^=api.name$$ = function(req, res) {
+	console.log("POST ^^=api.name$$");
+	console.log(req.body);
+
+	if(!Object.keys(req.body).length){
+		res.send({error: "no postdata"});
+		return;
+	}
+
+	Model.method.post(req.body, function(err, doc){
+		if(err)
+      res.send({ error: err });
+		else{
+
+			res.send({ success: true, insertId: doc.insertId});
+		}
+  });
 };
  ^^}else if(api.type == "get"){$$
 exports.^^=api.name$$ = function(req, res) {
@@ -144,7 +160,13 @@ function _^^=api.name$$(id, body, fn) {
 		fn("no validation code");
 		return;
 	}
-	Model.method.get({ "^^=idField$$": id }, { "^^=usernameField$$": 1}, function(err, userdoc){
+	var where = {};
+	^^if(api.idField){$$
+	where.^^=api.idField$$ = id;
+	^^}else{$$
+	where.^^=idField$$ = id;
+  ^^}$$
+	Model.method.get(where, { "^^=usernameField$$": 1}, function(err, userdoc){
 		console.log(userdoc);
 		if(err){
 			fn(err);

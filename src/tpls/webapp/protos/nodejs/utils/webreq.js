@@ -23,7 +23,7 @@ function _post(protocol, options, content, fn){
 				}catch(e){
 					doc.data = data;
 				}
-        fn(null, doc);
+        fn(null, doc, res.headers);
 			});
 		});
 	}else if(protocol == "https:"){
@@ -43,7 +43,7 @@ function _post(protocol, options, content, fn){
 				}catch(e){
 					doc.data = data;
 				}
-        fn(null, doc);
+        fn(null, doc, res.headers);
 			});
 		});
 	}else{

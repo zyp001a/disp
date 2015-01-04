@@ -50,16 +50,15 @@ public class ^^=ucfirst(name)$$Utils {
  ^^if(passwordField){$$
 		values.put(^^=ucfirst(name)$$Constant.PRESENT, 1);
  ^^}$$
+		String where = ^^=ucfirst(name)$$Constant.^^=idField.toUpperCase()$$ + "= '" + obj.^^=idField$$ + "'";
 		int count = context.getContentResolver().update(
-			^^=ucfirst(name)$$Constant.CONTENT_URI, values, null, null);
+			^^=ucfirst(name)$$Constant.CONTENT_URI, values, where, null);
 		return count > 0;
 	}
 
 	public static boolean saveList(List<^^=ucfirst(name)$$> li, Context context) throws JSONException {
 		for(int i=0; i<li.size(); i++){
-			ContentValues values = li.get(i).toContentValues();
-			int count = context.getContentResolver().update(
-				^^=ucfirst(name)$$Constant.CONTENT_URI, values, null, null);
+			save(li.get(i), context);
 		}
 		return true;
 	}

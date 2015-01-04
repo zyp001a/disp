@@ -1,6 +1,11 @@
 var webreq = require("./webreq");
 var encrypt = require("./encrypt");
 var encoding = require("./encoding");
+function maskUtilLast(str, num){
+	return str.substr(0, str.length-num).replace(/./g, "*") +
+        str.substr(str.length-num, num);
+
+}
 function formatDate(date, fmt){
 	//author: meizz   
 	var o = {   
@@ -147,6 +152,7 @@ module.exports = {
 	genNum: genNum,
 	escapeRegExp: escapeRegExp,
 	ucfirst: ucfirst,
+	maskUtilLast: maskUtilLast,
 	tmpl: tmpl,
 	isArray: isArray,
 	formatDate: formatDate,

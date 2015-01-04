@@ -77,7 +77,7 @@ function genEqualStr(where, sep){
 					wheres.push(key + " = " + "'"+where[key]+"'");
 					break;
 				case "object":
-					console.log(typeof where[key]);
+					wheres.push(key + " = " + "'" + utils.formatDate(where[key], "yyyy-MM-dd hh:mm:ss") + "'");
 					break;
 				default:
 					wheres.push(key + " = " + where[key]);

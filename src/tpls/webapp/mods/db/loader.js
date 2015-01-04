@@ -22,6 +22,7 @@ module.exports = function(mod, mp, env, config){
 	if(!mp.path) mp.path = false;
 	if(!mp.auth) mp.auth = false;
 	if(!mp.androidProvider) mp.androidProvider = false;
+	if(!mp.clear) mp.clear = false;
 
 	mp.dbdef = env.dbdef;
 

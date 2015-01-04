@@ -1,11 +1,29 @@
-
+/*
+body:
+ username
+ password
+*/
 router.route("/^^=name$$/^^=signin$$").post(^^=name$$Controller.signin);
+
 ^^if(!noSignup){$$
+/*
+body:
+ username
+ password
+^^if(code){$$
+ code
+^^}$$
+*/
 router.route("/^^=name$$/^^=signup$$").post(^^=name$$Controller.signup);
 ^^}$$
 
 ^^schema.fields.forEach(function(f){$$
  ^^if(f.encrypt){$$
+/*
+body:
+ id
+ password
+*/
 router.route("/^^=name$$/verifyId^^=ucfirst(f.name)$$").post(^^=name$$Controller.verifyId^^=ucfirst(f.name)$$);
  ^^}$$
 ^^})$$

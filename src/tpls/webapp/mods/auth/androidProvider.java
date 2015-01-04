@@ -33,6 +33,19 @@ public class ^^=ucfirst(name)$$Utils {
 		}
 		return s;
 	}
+	^^if(dbdef.getType(schema.fields[0], "java")=="long"){$$
+	public static long getIdLong(Context context) {
+		Cursor c = context.getContentResolver().query(^^=ucfirst(db)$$Constant.CONTENT_URI, null, ^^=ucfirst(db)$$Constant.PRESENT + " = ? ", new String[] { "1" }, null);
+		long s = 0;
+		if (c != null) {
+			if (c.moveToNext()) {
+				s = c.getLong(c.getColumnIndex(^^=ucfirst(db)$$Constant.^^=schema.idField.toUpperCase()$$));
+			}
+			c.close();
+		}
+		return s;
+	}
+		^^}$$
 	public static String getUser(Context context) {
 		Cursor c = context.getContentResolver().query(^^=ucfirst(db)$$Constant.CONTENT_URI, null, ^^=ucfirst(db)$$Constant.PRESENT + " = ? ", new String[] { "1" }, null);
 		String s = null;

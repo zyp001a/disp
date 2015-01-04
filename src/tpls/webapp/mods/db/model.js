@@ -169,7 +169,7 @@ Model.method.put = function(where, doc, fn){
 	Model.findOne(where, function(err, ori_doc){
     if (err){	fn(err); return;}
 		if(!ori_doc){
-			fn(null, {success: false});
+			fn("no doc find");
 			return;
 		}
 		^^fields.forEach(function(field){$$
@@ -190,14 +190,11 @@ Model.method.put^^=ucfirst(cate)$$ = function(where, doc, fn){
 	if(typeof where == "string" || typeof where == "number")
 		where = {^^=idField$$: where};
 	Model.findOne(where, function(err, ori_doc){
-    if (err)
-			fn(err);
-
+    if (err){ fn(err); return;};
 		^^fields.forEach(function(field){if(field.category == cate){$$
 	  if(doc.^^=field.name$$ && doc.^^=field.name$$ != ori_doc.^^=field.name$$)
 			ori_doc.^^=field.name$$ = doc.^^=field.name$$;
 		^^}})$$
-		console.log(ori_doc);
 		ori_doc.save(function(err){
 			if(err)
 				fn(err);
@@ -379,7 +376,7 @@ Model.method.gets = function(criteria, cols, fn){
 	}
 	if(skip && !limit)
 		console.error("skip must be used with limit for mysql");
-
+	console.log(selectStr);
 	mysql.query(selectStr, function(err, models){
     if (err)
       fn(err);
@@ -421,12 +418,13 @@ Model.method.delete = function(json, fn){
 Model.method.put = function(where, doc, fn){
 	if(typeof where == "string" || typeof where == "number")
 		where = {"^^=idField$$": where};
+	console.log(mysql.getUpdateStr(where, filter(doc), "^^=name$$"));
 	mysql.query(mysql.getUpdateStr(where, filter(doc), "^^=name$$"), function(err, result){
 		if(err) {fn(err); return;}
 		if(result.affectedRows)
-			fn(null, {success: true});
+			fn(null);
 		else
-			fn(null, {success: false});
+			fn("nothing updated");
 	});
 }
 Model.method.drop = function(fn){

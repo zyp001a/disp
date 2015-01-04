@@ -4,9 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class DateUtils {
-	public static SimpleDateFormat jsFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+	public static SimpleDateFormat jsFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	public static String getAbsoluteString(Date date) {
 		SimpleDateFormat format = new SimpleDateFormat("MM月dd日HH时",
 																									 Locale.getDefault());
@@ -21,7 +22,8 @@ public class DateUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return date;
+		if(date == null) return null;
+		return new Date(date.getTime() + TimeZone.getDefault().getOffset(0));
 	}
 	public static Date parseDate(long i) {
 		return new Date(i);
