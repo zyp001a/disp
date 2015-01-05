@@ -70,8 +70,9 @@ public class ^^=ucfirst(name)$$Utils {
 			^^=ucfirst(db)$$Constant.CONTENT_URI, values, null, null);
 		return count > 0;
 	}
-	public static boolean save(String user, String token, Context context) {
+	public static boolean save(String id, String user, String token, Context context) {
 		ContentValues values = new ContentValues();
+		values.put(^^=ucfirst(db)$$Constant.^^=schema.idField.toUpperCase()$$, id);
 		values.put(^^=ucfirst(db)$$Constant.^^=schema.usernameField.toUpperCase()$$, user);
 		values.put(^^=ucfirst(db)$$Constant.^^=schema.tokenField.toUpperCase()$$, token);
 		values.put(^^=ucfirst(db)$$Constant.PRESENT, 1);

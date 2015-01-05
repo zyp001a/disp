@@ -6,7 +6,7 @@
 		^^}else{$$
 		String id = "test^^=idField$$";
 		^^}$$
-		^^=ucfirst(name)$$Utils.save(id, "", context);
+		^^=ucfirst(name)$$Utils.save(id, "", "", context);
 		ExceptionCode e = API.^^=name+ucfirst(signin)$$("testphone", "testpassword", context);
 		assertNull(e.message);
 		assertTrue(!TextUtils.isEmpty(^^=ucfirst(name)$$Utils.getToken(context)));

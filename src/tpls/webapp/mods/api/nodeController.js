@@ -18,7 +18,7 @@ exports.upload^^=ucfirst(api.name)$$ = function(req, res){
 		res.send({error: "no id " + id});
     return;
 	}
-	if(!req.files || !req.files.buffer){
+	if(!req.files.buffer){
 		res.send({error: "no file"});
     return;
   }
@@ -57,9 +57,6 @@ exports.download^^=ucfirst(api.name)$$ = function(req, res){
 ^^apis.forEach(function(api){$$
  ^^if(api.type == "gets"){$$
 exports.^^=api.name$$ = function(req, res) {
-	console.log("GET list ^^=api.name$$");
-	console.log(req.params);
-
 	^^if(!api.field){$$
 	var cols = {};
 	^^}else{$$
@@ -158,19 +155,17 @@ function _^^=api.name$$(id, body, fn) {
 	 ^^}$$
 	^^}$$
 
+	^^if(api.code){$$
+	if(!body.code){
+		fn("no validation code");
+		return;
+	}
 	var where = {};
 	^^if(api.idField){$$
 	where.^^=api.idField$$ = id;
 	^^}else{$$
 	where.^^=idField$$ = id;
   ^^}$$
-
-
-	^^if(api.code){$$
-	if(!body.code){
-		fn("no validation code");
-		return;
-	}
 	Model.method.get(where, { "^^=usernameField$$": 1}, function(err, userdoc){
 		console.log(userdoc);
 		if(err){
@@ -180,7 +175,7 @@ function _^^=api.name$$(id, body, fn) {
 		require("../models/^^=api.code$$").method.VerifyCode({
 			id: userdoc.^^=usernameField$$,
 			code: body.code,
-			minutes: 3
+			minutes: 60
 		}, function(err, valid){	
 			if(err){
 				fn(err);
@@ -191,7 +186,7 @@ function _^^=api.name$$(id, body, fn) {
 				return;
 			}
 	^^}$$
-			Model.method.put(where, doc, function(err) {
+			Model.method.put({ "^^=idField$$": id }, doc, function(err) {
     		if (err)
 					fn(err);
 				else

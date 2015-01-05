@@ -7,7 +7,7 @@
 
 		^^if(auth){$$
 		^^=ucfirst(name)$$Utils.clear(context);
-		^^=ucfirst(auth)$$Utils.save(^^=ucfirst(auth)$$Controller.getTestId(), ^^=ucfirst(auth)$$Controller.getTestUser(), ^^=ucfirst(auth)$$Controller.getTestToken(), context);
+	  ^^=ucfirst(auth)$$Utils.save(^^=ucfirst(auth)$$Controller.getTestId(), ^^=ucfirst(auth)$$Controller.getTestToken(), context);
 		^^}$$
 
 		ExceptionCode e = API.^^=api.name$$(context);
@@ -41,8 +41,7 @@
 
 		^^if(auth){$$
 		^^=ucfirst(name)$$Utils.clear(context);
-		^^=ucfirst(auth)$$Utils.save(^^=ucfirst(auth)$$Controller.getTestId(), ^^=ucfirst(auth)$$Controller.getTestUser(), ^^=ucfirst(auth)$$Controller.getTestToken(), context);
-
+	  ^^=ucfirst(auth)$$Utils.save(^^=ucfirst(auth)$$Controller.getTestId(), ^^=ucfirst(auth)$$Controller.getTestToken(), context);
 		^^}$$
 
 		ExceptionCode e = API.get^^=ucfirst(name)$$(id, context);
@@ -61,8 +60,7 @@
 		Context context = activity.getApplicationContext();
 		^^if(auth){$$
 		^^=ucfirst(name)$$Utils.clear(context);
-		^^=ucfirst(auth)$$Utils.save(^^=ucfirst(auth)$$Controller.getTestId(), ^^=ucfirst(auth)$$Controller.getTestUser(), ^^=ucfirst(auth)$$Controller.getTestToken(), context);
-
+		^^=ucfirst(auth)$$Utils.save(^^=ucfirst(auth)$$Controller.getTestId(), ^^=ucfirst(auth)$$Controller.getTestToken(), context);
 		^^}$$
 	  
 		ExceptionCode e = API.post^^=ucfirst(name)$$(^^=ucfirst(name)$$.generateTest("atest"), context);
@@ -86,7 +84,7 @@
 
 		^^if(auth){$$
 		^^=ucfirst(name)$$Utils.clear(context);
-		^^=ucfirst(auth)$$Utils.save(^^=ucfirst(auth)$$Controller.getTestId(), ^^=ucfirst(auth)$$Controller.getTestUser(), ^^=ucfirst(auth)$$Controller.getTestToken(), context);
+	  ^^=ucfirst(auth)$$Utils.save(^^=ucfirst(auth)$$Controller.getTestId(), ^^=ucfirst(auth)$$Controller.getTestToken(), context);
 		^^}$$
 
 		ExceptionCode e = API.upload^^=ucfirst(name)$$^^=ucfirst(api.name)$$(^^=ucfirst(auth)$$Controller.getTestId(), bitmap, context);

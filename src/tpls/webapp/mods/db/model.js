@@ -172,6 +172,11 @@ Model.method.put = function(where, doc, fn){
 			fn("no doc find");
 			return;
 		}
+		if(doc.$inc){
+			for(var key in doc.$inc){
+				ori_doc[key]+=doc.$inc[key];
+			}
+		}
 		^^fields.forEach(function(field){$$
 	  if(doc.^^=field.name$$ && doc.^^=field.name$$ != ori_doc.^^=field.name$$)
 			ori_doc.^^=field.name$$ = doc.^^=field.name$$;
@@ -469,6 +474,7 @@ function filter(doc){
 	if(doc.^^=field.name$$)
 		json.^^=field.name$$ = doc.^^=field.name$$;
 	^^})$$
+	if(doc.$inc) json.$inc = doc.$inc;
 	return json;
 }
 Model.method.filter = filter;

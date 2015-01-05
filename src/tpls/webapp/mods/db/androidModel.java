@@ -93,7 +93,7 @@ public class ^^=ucfirst(name)$$ {
 	}
 	public void setId(String id){
 		^^if(fields[0].default == "autoinc"){$$
-		this.^^=idField$$ = Integer.parseInt(id);
+		this.^^=idField$$ = Long.parseLong(id);
 				^^}else{$$
 		this.^^=idField$$ = id;
 				^^}$$

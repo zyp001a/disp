@@ -25,6 +25,7 @@ function _init(root, env){
 	if(!env.nodeDeps) env.nodeDeps = {};
 	if(!env.nodeDevDeps) env.nodeDevDeps = {};
 	if(!env.nodeControllers) env.nodeControllers = [];
+	if(!env.nodeServers) env.nodeServers = [];
 	if(!env.nodeRoutes) env.nodeRoutes = [];
 	if(!env.nodeTests) env.nodeTests = [];
 	if(!env.nodeScripts) env.nodeScripts = [];
@@ -153,7 +154,7 @@ function _default(mod, mp, env, config){
 				content:tmpl(fs.readFileSync(mod+"/partial.html").toString(), mp)
 			});
 		}
-		if(!config.noRoute && mp.name){
+		if(!config.noRoute && !mp.noRoute && mp.name){
 			if(mp.isHome){
 				env.routes.push({
 					name: mp.name,
@@ -274,11 +275,19 @@ function _default(mod, mp, env, config){
 				content:tmpl(fs.readFileSync(mod+"/nodeTest.js").toString(), mp)
 			});
 		}
-		if(fs.existsSync(mod+"/nodeRoute.js")){
-			env.nodeRoutes.push({
+		if(fs.existsSync(mod+"/nodeServer.js")){
+			env.nodeServers.push({
 				name: mp.name, 
-				content:tmpl(fs.readFileSync(mod+"/nodeRoute.js").toString(), mp)
+				content:tmpl(fs.readFileSync(mod+"/nodeServer.js").toString(), mp)
 			});
+		}
+		if(!config.noNodeRoute && !mp.noNodeRoute){
+			if(fs.existsSync(mod+"/nodeRoute.js")){
+				env.nodeRoutes.push({
+					name: mp.name, 
+					content:tmpl(fs.readFileSync(mod+"/nodeRoute.js").toString(), mp)
+				});
+			}
 		}
 
 

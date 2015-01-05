@@ -1,0 +1,23 @@
+<dl>
+<dt>url</dt>
+^^if(withId){$$
+<dd>/api/^^=posturl$$</dd>
+^^}else{$$
+^^}$$
+</dl>
+<div class="row">
+<div class="col-md-6">
+<form ng-submit="submit()">
+^^fields.forEach(function(field){$$
+  <div class="form-group">
+    <label for="^^=field.name$$">^^=field.text$$</label>
+    <input type="text" class="form-control ^^if(field.required){$$required^^}$$" id="^^=field.name$$" name="^^=field.name$$" placeholder="^^=field.hint || field.text$$" ng-model="data.^^=field.name$$">
+  </div>
+^^})$$
+  <button type="submit" class="btn btn-primary btn-block">Submit</button>
+<form/>
+</div>
+<div class="col-md-6">
+<textarea style="width:1000px;height:800px;" ng-model="result"></textarea>
+</div>
+</form>

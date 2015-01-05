@@ -136,15 +136,16 @@ else{
 
 extendObj(config); // process mount
 
-if(process.env.NODE_ENV == "prod" && config.prod){
-	distDir = dir + "/" + "prod";
-	for (var key in config.prod){
+var nodeenv = process.env.NODE_ENV;
+if(nodeenv && config[nodeenv]){
+	distDir = dir + "/" + nodeenv;
+	for (var key in config[nodeenv]){
 
-		if(typeof config.prod[key] == "string" || typeof config.prod[key] == "number" || typeof config.prod[key] == "boolean")
-			env[key] = config.prod[key];
-		else if(typeof config.prod[key] == "object"){
-			if(isArray(config.prod[key])){
-				config.prod[key].forEach(function(moddist){
+		if(typeof config[nodeenv][key] == "string" || typeof config[nodeenv][key] == "number" || typeof config[nodeenv][key] == "boolean")
+			env[key] = config[nodeenv][key];
+		else if(typeof config[nodeenv][key] == "object"){
+			if(isArray(config[nodeenv][key])){
+				config[nodeenv][key].forEach(function(moddist){
 					env[key].forEach(function(mod){
 						if(moddist.name == mod.name){
 							for (var key in moddist){
@@ -158,8 +159,8 @@ if(process.env.NODE_ENV == "prod" && config.prod){
 			console.log(key);
 				if(!env[key])
 					env[key] = {};
-				for(var key2 in config.prod[key]){
-					env[key][key2] = config.prod[key][key2];
+				for(var key2 in config[nodeenv][key]){
+					env[key][key2] = config[nodeenv][key][key2];
 				}
 			}
 		}

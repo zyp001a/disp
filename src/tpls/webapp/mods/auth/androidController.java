@@ -12,4 +12,7 @@ public class ^^=ucfirst(name)$$Controller {
 
 
 	}
+	public static String getTestUser(){
+		return "test^^=schema.usernameField$$";
+	}
 }
